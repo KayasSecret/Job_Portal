@@ -43,4 +43,4 @@ const jobSchema = new mongoose.Schema({
         ref: 'Application'
     }]
 });
-export const job = mongoose.model("job", jobSchema);
+export const job = mongoose.model("Job", jobSchema);
