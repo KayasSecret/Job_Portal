@@ -78,8 +78,18 @@ export const login = async (req, res) => {
         }
         const token = await jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' })
 
+        user = {
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        }
+
         return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpsOnly: true, sameSite: 'strict' }).json({
             message: `Welcome back ${user.fullName}`,
+            user,
             success: true
         })
     }
@@ -90,19 +100,20 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        return res.status(200).cookie("token", "", {maxAge: 0}).json({
+        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
             message: "Logged out successfully.",
             success: true
         })
-    } 
+    }
     catch (error) {
         console.log(error)
     }
 }
 
-export const updateProfile = async(req, res) => {
+export const updateProfile = async (req, res) => {
     try {
-        const {fullName, email, phoneNumber, bio, skills} = req.body;
+        const { fullName, email, phoneNumber, bio, skills } = req.body;
+        const file = req.file;
         if (!fullName || !email || !phoneNumber || !bio || !skills) {
             return res.status(400).json({
                 message: "Something is Missing",
@@ -110,9 +121,48 @@ export const updateProfile = async(req, res) => {
             })
         }
 
+        // Cloudinary set comes here
+
         const skillsArray = skills.split(",");
         const userId = req.id; // Middle ware Authentication
-    } catch(error) {
+        let user = await User.findById(UserId);
+
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found.",
+                success: false
+            })
+        }
+
+        // Update Data  
+            user.fullName = fullName,
+            user.email = email,
+            user.phoneNumber = phoneNumber,
+            user.profile.bio = bio,
+            user.profile.skills = skillsArray
+
+        // Resume comes later
+
+
+
+        await user.save();
+
+        user = {
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        }
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            user,
+            success: true
+        })
+
+    } catch (error) {
         console.log(error)
     }
 }
