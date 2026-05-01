@@ -26,7 +26,7 @@ export const register = async (req, res) => {
             fullName,
             email,
             phoneNumber,
-            hashedPassword,
+            password: hashedPassword,
             role,
         })
 
