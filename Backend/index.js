@@ -11,20 +11,31 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true
-}
-app.use(cors(corsOptions)); 
+};
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 8080;
 
-// API'S
+// API Routes
 app.use("/api/v1/user", userRoute);
 
-app.listen(PORT, ()=> {
-    connectDB();
-    console.log(`Server running at port ${PORT}`);
-})
+const startServer = async () => {
+    try {
+        await connectDB(); // DB connect first
+
+        app.listen(PORT, () => {
+            console.log(`Server running at port ${PORT}`);
+        });
+    } catch (error) {
+        console.log("Database connection failed ❌", error);
+        process.exit(1);
+    }
+};
+    
+startServer();
