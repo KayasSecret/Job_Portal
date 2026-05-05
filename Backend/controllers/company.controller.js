@@ -76,6 +76,7 @@ export const updateCompany = async (req, res) => {
 
         // Cloudinary
         const updateData = { name, description, website, location }
+        
         const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true })
 
         if (!company) {
@@ -86,7 +87,7 @@ export const updateCompany = async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "Company information updated",
+            message: "Company information updated.",
             success: true
         })
     } catch (error) {
