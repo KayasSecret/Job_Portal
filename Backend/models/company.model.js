@@ -6,23 +6,15 @@ const companySchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    description: {
-        type: String
-    },
-    website: {
-        type: String
-    },
-    location: {
-        type: String,
-    },
-    logo: {
-        type: String
-    },
+    description: String,
+    website: String,
+    location: String,
+    logo: String,
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }
-}, {timestamps: true});
-export const Company = mongoose.model("Company", companySchema)
-export const Job = mongoose.model("Job", jobSchema);
+}, { timestamps: true });
+
+export const Company = mongoose.model("Company", companySchema);
