@@ -125,11 +125,6 @@ export const updateCompany = async (req, res) => {
       success: true
     });
 
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Server error",
-      success: false
-    });
+  } 
   }
 };  
