@@ -6,33 +6,33 @@ export const postJob = async (req, res) => {
         const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
         const userId = req.id;
 
-    if(!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId) {
-        return res.status(400).json({
-            message: "Something is missing",
-            success: false
+        if (!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId) {
+            return res.status(400).json({
+                message: "Something is missing",
+                success: false
+            })
+        }
+
+        const job = await Job.create({
+            title,
+            description,
+            requirements: requirements.split(","),
+            salary: Number(salary),
+            location,
+            jobType,
+            experienceLevel: experience,
+            position,
+            company: companyId,
+            created_by: userId
         })
-    }
 
-    const job = await Job.create({
-        title,
-        description,
-        requirements: requirements.split(","),
-        salary: Number(salary),
-        location,
-        jobType,
-        experienceLevel: experience,
-        position,
-        company: companyId,
-        created_by: userId
-    })
+        return res.status(201).json({
+            message: "New job created successfully.",
+            job,
+            success: true
+        })
 
-    return res.status(201).json({
-        message: "New job created successfully.",
-        job,
-        success: true
-    })
-
-    } catch(error) {
+    } catch (error) {
         console.log(error);
     }
 }
@@ -43,71 +43,71 @@ export const getAlljobs = async (req, res) => {
         const keyword = req.query.keyword || "",
         const query = {
             $or: [
-                {title: {$regex: keyword, $options: "i"}},
-                {description: {$regex: keyword, $options: "i"}},
+                { title: { $regex: keyword, $options: "i" } },
+                { description: { $regex: keyword, $options: "i" } },
             ]
         }
 
         const jobs = await job.find(query);
-        if(!jobs) {
-            return res.status(404).json ({
+        if (!jobs) {
+            return res.status(404).json({
                 message: "Jobs not found",
                 success: true
             })
         }
 
-        return res.status(200).json ({
+        return res.status(200).json({
             jobs,
             success: true
         })
     }
-    catch(error) {
+    catch (error) {
         console.log(error);
     }
 }
 
 // For the Student
 export const getJobById = async (res, res) => {
-   try {
+    try {
         const jobId = req.params.id
         const job = await Job.findById(jobId)
 
-        if(!job) {
-            return res.status(404).json ({
+        if (!job) {
+            return res.status(404).json({
                 message: "Jobs not find.",
                 success: false
             })
         }
 
-        return res.status(200).json ({
+        return res.status(200).json({
             job,
             success: true
         })
-   } 
-   catch(error) {
-    console.log(error)
-   }
+    }
+    catch (error) {
+        console.log(error)
+    }
 }
 
 // How many jobs has the admin posted till today 
 export const getAdminJobs = async (req, res) => {
     try {
         const adminId = req.id;
-        const jobs = await Job.find({created_by: adminId})  
+        const jobs = await Job.find({ created_by: adminId })
 
-        if(!jobs) {
-            return res.status(404).json ({
+        if (!jobs) {
+            return res.status(404).json({
                 message: "Jobs are not found.",
                 success: false
             })
         }
 
-        return res.status(200).json ({
+        return res.status(200).json({
             jobs,
-            success: true   
+            success: true
         })
-    } 
-    catch(error) {
+    }
+    catch (error) {
         console.log(error)
     }
 }
