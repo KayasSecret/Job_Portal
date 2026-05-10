@@ -5,7 +5,7 @@ import { Job } from "../models/job.model.js"
 export const applyJob = async (req, res) => {
     try {
         const userId = req.id;
-        const { id: jobId } = req.params.id;
+        const jobId = req.params.id;
 
         if (!jobId) {
             return res.status(404).json({
@@ -83,35 +83,39 @@ export const getAppliedJobs = async (req, res) => {
 // Admin will see how many users have applied.
 export const getApplicants = async (req, res) => {
     try {
+
         const jobId = req.params.id;
-        const job = await job.findById(jobId).populate({
-            path: 'applications',
-            options: { sort: { createdAt: -1 } },
+
+        // first find job
+        const job = await Job.findById(jobId).populate({
+            path: "applications",
             populate: {
-                path: 'applicant'
+                path: "applicant"
             }
         });
 
+        // then check
         if (!job) {
             return res.status(404).json({
                 message: "Job not found.",
                 success: false
-            })
+            });
         }
 
         return res.status(200).json({
             job,
             success: true
-        })
-    }
-    catch (error) {
+        });
+
+    } catch (error) {
         console.log(error);
     }
 }
 
 export const updateStatus = async (req, res) => {
     try {
-        const status = req.body;
+
+        const { status } = req.body;
         const applicationId = req.params.id;
 
         if (!status) {
@@ -121,8 +125,10 @@ export const updateStatus = async (req, res) => {
             })
         }
 
-        // Find the application using the application's ID.
-        const application = await Application.findOne({ _id: applicationId });
+        // Find application using application ID
+        const application = await Application.findOne({
+            _id: applicationId
+        });
 
         if (!application) {
             return res.status(404).json({
@@ -131,16 +137,17 @@ export const updateStatus = async (req, res) => {
             })
         }
 
-        // To update the status
+        // Update status
         application.status = status.toLowerCase();
+
         await application.save();
 
         return res.status(200).json({
             message: "Status updated successfully.",
             success: true
         })
-    }
-    catch (error) {
+
+    } catch (error) {
         console.log(error);
     }
 }
