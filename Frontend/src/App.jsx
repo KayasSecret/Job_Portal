@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import Navbar from './components/shared/Navbar'
 import './App.css'
 
 function App() {
@@ -9,9 +10,7 @@ function App() {
 
   return (
     <>
-      <h1 className="text-red-500">
-        Lets Build a Job Portal with React, Node.js, Express and MongoDB
-      </h1>
+      <Navbar />
     </>
   )
 }
