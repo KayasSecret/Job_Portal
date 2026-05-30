@@ -28,7 +28,7 @@ function Navbar() {
                                         <Button variant="outline" className="cursor-pointer">Login</Button>
                                     </Link>
                                     <Link to="/signup">
-                                        <Button variant="outline" className="bg-[#6A38C2] text-white hover:bg-[#270069] hover:text-white cursor-pointer">Signup</Button>
+                                        <Button variant="outline" className="bg-[#014dff] text-white hover:bg-[#002e99] hover:text-white cursor-pointer">Signup</Button>
                                     </Link>
                                 </div>
                             ) :
