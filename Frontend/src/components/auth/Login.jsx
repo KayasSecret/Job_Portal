@@ -8,6 +8,9 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { RadioGroup } from '../ui/radio-group';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading } from '../../redux/authSlice';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -16,7 +19,9 @@ const Login = () => {
     role: ""
   })
 
+  const { loading } = useSelector(state => state.auth)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value })
@@ -25,6 +30,7 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault()
     try {
+      dispatch(setLoading(true))
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: {
           "Content-Type": "application/json"
@@ -38,6 +44,9 @@ const Login = () => {
     } catch (error) {
       console.log(error)
       toast.error(error.response.data.message)
+    }
+    finally {
+      dispatch(setLoading(false))
     }
   }
   return (
@@ -101,7 +110,12 @@ const Login = () => {
 
           </div>
 
-          <Button type="submit" className="w-full my-4 cursor-pointer hover:bg-blue-800">Login</Button>
+          {
+            loading ? 
+            <Button className="w-full my-4"><Loader2 className="mr-2 h-4 w-4 animated-spin" /> Please Wait </Button> : 
+            <Button type="submit" className="w-full my-4 cursor-pointer hover:bg-blue-800">Login</Button>
+          }
+
           <div className="text-center text-md mt-2">
             <span>
               Don't have an account?
