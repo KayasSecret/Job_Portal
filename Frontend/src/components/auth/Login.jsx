@@ -1,16 +1,13 @@
-import React from 'react'
-import Navbar from '../shared/Navbar';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { RadioGroup } from '../ui/radio-group';
-import { RadioGroupItem } from '../ui/radio-group';
-import { Button } from '../ui/button';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import axios from 'axios';
-import { USER_API_ENDPOINT } from '../utils/constant';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { USER_API_ENDPOINT } from '../../utils/constant';
+import Navbar from '../shared/Navbar';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { RadioGroup } from '../ui/radio-group';
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -34,7 +31,6 @@ const Login = () => {
         },
         withCredentials: true
       })
-      console.log(res.data.success)
       if (res.data.success) {
         navigate("/")
         toast.success(res.data.message)
