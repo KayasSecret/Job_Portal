@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from "./ui/button";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { Search } from 'lucide-react';
 
 const HeroSection = () => {
   return (
@@ -16,10 +16,8 @@ const HeroSection = () => {
             placeholder="Find your dream job...!"
             className="outline-none border-none w-full"
           />
-          <Button>
-            <MagnifyingGlass
-             className="h-5 w-5" 
-            />
+          <Button className="rounded-r-full bg-[#6A38C2] hover:bg-[#6A38C2]/90 text-white">
+            <Search className="h-5 w-5" />
           </Button>
         </div>
       </div>
