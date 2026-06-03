@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import Navbar from './components/shared/Navbar'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/auth/Login'
@@ -22,13 +20,7 @@ const appRouter = createBrowserRouter([
 ])
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div>
-      <RouterProvider router={appRouter} />
-    </div>
-  )
+  return <RouterProvider router={appRouter} />
 }
 
 export default App
