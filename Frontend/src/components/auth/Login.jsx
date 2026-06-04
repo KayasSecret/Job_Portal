@@ -11,6 +11,7 @@ import { RadioGroup } from '../ui/radio-group';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../../redux/authSlice';
 import { Loader2 } from 'lucide-react';
+import { setUser } from '../../redux/authSlice';
 
 {/*This is the login page*/}
 const Login = () => {
@@ -39,6 +40,7 @@ const Login = () => {
         withCredentials: true
       })
       if (res.data.success) {
+        dispatch(setUser(res.data.user))
         navigate("/")
         toast.success(res.data.message)
       }

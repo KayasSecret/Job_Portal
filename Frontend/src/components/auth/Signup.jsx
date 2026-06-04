@@ -9,6 +9,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { RadioGroup } from '../ui/radio-group';
 import { useDispatch, useSelector } from 'react-redux';
+import { setLoading } from '../../redux/authSlice';
 
 const Signup = () => {
   const [input, setInput] = useState({
