@@ -5,6 +5,7 @@ import Signup from './components/auth/Signup'
 import Jobs from './components/Jobs'
 import Browse from './components/Browse'
 import Profile from './components/Profile'
+import JobDescription from './components/JobDescription'
 import './App.css'
 
 const appRouter = createBrowserRouter([

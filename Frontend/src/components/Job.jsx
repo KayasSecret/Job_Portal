@@ -5,8 +5,11 @@ import { Avatar } from './ui/Avatar'
 import { AvatarImage } from './ui/Avatar'
 import Logo from '../assets/logo.png'
 import { Badge } from './ui/Badge'
+import { useNavigate } from 'react-router-dom'
 
 const Job = () => {
+  const navigate = useNavigate();
+  const jobId = "mynameiskayasmishra" 
   return (
     <div className="p-5 rounded-md shadow-xl bg-white border border-gray-200">
       <div className="flex items-center justify-between">
@@ -39,7 +42,7 @@ const Job = () => {
       </div>
 
       <div className="flex items-center gap-4 mt-4">
-        <Button variant="outline" className="cursor-pointer">Details</Button>
+        <Button onClick={() => navigate(`/description/${jobId}`)} variant="outline" className="cursor-pointer">Details</Button>
         <Button className="bg-[#7209b7] font-bold cursor-pointer">Save For Later</Button>
       </div>
     </div>

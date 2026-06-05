@@ -10,6 +10,7 @@ import { Label } from '../ui/label';
 import { RadioGroup } from '../ui/radio-group';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../../redux/authSlice';
+import { Loader2 } from 'lucide-react';
 
 const Signup = () => {
   const [input, setInput] = useState({
