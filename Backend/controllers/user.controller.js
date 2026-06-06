@@ -1,6 +1,8 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataURI from "../utils/dataURI.js";
+import cloudinary from "../utils/cloudinary.js";
 
 
 // ================= REGISTER =================
@@ -143,14 +145,13 @@ export const logout = async (req, res) => {
     }
 };
 
-
 // ================= UPDATE PROFILE =================
 export const updateProfile = async (req, res) => {
     try {
         const { fullName, email, phoneNumber, bio, skills } = req.body;
-        const userId = req.id; // from middleware
+        const userId = req.id;
 
-        let user = await User.findById(userId);  // ✅ FIXED
+        let user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).json({
@@ -165,16 +166,36 @@ export const updateProfile = async (req, res) => {
             skillsArray = skills.split(",");
         }
 
-        // Update fields
+        // Update basic fields
         if (fullName) user.fullName = fullName;
         if (email) user.email = email;
         if (phoneNumber) user.phoneNumber = phoneNumber;
 
-        // Ensure profile object exists
-        if (!user.profile) user.profile = {};
+        // Ensure profile exists
+        if (!user.profile) {
+            user.profile = {};
+        }
 
         if (bio) user.profile.bio = bio;
         if (skills) user.profile.skills = skillsArray;
+
+        // Resume Upload
+        const file = req.file;
+
+        if (file) {
+            const fileURI = getDataURI(file);
+            const cloudResponse = await cloudinary.uploader.upload(
+                fileURI.content,
+                {
+                    resource_type: "raw"
+                }
+            );
+
+            if (cloudResponse) {
+                user.profile.resume = cloudResponse.secure_url;
+                user.profile.resumeOriginalName = file.originalname;
+            }
+        }
 
         await user.save();
 
@@ -195,6 +216,7 @@ export const updateProfile = async (req, res) => {
 
     } catch (error) {
         console.error("UPDATE PROFILE ERROR:", error);
+
         return res.status(500).json({
             message: "Server error",
             success: false

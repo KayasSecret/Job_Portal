@@ -5,10 +5,11 @@ import { Button } from './ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
-  DialogHeader, 
+  DialogHeader,
   DialogTitle,
-} from './ui/dialog'
+} from "./ui/dialog";
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { toast } from 'sonner'
@@ -56,9 +57,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     try {
       const res = await axios.post(`${USER_API_ENDPOINT}/profile/update`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
+        // headers: {
+        //   'Content-Type': 'multipart/form-data'
+        // },
         withCredentials: true
       })
 
@@ -81,6 +82,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         <DialogContent className="sm:max-w-[425px]" onInteractOutside={() => setOpen(false)}>
           <DialogHeader>
             <DialogTitle>Update Profile</DialogTitle>
+            <DialogDescription>
+              Update your profile information and resume.
+            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={submitHandler}>
