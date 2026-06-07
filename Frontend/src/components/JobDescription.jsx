@@ -13,7 +13,6 @@ const JobDescription = ({ job }) => {
   const jobId = params.id;
   const { user } = useSelector(store => store.auth);
   const { singleJob } = useSelector(store => store.job)
-  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchSingleJob = async () => {
