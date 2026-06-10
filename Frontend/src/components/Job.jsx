@@ -9,7 +9,12 @@ import { useNavigate } from 'react-router-dom'
 
 const Job = ({job}) => {
   const navigate = useNavigate();
-  const jobId = "mynameiskayasmishra" 
+  // const jobId = "mynameiskayasmishra" 
+
+  const daysAgoFunction = () => {
+    const createdAt = new Date()
+  }
+
   return (
     <div className="p-5 rounded-md shadow-xl bg-white border border-gray-200">
       <div className="flex items-center justify-between">
