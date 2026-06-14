@@ -4,14 +4,17 @@ import App from './App.jsx'
 import { Toaster } from './components/ui/sonner'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from "@material-tailwind/react"
-import store from './redux/store.js'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from './redux/store'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <ThemeProvider>
-        <App />
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
       </ThemeProvider>
     </Provider>
     <Toaster />
