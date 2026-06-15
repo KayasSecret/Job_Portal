@@ -18,13 +18,13 @@ function Navbar() {
     const logoutHandler = async () => {
         try {
             const res = await axios.get(`${USER_API_ENDPOINT}/logout`, { withCredentials: true })
-            if(res.data.success) {
+            if (res.data.success) {
                 dispatch(setUser(null))
                 navigate("/")
                 toast.success(res.data.message)
             }
-        } catch(error) {
-            console.log(error) 
+        } catch (error) {
+            console.log(error)
             toast.error(error.response.data.message)
         }
     }
@@ -37,9 +37,21 @@ function Navbar() {
                 </div>
                 <div className="flex items-center gap-12">
                     <ul className='flex font-medium items-center gap-5'>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/jobs">Jobs</Link></li>
-                        <li><Link to="/browse">Browse</Link></li>
+                        {
+                            user && user.role === "recruiter" ? (
+                                <>
+                                    <li><Link to="/admin/companies">Companies</Link></li>
+                                    <li><Link to="/admin/jobs">Jobs</Link></li>
+                                </>
+                            ) : 
+                            (
+                                <>
+                                    <li><Link to="/">Home</Link></li>
+                                    <li><Link to="/jobs">Jobs</Link></li>
+                                    <li><Link to="/browse">Browse</Link></li>
+                                </>
+                            )
+                        }
                     </ul>
 
                     {
