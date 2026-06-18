@@ -4,8 +4,11 @@ import { Avatar, AvatarImage } from '../ui/avatar'
 import Logo from '../../assets/Logo.png'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Edit2, MoreHorizontal } from 'lucide-react'
+import { useSelector } from 'react-redux'
 
 const CompaniesTable = () => {
+    const { companies } = useSelector(store => store.company)
+
     return (
         <div>
             <Table>
@@ -22,30 +25,30 @@ const CompaniesTable = () => {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>
-                            <Avatar className="cursor-pointer">
-                                <AvatarImage src={Logo} />
-                            </Avatar>
-                        </TableCell>
-                        <TableCell>
-                            Comapny Name
-                        </TableCell>
-                        <TableCell>
-                            14-06-2026
-                        </TableCell>
-                        <TableCell className="text-right cursor-pointer">
-                            <Popover>
-                                <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
-                                <PopoverContent className="w-32">
-                                    <div className='flex items-center gap-2 w-fit cursor-pointer'>
-                                        <Edit2 className='w-4'/>
-                                        <span>Edit</span>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-                        </TableCell>
-                    </TableRow>
+                    {
+                        companies?.map((company) =>
+                            <TableRow>
+                                <TableCell>
+                                    <Avatar className="cursor-pointer">
+                                        <AvatarImage src={company.logo} />
+                                    </Avatar>
+                                </TableCell>
+                                <TableCell>{company.name}</TableCell>
+                                <TableCell>{company.createdAt.split("T")[0]}</TableCell>
+                                <TableCell className="text-right cursor-pointer">
+                                    <Popover>
+                                        <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
+                                        <PopoverContent className="w-32">
+                                            <div className='flex items-center gap-2 w-fit cursor-pointer'>
+                                                <Edit2 className='w-4' />
+                                                <span>Edit</span>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </TableCell>
+                            </TableRow>
+                        )
+                    }
                 </TableBody>
             </Table>
         </div>
