@@ -14,10 +14,10 @@ const Home = () => {
   const navigate = useNavigate()
   const { user } = useSelector(store => store.auth)
   useEffect(() => {
-    if (user) {
-      navigate("/admin/companies")
+    if (user?.role === "recruiter") {
+      navigate("/admin/companies");
     }
-  }, [])
+  }, [user])
   return (
     <div>
       <Navbar />

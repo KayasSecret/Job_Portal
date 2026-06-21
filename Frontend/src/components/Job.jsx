@@ -3,7 +3,6 @@ import { Button } from './ui/Button'
 import { BookmarkIcon } from 'lucide-react'
 import { Avatar } from './ui/Avatar'
 import { AvatarImage } from './ui/Avatar'
-import Logo from '../assets/logo.png'
 import { Badge } from './ui/Badge'
 import { useNavigate } from 'react-router-dom'
 
@@ -30,7 +29,7 @@ const Job = ({ job }) => {
       <div className="flex items-center gap-2 my-2">
         <Button variant="outline" className="p-6" size="icon">
           <Avatar className="cursor-pointer">
-            <AvatarImage src={Logo} />
+            <AvatarImage src={job?.company?.logo} />
           </Avatar>
         </Button>
 

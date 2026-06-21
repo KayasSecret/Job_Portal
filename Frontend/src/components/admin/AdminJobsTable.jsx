@@ -63,3 +63,5 @@ const AdminJobsTable = () => {
         </div>
     )
 }
+
+export default AdminJobsTable

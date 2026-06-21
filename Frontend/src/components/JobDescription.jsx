@@ -30,8 +30,10 @@ const JobDescription = ({ job }) => {
         toast.success(res.data.message)
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message)
+      // console.log(error);
+      // toast.error(error.response.data.message)
+       console.log("FULL ERROR =>", error.response?.data);
+      
     }
   }
 

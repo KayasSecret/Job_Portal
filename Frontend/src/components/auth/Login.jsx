@@ -13,7 +13,7 @@ import { setLoading } from '../../redux/authSlice';
 import { Loader2 } from 'lucide-react';
 import { setUser } from '../../redux/authSlice';
 
-{/*This is the login page*/}
+{/*This is the login page*/ }
 const Login = () => {
   const [input, setInput] = useState({
     email: "",
@@ -41,7 +41,11 @@ const Login = () => {
       })
       if (res.data.success) {
         dispatch(setUser(res.data.user))
-        navigate("/")
+        if (res.data.user.role === "recruiter") {
+          navigate("/admin/companies");
+        } else {
+          navigate("/");
+        } 
         toast.success(res.data.message)
       }
     } catch (error) {
@@ -114,9 +118,9 @@ const Login = () => {
           </div>
 
           {
-            loading ? 
-            <Button className="w-full my-4"><Loader2 className="mr-2 h-4 w-4 animated-spin" /> Please Wait </Button> : 
-            <Button type="submit" className="w-full my-4 cursor-pointer hover:bg-blue-800">Login</Button>
+            loading ?
+              <Button className="w-full my-4"><Loader2 className="mr-2 h-4 w-4 animated-spin" /> Please Wait </Button> :
+              <Button type="submit" className="w-full my-4 cursor-pointer hover:bg-blue-800">Login</Button>
           }
 
           <div className="text-center text-md mt-2">
