@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from "./ui/button";
 import { Search } from 'lucide-react';
 
 const HeroSection = () => {
+  const [query, setQuery] = useState("")
+
+  
+
   return (
     <div className="text-center">
       <div className="flex flex-col gap-6 my-10">
@@ -14,9 +18,12 @@ const HeroSection = () => {
           <input
             type="text"
             placeholder="Find your dream job...!"
+            onChange={(e) => setQuery(e.target.value)}
             className="outline-none border-none w-full"
           />
-          <Button className="rounded-r-full bg-[#6A38C2] hover:bg-[#6A38C2]/90 text-white">
+          <Button
+            onClick={searchJobHandler}
+            className="rounded-r-full bg-[#6A38C2] hover:bg-[#6A38C2]/90 text-white">
             <Search className="h-5 w-5" />
           </Button>
         </div>
