@@ -4,11 +4,29 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { MoreHorizontal } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { store } from '@/redux/store'
+import axios from 'axios'
+import { APPLICANT_API_ENDPOINT } from '@/utils/constant'
+import { toast } from 'sonner'
 
 const shortListingStatus = ["Accepted", "Rejected"]
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector(store => store.application)
+
+  const statusHandler = async (status, id) => {
+    try {
+      axios.defaults.withCredentials = true 
+      const res = await axios.post(`${APPLICANT_API_ENDPOINT}/status/${id}/update`,
+        { status }
+      )
+      if(res.data.success) {
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
+  }
 
   return (
     <div>
@@ -32,13 +50,17 @@ const ApplicantsTable = () => {
                 <TableCell>{item?.applicant?.email}</TableCell>
                 <TableCell>{item?.applicant?.phoneNumber}</TableCell>
                 <TableCell>
-                  <a
-                    className='text-blue-600 cursor-pointer'
-                    href={item?.applicant?.profile?.resumeOriginalName}
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    {item?.applicant?.profile?.resumeOriginalName}
-                  </a>
+                  {
+                    item?.applicant?.profile?.resume ?
+                      <a
+                        className='text-blue-600 cursor-pointer'
+                        href={item?.applicant?.profile?.resumeOriginalName}
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        {item?.applicant?.profile?.resumeOriginalName}
+                      </a> :
+                      <span>NA</span>
+                  }
                 </TableCell>
                 <TableCell>{item?.applicant?.createdAt.split("T")[0]}</TableCell>
                 <TableCell className="text-right cursor-pointer">
@@ -46,11 +68,11 @@ const ApplicantsTable = () => {
                     <PopoverTrigger>
                       <MoreHorizontal />
                     </PopoverTrigger>
-                    <PopoverContent className="cursor-pointer">
+                    <PopoverContent className="cursor-pointer W-32">
                       {
                         shortListingStatus.map((status, index) => {
                           return (
-                            <div key={index}>
+                            <div onClick={() => statusHandler(status, item?._id)} key={index} className='flex w-fit items-center my-2 cursor-pointer'>
                               <span>{status}</span>
                             </div>
                           )
