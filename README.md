@@ -1,189 +1,112 @@
-# 🚀 JobHub - MERN Stack Job Portal
-
 <div align="center">
 
-![JobHub Banner](https://img.shields.io/badge/JobHub-MERN%20Stack-blue?style=for-the-badge)
+# 🚀 JobHub - MERN Stack Job Portal
 
-### 🌟 Find Your Dream Job, Hire Top Talent 🌟
+<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&pause=1000&color=6A38C2&center=true&vCenter=true&width=700&lines=Modern+MERN+Job+Portal;Find+Your+Dream+Job;Hire+Top+Talent+Easily;Built+with+React+Node+MongoDB" />
 
-A modern, full-stack Job Portal built with the MERN Stack that connects job seekers with recruiters through a fast, secure, and intuitive platform.
+<br>
 
-[![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev/)
-[![NodeJS](https://img.shields.io/badge/Node.js-Backend-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb)](https://mongodb.com/)
-[![ExpressJS](https://img.shields.io/badge/Express.js-Server-black?style=for-the-badge&logo=express)](https://expressjs.com/)
-[![Vite](https://img.shields.io/badge/Vite-Build%20Tool-purple?style=for-the-badge&logo=vite)](https://vitejs.dev/)
-[![JWT](https://img.shields.io/badge/JWT-Authentication-orange?style=for-the-badge)]()
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white">
+<img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white">
+<img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white">
+<img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white">
+<img src="https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
 
-</div>
+<br><br>
 
----
+<a href="#">
+<img src="https://img.shields.io/badge/🌐 Live_Demo-6A38C2?style=for-the-badge">
+</a>
 
-## 📖 Overview
+<a href="#">
+<img src="https://img.shields.io/badge/📂 Source_Code-000000?style=for-the-badge">
+</a>
 
-🎯 **JobHub** is a powerful MERN Stack Job Portal designed to streamline the recruitment process. It allows recruiters to post jobs, manage applicants, and hire talented candidates, while job seekers can search, apply, and track their applications effortlessly.
+<a href="#">
+<img src="https://img.shields.io/badge/⭐ Give_A_Star-FFD700?style=for-the-badge">
+</a>
 
-Whether you're looking for your next opportunity or your next employee, JobHub provides a seamless experience.
+<a href="#">
+<img src="https://img.shields.io/badge/📄 Resume-00C853?style=for-the-badge">
+</a>
 
----
+<a href="#">
+<img src="https://img.shields.io/badge/💼 LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white">
+</a>
 
-# ✨ Key Features
+<a href="#">
+<img src="https://img.shields.io/badge/📧 Contact-EA4335?style=for-the-badge">
+</a>
 
-## 👨‍💼 For Job Seekers
+## ✨ About
 
-✅ Secure Registration & Login
+JobHub is a modern MERN Stack Job Portal where students can search and apply for jobs while recruiters can post jobs and manage applicants.
 
-✅ Browse Available Jobs
+Built using React, Node.js, Express.js, MongoDB, Redux Toolkit and Cloudinary.
 
-✅ Advanced Job Search & Filters
-
-✅ Apply for Jobs Instantly
-
-✅ Upload Resume/CV
-
-✅ Track Application Status
-
-✅ Personalized Dashboard
-
-✅ Profile Management
-
-✅ Responsive Design
-
----
-
-## 🏢 For Recruiters
-
-✅ Create Company Profile
-
-✅ Post New Jobs
-
-✅ Edit & Delete Job Listings
-
-✅ Manage Applicants
-
-✅ View Candidate Profiles
-
-✅ Update Hiring Status
-
-✅ Recruiter Dashboard
+## 🎯 Features
 
 ✅ Secure Authentication
 
----
+✅ Job Search & Filters
 
-# 🛠️ Tech Stack
+✅ One Click Apply
 
-## Frontend 🎨
+✅ Resume Upload
 
-- ⚛️ React.js
-- ⚡ Vite
-- 🎨 CSS3
-- 📱 Responsive Design
-- 🔄 Axios
-- 🧭 React Router DOM
-- 🔔 React Toastify
+✅ Recruiter Dashboard
 
-## Backend ⚙️
+✅ Company Management
 
-- 🟢 Node.js
-- 🚀 Express.js
-- 🔐 JWT Authentication
-- 🔒 Bcrypt.js
+✅ Applicant Tracking
 
-## Database 💾
+✅ Responsive Design
 
-- 🍃 MongoDB
-- 📊 Mongoose ODM
+✅ Modern UI Animations
 
-## Development Tools 🧰
+## 🛠 Tech Stack
 
-- 💻 VS Code
-- 🌐 Git
-- 🐙 GitHub
-- 📮 Postman
-- 📦 NPM
+⚛ React.js
 
----
+⚡ Vite
 
-# 🔥 Major Functionalities
+🎨 Tailwind CSS
 
-### 👤 User Authentication
+🔄 Redux Toolkit
 
-- Register Account
-- Login System
-- JWT Token Authentication
-- Password Encryption
-- Protected Routes
+🟢 Node.js
 
-### 📋 Job Management
+🚀 Express.js
 
-- Create Jobs
-- Update Jobs
-- Delete Jobs
-- View Jobs
-- Search Jobs
+🍃 MongoDB
 
-### 📨 Application System
+☁ Cloudinary
 
-- Apply for Jobs
-- Resume Submission
-- Application Tracking
-- Recruiter Review System
+🔐 JWT Authentication
 
-### 📊 Dashboard
-
-- User Dashboard
-- Recruiter Dashboard
-- Application Statistics
-- Job Management Panel
-
----
-
-# 📸 Project Screens
-
-### 🏠 Home Page
-
-- Attractive Hero Section
-- Featured Jobs
-- Search Functionality
-
-### 🔍 Job Search
-
-- Keyword Search
-- Category Filters
-- Location Filters
-
-### 👨‍💼 Recruiter Panel
-
-- Post Jobs
-- Manage Applicants
-- Track Hiring
-
-### 👤 Candidate Dashboard
-
-- Manage Profile
-- View Applied Jobs
-- Track Application Status
-
----
-
-# 📂 Project Structure
+## 🚀 Installation
 
 ```bash
-JobHub/
-│
-├── client/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── assets/
-│   └── services/
-│
-├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   └── config/
-│
-└── README.md
+git clone <repo-url>
+
+cd frontend
+npm install
+npm run dev
+
+cd backend
+npm install
+npm run dev
+
+
+---
+
+## 🌟 Attractive Footer
+
+```md
+
+### ⭐ If you like this project, give it a Star ⭐
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=6A38C2&height=120&section=footer"/>
+
+</div>
