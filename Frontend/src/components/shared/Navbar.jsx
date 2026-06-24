@@ -1,113 +1,234 @@
-import React from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { setUser } from '@/redux/authSlice';
-import { Avatar, AvatarImage } from '../ui/avatar'
-import { Button } from '../ui/button'
-import { LogOut, User2 } from "lucide-react";
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { USER_API_ENDPOINT } from '@/utils/constant';
-import { toast } from 'sonner';
+import React from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { setUser } from "@/redux/authSlice";
+import { Avatar, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import {
+  LogOut,
+  User2,
+  Briefcase,
+  Building2,
+  Menu,
+} from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/constant";
+import { toast } from "sonner";
 
 function Navbar() {
-    const { user } = useSelector(store => store.auth) || {};
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+  const { user } = useSelector((store) => store.auth) || {};
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const logoutHandler = async () => {
-        try {
-            const res = await axios.get(`${USER_API_ENDPOINT}/logout`, { withCredentials: true })
-            if (res.data.success) {
-                dispatch(setUser(null))
-                navigate("/")
-                toast.success(res.data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.response.data.message)
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(
+        `${USER_API_ENDPOINT}/logout`,
+        {
+          withCredentials: true,
         }
+      );
+
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Logout failed"
+      );
     }
+  };
 
-    return (
-        <div className="bg-white">
-            <div className="flex items-center justify-between container mx-auto max-w-7xl h-16">
-                <div>
-                    <h1 className="text-2xl font-bold">Job <span className='text-[#F83002]'>Portal</span></h1>
-                </div>
-                <div className="flex items-center gap-12">
-                    <ul className='flex font-medium items-center gap-5'>
-                        {
-                            user && user.role === "recruiter" ? (
-                                <>
-                                    <li><Link to="/admin/companies">Companies</Link></li>
-                                    <li><Link to="/admin/jobs">Jobs</Link></li>
-                                </>
-                            ) : 
-                            (
-                                <>
-                                    <li><Link to="/">Home</Link></li>
-                                    <li><Link to="/jobs">Jobs</Link></li>
-                                    <li><Link to="/browse">Browse</Link></li>
-                                </>
-                            )
-                        }
-                    </ul>
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
-                    {
-                        !user ?
-                            (
-                                <div className="flex items-center gap-2">
-                                    <Link to="/login">
-                                        <Button variant="outline" className="cursor-pointer">Login</Button>
-                                    </Link>
-                                    <Link to="/signup">
-                                        <Button variant="outline" className="bg-[#6A38C2] text-white hover:bg-[#7716ff] hover:text-white cursor-pointer">Signup</Button>
-                                    </Link>
-                                </div>
-                            ) :
-                            (
-                                <Popover>
-                                    {/* POPOVERTRIGGER */}
-                                    <PopoverTrigger asChild>
-                                        <Avatar className="cursor-pointer">
-                                            <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
-                                        </Avatar>
-                                    </PopoverTrigger>
+  return (
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-purple-100 shadow-sm">
+      <div className="container mx-auto max-w-7xl px-4">
+        <div className="flex items-center justify-between h-[72px]">
+          
+          {/* LOGO */}
 
-                                    {/* POPOVERCONTENT */}
-                                    <PopoverContent className="w-80">
-                                        <div>
-                                            <div className="flex gap-4">
-                                                <Avatar className="cursor-pointer">
-                                                    <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
-                                                </Avatar>
-                                                <div>
-                                                    <h2 className="font-medium">{user?.fullName}</h2>
-                                                    <p className="text-sm text-muted-foreground">{user?.profile?.bio}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex flex-col my-2 text-600">
-                                                <div className="flex w-fit items-center gap-2 cursor-pointer">
-                                                    <User2 />
-                                                    <Button variant="link" className="cursor-pointer"><Link to="/profile">View Profile</Link></Button>
-                                                </div>
-                                                <div className="flex w-fit items-center gap-2 cursor-pointer">
-                                                    <LogOut />
-                                                    <Button onClick={logoutHandler} variant="link" className="cursor-pointer">Logout</Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            )
-
-                    }
-                </div>
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#8B5CF6] flex items-center justify-center text-white font-bold shadow-md">
+              JP
             </div>
-        </div >
-    )
+
+            <h1 className="text-2xl font-extrabold tracking-tight">
+              <span className="text-[#6A38C2]">Job</span>
+              <span className="text-[#F83002]">Portal</span>
+            </h1>
+          </Link>
+
+          {/* NAVIGATION */}
+
+          <div className="flex items-center gap-10">
+            <ul className="hidden md:flex items-center gap-8 font-medium text-gray-700">
+
+              {user && user.role === "recruiter" ? (
+                <>
+                  <li>
+                    <Link
+                      to="/admin/companies"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
+                        isActive("/admin/companies")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                      }`}
+                    >
+                      Companies
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/admin/jobs"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
+                        isActive("/admin/jobs")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                      }`}
+                    >
+                      Jobs
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
+                        isActive("/")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                      }`}
+                    >
+                      Home
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/jobs"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
+                        isActive("/jobs")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                      }`}
+                    >
+                      Jobs
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/browse"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
+                        isActive("/browse")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                      }`}
+                    >
+                      Browse
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+
+            {/* AUTH SECTION */}
+
+            {!user ? (
+              <div className="flex items-center gap-3">
+                <Link to="/login">
+                  <Button
+                    variant="outline"
+                    className="border-purple-200 hover:bg-purple-50 hover:text-[#6A38C2]"
+                  >
+                    Login
+                  </Button>
+                </Link>
+
+                <Link to="/signup">
+                  <Button className="bg-[#6A38C2] hover:bg-[#5B21B6] text-white shadow-md">
+                    Signup
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Avatar className="cursor-pointer border-2 border-purple-200 hover:border-[#6A38C2] transition-all">
+                    <AvatarImage
+                      src={user?.profile?.profilePhoto}
+                      alt={user?.fullName}
+                    />
+                  </Avatar>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-80 rounded-2xl border border-purple-100 shadow-xl">
+                  <div className="space-y-4">
+
+                    {/* USER INFO */}
+
+                    <div className="flex gap-4 items-start">
+                      <Avatar className="h-14 w-14 border border-purple-200">
+                        <AvatarImage
+                          src={user?.profile?.profilePhoto}
+                          alt={user?.fullName}
+                        />
+                      </Avatar>
+
+                      <div>
+                        <h2 className="font-semibold text-lg">
+                          {user?.fullName}
+                        </h2>
+
+                        <p className="text-sm text-gray-500">
+                          {user?.profile?.bio ||
+                            "Welcome to Job Portal"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="border-t pt-3 space-y-2">
+
+                      {user?.role !== "recruiter" && (
+                        <Link
+                          to="/profile"
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-purple-50 transition-all"
+                        >
+                          <User2 size={18} />
+                          <span>View Profile</span>
+                        </Link>
+                      )}
+
+                      <button
+                        onClick={logoutHandler}
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-red-50 text-red-500 transition-all w-full text-left"
+                      >
+                        <LogOut size={18} />
+                        <span>Logout</span>
+                      </button>
+
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  );
 }
 
-export default Navbar
+export default Navbar;
