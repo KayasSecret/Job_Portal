@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
+import Logo from "../../assets/Logo_Org.png"
 
 function Navbar() {
   const { user } = useSelector((store) => store.auth) || {};
@@ -40,7 +41,7 @@ function Navbar() {
       console.log(error);
       toast.error(
         error?.response?.data?.message ||
-          "Logout failed"
+        "Logout failed"
       );
     }
   };
@@ -53,17 +54,20 @@ function Navbar() {
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-purple-100 shadow-sm">
       <div className="container mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between h-[72px]">
-          
+
           {/* LOGO */}
 
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#8B5CF6] flex items-center justify-center text-white font-bold shadow-md">
-              JP
+            {/* <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#8B5CF6] flex items-center justify-center text-white font-bold shadow-md">
+              HN
+            </div> */}
+
+            <div className="w-15 h-15">
+              <img src={Logo} alt="" />
             </div>
 
-            <h1 className="text-2xl font-extrabold tracking-tight">
-              <span className="text-[#6A38C2]">Job</span>
-              <span className="text-[#F83002]">Portal</span>
+            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#4C1D95] via-[#a53aed] to-[#C026D3] bg-clip-text text-transparent drop-shadow-sm">
+              HIRE <span className="font-black">NEST</span>
             </h1>
           </Link>
 
@@ -77,11 +81,10 @@ function Navbar() {
                   <li>
                     <Link
                       to="/admin/companies"
-                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
-                        isActive("/admin/companies")
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/admin/companies")
                           ? "text-[#6A38C2] font-semibold"
                           : ""
-                      }`}
+                        }`}
                     >
                       Companies
                     </Link>
@@ -90,11 +93,10 @@ function Navbar() {
                   <li>
                     <Link
                       to="/admin/jobs"
-                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
-                        isActive("/admin/jobs")
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/admin/jobs")
                           ? "text-[#6A38C2] font-semibold"
                           : ""
-                      }`}
+                        }`}
                     >
                       Jobs
                     </Link>
@@ -105,11 +107,10 @@ function Navbar() {
                   <li>
                     <Link
                       to="/"
-                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
-                        isActive("/")
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/")
                           ? "text-[#6A38C2] font-semibold"
                           : ""
-                      }`}
+                        }`}
                     >
                       Home
                     </Link>
@@ -118,11 +119,10 @@ function Navbar() {
                   <li>
                     <Link
                       to="/jobs"
-                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
-                        isActive("/jobs")
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/jobs")
                           ? "text-[#6A38C2] font-semibold"
                           : ""
-                      }`}
+                        }`}
                     >
                       Jobs
                     </Link>
@@ -131,13 +131,36 @@ function Navbar() {
                   <li>
                     <Link
                       to="/browse"
-                      className={`transition-all duration-200 hover:text-[#6A38C2] ${
-                        isActive("/browse")
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/browse")
                           ? "text-[#6A38C2] font-semibold"
                           : ""
-                      }`}
+                        }`}
                     >
                       Browse
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/savedjobs"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/savedjobs")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                        }`}
+                    >
+                      Saved Jobs
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      to="/techevents"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/techevents")
+                          ? "text-[#6A38C2] font-semibold"
+                          : ""
+                        }`}
+                    >
+                      Tech Events
                     </Link>
                   </li>
                 </>

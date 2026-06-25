@@ -141,7 +141,7 @@ const Browse = () => {
               >
                 {/* Glow Effect */}
 
-                <div className="absolute inset-0 background: linear-gradient(to right, ...); from-purple-500/10 to-violet-500/10 rounded-3xl blur-xl opacity-0 hover:opacity-100 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-3xl blur-xl opacity-0 hover:opacity-100 transition-all duration-500"></div>
 
                 <div className="relative">
                   <Job job={job} />

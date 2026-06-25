@@ -1,4 +1,7 @@
 import React from 'react'
+import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/constant";
+import { toast } from "sonner";
 import { Button } from './ui/Button'
 import { BookmarkIcon, MapPin, Briefcase, IndianRupee } from 'lucide-react'
 import { Avatar } from './ui/Avatar'
@@ -15,6 +18,23 @@ const Job = ({ job }) => {
         const currentTime = new Date();
         const timeDifference = currentTime - createdAt;
         return Math.floor(timeDifference / (1000 * 24 * 60 * 60));
+    };
+
+    const saveJobHandler = async () => {
+        try {
+            const res = await axios.post(
+                `${USER_API_ENDPOINT}/savejob/${job?._id}`, {}, { withCredentials: true }
+            );
+
+            if (res.data.success) {
+                toast.success(res.data.message);
+            }
+
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.message || "Something went wrong"
+            );
+        }
     };
 
     return (
@@ -53,6 +73,7 @@ const Job = ({ job }) => {
                 </p>
 
                 <Button
+                    onClick={saveJobHandler}
                     variant="outline"
                     size="icon"
                     className="
@@ -145,6 +166,7 @@ const Job = ({ job }) => {
                 </Button>
 
                 <Button
+                    onClick={saveJobHandler}
                     className="
                         flex-1
                         rounded-xl

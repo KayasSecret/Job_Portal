@@ -4,6 +4,8 @@ import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
 import Jobs from './components/Jobs'
 import Browse from './components/Browse'
+import SavedJobs from './components/SavedJobs'
+import TechEvents from './components/TechEvents'
 import Profile from './components/Profile'
 import JobDescription from './components/JobDescription'
 import Companies from './components/admin/Companies'
@@ -41,6 +43,14 @@ const appRouter = createBrowserRouter([
     path: "/browse",
     element: <Browse />
   },
+  {
+    path: "/savedjobs",
+    element: <SavedJobs />
+  }, 
+  {
+    path: "/techevents",
+    element: <TechEvents />
+  },  
   {
     path: "/profile",
     element: <Profile />
