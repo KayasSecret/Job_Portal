@@ -12,6 +12,7 @@ import {
   FaLinkedinIn,
   FaGithub,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -91,45 +92,27 @@ const Footer = () => {
 
             <div className="flex flex-col sm:flex-row gap-5">
 
-              <button
-                className="
-                px-8
-                py-4
-                rounded-2xl
-                bg-white
-                text-purple-700
-                font-semibold
-                shadow-xl
-                hover:scale-105
-                transition-all
-                duration-300
-                flex
-                items-center
-                gap-2
-                "
-              >
-                Browse Jobs
-
-                <ArrowRight size={18} />
-
-              </button>
-
-              <button
-                className="
-                px-8
-                py-4
-                rounded-2xl
-                border
-                border-white/40
-                text-white
-                backdrop-blur-xl
-                hover:bg-white/10
-                transition-all
-                duration-300
-                "
-              >
-                Post a Job
-              </button>
+              <Link to="/browse">
+                <button
+                  className=" 
+                    px-8
+                    py-4
+                    rounded-2xl
+                    bg-white
+                    text-purple-700
+                    font-semibold
+                    shadow-xl
+                    hover:scale-105
+                    transition-all
+                    duration-300
+                    flex
+                    items-center
+                    gap-2
+                    cursor-pointer">
+                  Browse Jobs
+                  <ArrowRight size={18} />
+                </button>
+              </Link>
 
             </div>
 
@@ -421,27 +404,41 @@ const Footer = () => {
 
               <ul className="space-y-4 text-gray-600">
 
-                <li className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
+                <li
+                  onClick={() =>
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
                   Home
                 </li>
 
                 <li className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
-                  Browse Jobs
+                  <Link to="/browse">Browse</Link>
                 </li>
 
                 <li className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
-                  Companies
+                  <Link to="/jobs">Companies</Link>
                 </li>
 
                 <li className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
-                  Saved Jobs
+                  <Link to="/savedjobs">Saved Jobs</Link>
                 </li>
 
                 <li className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
-                  Tech Events
+                  <Link to="/events">Tech Events</Link>
                 </li>
 
-                <li className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
+                <li
+                  onClick={() =>
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="hover:text-purple-600 hover:translate-x-2 transition-all cursor-pointer">
                   About Us
                 </li>
 
