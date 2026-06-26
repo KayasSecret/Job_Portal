@@ -154,13 +154,13 @@ function Navbar() {
 
                   <li>
                     <Link
-                      to="/techevents"
-                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/techevents")
+                      to="/events"
+                      className={`transition-all duration-200 hover:text-[#6A38C2] ${isActive("/events")
                           ? "text-[#6A38C2] font-semibold"
                           : ""
                         }`}
                     >
-                      Tech Events
+                      Events
                     </Link>
                   </li>
                 </>

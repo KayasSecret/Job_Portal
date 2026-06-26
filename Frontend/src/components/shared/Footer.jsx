@@ -1,15 +1,17 @@
 import React from "react";
 import {
   BriefcaseBusiness,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Github,
   ArrowRight,
   Send,
   Sparkles,
 } from "lucide-react";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
+  FaGithub,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -245,7 +247,6 @@ const Footer = () => {
 
         </div>
 
-        {/* ================= MAIN FOOTER STARTS IN PART 2 ================= */}
         {/* ================= MAIN FOOTER ================= */}
 
         <div
@@ -319,7 +320,7 @@ const Footer = () => {
                   hover:scale-110
                   "
                 >
-                  <Facebook size={20} />
+                  <FaFacebookF />
                 </a>
 
                 <a
@@ -340,7 +341,7 @@ const Footer = () => {
                   hover:scale-110
                   "
                 >
-                  <Twitter size={20} />
+                  <FaTwitter />
                 </a>
 
                 <a
@@ -361,7 +362,7 @@ const Footer = () => {
                   hover:scale-110
                   "
                 >
-                  <Instagram size={20} />
+                  <FaInstagram />
                 </a>
 
                 <a
@@ -382,7 +383,7 @@ const Footer = () => {
                   hover:scale-110
                   "
                 >
-                  <Linkedin size={20} />
+                  <FaLinkedinIn />
                 </a>
 
                 <a
@@ -403,7 +404,7 @@ const Footer = () => {
                   hover:scale-110
                   "
                 >
-                  <Github size={20} />
+                  <FaGithub />
                 </a>
 
               </div>
@@ -526,7 +527,6 @@ const Footer = () => {
 
           </div>
 
-          {/* ================= NEWSLETTER STARTS IN PART 3 ================= */}
           {/* ================= NEWSLETTER ================= */}
 
           <div className="mt-16">

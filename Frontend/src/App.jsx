@@ -1,89 +1,128 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './components/Home'
-import Login from './components/auth/Login'
-import Signup from './components/auth/Signup'
-import Jobs from './components/Jobs'
-import Browse from './components/Browse'
-import SavedJobs from './components/SavedJobs'
-import TechEvents from './components/TechEvents'
-import Profile from './components/Profile'
-import JobDescription from './components/JobDescription'
-import Companies from './components/admin/Companies'
-import CompanyCreate from './components/admin/CompanyCreate'
-import CompanySetup from './components/admin/CompanySetup'
-import AdminJobs from './components/admin/AdminJobs'
-import PostJob from './components/admin/PostJob'
-import Applicants from './components/admin/Applicants'
-import ProtectedRoute from './components/admin/ProtectedRoute'
-import './App.css'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import Home from "./components/Home";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import Jobs from "./components/Jobs";
+import Browse from "./components/Browse";
+import SavedJobs from "./components/SavedJobs";
+import Profile from "./components/Profile";
+import JobDescription from "./components/JobDescription";
+
+// Events
+import Events from "./components/events/Events";
+import EventDetails from "./components/events/EventDetails";
+
+// Admin
+import Companies from "./components/admin/Companies";
+import CompanyCreate from "./components/admin/CompanyCreate";
+import CompanySetup from "./components/admin/CompanySetup";
+import AdminJobs from "./components/admin/AdminJobs";
+import PostJob from "./components/admin/PostJob";
+import Applicants from "./components/admin/Applicants";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
+
+import "./App.css";
 
 const appRouter = createBrowserRouter([
-  // Paths for clients
+  // Public Routes
   {
     path: "/",
-    element: <Home />
+    element: <Home />,
   },
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
   },
   {
     path: "/signup",
-    element: <Signup />
+    element: <Signup />,
   },
   {
     path: "/jobs",
-    element: <Jobs />
-  }, 
+    element: <Jobs />,
+  },
   {
     path: "/description/:id",
-    element: <JobDescription />
+    element: <JobDescription />,
   },
   {
     path: "/browse",
-    element: <Browse />
+    element: <Browse />,
   },
   {
     path: "/savedjobs",
-    element: <SavedJobs />
-  }, 
+    element: <SavedJobs />,
+  },
+
+  // Events
   {
-    path: "/techevents",
-    element: <TechEvents />
-  },  
+    path: "/events",
+    element: <Events />,
+  },
+  {
+    path: "/events/:id",
+    element: <EventDetails />,
+  },
+
   {
     path: "/profile",
-    element: <Profile />
+    element: <Profile />,
   },
-  // Paths for Recruiter
+
+  // Admin Routes
   {
     path: "/admin/companies",
-    element: <ProtectedRoute><Companies /></ProtectedRoute>
+    element: (
+      <ProtectedRoute>
+        <Companies />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/companies/create",
-    element: <CompanyCreate />
+    element: (
+      <ProtectedRoute>
+        <CompanyCreate />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/companies/:id",
-    element: <CompanySetup />
+    element: (
+      <ProtectedRoute>
+        <CompanySetup />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/jobs",
-    element: <AdminJobs />
+    element: (
+      <ProtectedRoute>
+        <AdminJobs />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/jobs/create",
-    element: <PostJob />
+    element: (
+      <ProtectedRoute>
+        <PostJob />
+      </ProtectedRoute>
+    ),
   },
-  { 
+  {
     path: "/admin/jobs/:id/applicants",
-    element: <Applicants />
-  }
-])
+    element: (
+      <ProtectedRoute>
+        <Applicants />
+      </ProtectedRoute>
+    ),
+  },
+]);
 
 function App() {
-  return <RouterProvider router={appRouter} />
+  return <RouterProvider router={appRouter} />;
 }
 
-export default App
+export default App;
