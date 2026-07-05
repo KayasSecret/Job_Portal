@@ -77,7 +77,7 @@ Built using React, Node.js, Express.js, MongoDB, Redux Toolkit and Cloudinary.
 
 🟢 Node.js
 
-🚀 Express.js
+🚀 Express.
 
 🍃 MongoDB
 
