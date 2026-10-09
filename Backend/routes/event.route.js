@@ -1,4 +1,5 @@
 import express from "express";
+import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 import {
   createEvent,
@@ -6,23 +7,27 @@ import {
   getEventById,
   updateEvent,
   deleteEvent,
+  getAdminEvents,
 } from "../controllers/event.controller.js";
 
 const router = express.Router();
 
 // Create Event
-router.post("/", createEvent);
+router.post("/", isAuthenticated, createEvent);
 
 // Get All Events
 router.get("/", getAllEvents);
+
+// Get Admin Events (must be before /:id)
+router.get("/admin", isAuthenticated, getAdminEvents);
 
 // Get Single Event
 router.get("/:id", getEventById);
 
 // Update Event
-router.put("/:id", updateEvent);
+router.put("/:id", isAuthenticated, updateEvent);
 
 // Delete Event
-router.delete("/:id", deleteEvent);
+router.delete("/:id", isAuthenticated, deleteEvent);
 
 export default router;

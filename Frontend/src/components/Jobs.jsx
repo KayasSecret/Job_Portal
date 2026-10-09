@@ -4,9 +4,12 @@ import FilterCard from "./FilterCard";
 import Job from "./Job";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
 
 const Jobs = () => {
-  const { allJobs, searchedQuery } = useSelector(
+  useGetAllJobs();
+
+  const { allJobs = [], searchedQuery } = useSelector(
     (store) => store.job
   );
 
@@ -14,17 +17,12 @@ const Jobs = () => {
 
   useEffect(() => {
     if (searchedQuery) {
+      const query = searchedQuery.toLowerCase();
       const filteredJobs = allJobs.filter((job) => {
         return (
-          job.title
-            .toLowerCase()
-            .includes(searchedQuery.toLowerCase()) ||
-          job.description
-            .toLowerCase()
-            .includes(searchedQuery.toLowerCase()) ||
-          job.location
-            .toLowerCase()
-            .includes(searchedQuery.toLowerCase())
+          job?.title?.toLowerCase().includes(query) ||
+          job?.description?.toLowerCase().includes(query) ||
+          job?.location?.toLowerCase().includes(query)
         );
       });
 

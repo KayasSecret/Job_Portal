@@ -3,12 +3,33 @@ import { Event } from "../models/event.model.js";
 // Create Event
 export const createEvent = async (req, res) => {
   try {
-    const event = await Event.create(req.body);
+    const event = await Event.create({
+      ...req.body,
+      createdBy: req.id
+    });
 
     return res.status(201).json({
       success: true,
       message: "Event created successfully",
       event,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get Admin Events
+export const getAdminEvents = async (req, res) => {
+  try {
+    const adminId = req.id;
+    const events = await Event.find({ createdBy: adminId }).sort({ eventDate: 1 });
+
+    return res.status(200).json({
+      success: true,
+      events,
     });
   } catch (error) {
     return res.status(500).json({

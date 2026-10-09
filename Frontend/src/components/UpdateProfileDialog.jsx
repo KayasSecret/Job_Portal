@@ -22,12 +22,12 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   const { user } = useSelector(store => store.auth)
 
   const [input, setInput] = useState({
-    fullName: user?.fullName,
-    email: user?.email,
-    phoneNumber: user?.phoneNumber,
-    bio: user?.profile?.bio,
-    skills: user?.profile?.skills.map(skill => skill),
-    resume: user?.profile?.resume
+    fullName: user?.fullName || "",
+    email: user?.email || "",
+    phoneNumber: user?.phoneNumber || "",
+    bio: user?.profile?.bio || "",
+    skills: user?.profile?.skills ? user?.profile?.skills.join(", ") : "",
+    resume: user?.profile?.resume || ""
   })
 
   const dispatch = useDispatch()
@@ -45,11 +45,11 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     e.preventDefault();
     const formData = new FormData();
 
-    formData.append("fullName", input.fullName)
-    formData.append("email", input.email)
-    formData.append("phoneNumber", input.phoneNumber)
-    formData.append("bio", input.bio)
-    formData.append("skills", input.skills)
+    formData.append("fullName", input.fullName || "")
+    formData.append("email", input.email || "")
+    formData.append("phoneNumber", input.phoneNumber || "")
+    formData.append("bio", input.bio || "")
+    formData.append("skills", input.skills || "")
 
     if (input.file) {
       formData.append("file", input.file)
@@ -58,9 +58,6 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     try {
       setLoading(true)
       const res = await axios.post(`${USER_API_ENDPOINT}/profile/update`, formData, {
-        // headers: {
-        //   'Content-Type': 'multipart/form-data'
-        // },
         withCredentials: true
       })
 
@@ -70,13 +67,12 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
       }
     } catch (error) {
       console.log(error)
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data?.message || "Failed to update profile")
     } finally {
       setLoading(false)
     }
 
     setOpen(false)
-    console.log(input)
   }
 
   return (
@@ -155,7 +151,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             <DialogFooter>
               {
                 loading ?
-                  <Button className="w-full my-4"><Loader2 className="mr-2 h-4 w-4 animated-spin" /> Please Wait </Button> :
+                  <Button className="w-full my-4"><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait </Button> :
                   <Button type="submit" className="w-full my-4 cursor-pointer hover:bg-blue-800">Update</Button>
               }
 

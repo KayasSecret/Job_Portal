@@ -37,15 +37,16 @@ export const postJob = async (req, res) => {
         }
 
         // Create Job
+        const parsedExperience = parseInt(experience, 10);
         const job = await Job.create({
             title,
             description,
-            requirements: requirements.split(","),
+            requirements: requirements.split(",").map(r => r.trim()).filter(Boolean),
             salary: Number(salary),
             location,
             jobType,
-            experienceLevel: experience,
-            position,
+            experienceLevel: isNaN(parsedExperience) ? 0 : parsedExperience,
+            position: Number(position),
             company: companyId,
             created_by: userId
         });
@@ -156,9 +157,8 @@ export const getAdminJobs = async (req, res) => {
         const jobs = await Job.find({
             created_by: adminId
         }).populate({
-            path: "company",
-            createdAt: -1
-        });
+            path: "company"
+        }).sort({ createdAt: -1 });
 
         return res.status(200).json({
             jobs,

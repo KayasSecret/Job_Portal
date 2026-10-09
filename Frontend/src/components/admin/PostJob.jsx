@@ -17,21 +17,19 @@ import axios from "axios";
 import { JOB_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import useGetAllCompanies from "@/hooks/useGetAllCompanies";
 
 import {
   Loader2,
   BriefcaseBusiness,
-  FileText,
-  MapPin,
-  IndianRupee,
-  Building2,
-  Users,
   Sparkles,
 } from "lucide-react";
 
 import { motion } from "framer-motion";
 
 const PostJob = () => {
+  useGetAllCompanies();
+
   const [input, setInput] = useState({
     title: "",
     description: "",
@@ -48,7 +46,7 @@ const PostJob = () => {
 
   const navigate = useNavigate();
 
-  const { companies } = useSelector(
+  const { companies = [] } = useSelector(
     (store) => store.company
   );
 
@@ -66,10 +64,12 @@ const PostJob = () => {
           company.name.toLowerCase() === value
       );
 
-    setInput({
-      ...input,
-      companyId: selectedCompany._id,
-    });
+    if (selectedCompany) {
+      setInput({
+        ...input,
+        companyId: selectedCompany._id,
+      });
+    }
   };
 
   const submitHandler = async (e) => {
@@ -260,14 +260,14 @@ const PostJob = () => {
               </div>
 
               <div>
-                <Label>Experience</Label>
+                <Label>Experience (Years)</Label>
                 <Input
                   name="experience"
                   value={input.experience}
                   onChange={
                     changeEventHandler
                   }
-                  placeholder="2 Years"
+                  placeholder="2"
                   className="mt-2 h-12 rounded-xl"
                 />
               </div>

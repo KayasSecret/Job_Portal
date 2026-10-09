@@ -1,4 +1,3 @@
-import { application } from "express";
 import { Application } from "../models/application.model.js"
 import { Job } from "../models/job.model.js"
 
@@ -48,6 +47,10 @@ export const applyJob = async (req, res) => {
     }
     catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
     }
 }
 
@@ -77,6 +80,10 @@ export const getAppliedJobs = async (req, res) => {
     }
     catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
     }
 }
 
@@ -109,6 +116,10 @@ export const getApplicants = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
     }
 }
 
@@ -149,5 +160,9 @@ export const updateStatus = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
     }
 }

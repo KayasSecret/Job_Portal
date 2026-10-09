@@ -138,7 +138,7 @@ const Job = ({ job }) => {
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <Briefcase className="w-4 h-4" />
-                    <span>{job?.experience || 0}+ Years</span>
+                    <span>{job?.experienceLevel ?? job?.experience ?? 0}+ Years</span>
                 </div>
 
                 <div className="flex items-center gap-1 text-sm text-green-600 font-semibold">

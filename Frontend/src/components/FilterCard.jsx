@@ -35,7 +35,7 @@ const FilterCard = () => {
     <div className="w-full bg-white p-3 rounded-md">
       <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3"></hr>
-      <RadioGroup vlaue={selectedValue} onValueChange={changeHandler}>
+      <RadioGroup value={selectedValue} onValueChange={changeHandler}>
         {
           filterData.map((data, index) => (
             <div key={index}>
@@ -44,7 +44,7 @@ const FilterCard = () => {
                 data.array.map((item, idx) => {
                   const itemId = `id${index} - ${idx}`
                   return (
-                    <div className="flex items-center space-x-2 my-2">
+                    <div key={itemId} className="flex items-center space-x-2 my-2">
                       <RadioGroupItem value={item} id={itemId} />
                       <Label htmlFor={itemId}>{item}</Label>
                     </div>

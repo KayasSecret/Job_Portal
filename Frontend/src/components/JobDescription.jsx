@@ -36,7 +36,7 @@ const JobDescription = () => {
         const updatedJob = {
           ...singleJob,
           applications: [
-            ...singleJob.applications,
+            ...(singleJob?.applications || []),
             {
               applicant: user?._id,
             },
@@ -255,7 +255,7 @@ const JobDescription = () => {
                     <span className="font-semibold">
                       Experience :
                     </span>{" "}
-                    {singleJob?.experience || 0} Years
+                    {singleJob?.experienceLevel ?? singleJob?.experience ?? 0} Years
                   </p>
 
                   <p>
