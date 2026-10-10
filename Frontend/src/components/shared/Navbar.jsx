@@ -6,9 +6,6 @@ import { Button } from "../ui/button";
 import {
   LogOut,
   User2,
-  Briefcase,
-  Building2,
-  Menu,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

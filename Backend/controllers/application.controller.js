@@ -47,6 +47,12 @@ export const applyJob = async (req, res) => {
     }
     catch (error) {
         console.log(error);
+        if (error.code === 11000) {
+            return res.status(400).json({
+                message: "You have already applied for the job.",
+                success: false
+            });
+        }
         return res.status(500).json({
             message: "Server error",
             success: false
@@ -109,6 +115,14 @@ export const getApplicants = async (req, res) => {
             });
         }
 
+        // Authorize: Only the recruiter who created this job can view its applicants
+        if (job.created_by.toString() !== req.id) {
+            return res.status(403).json({
+                message: "You are not authorized to view applicants for this job.",
+                success: false
+            });
+        }
+
         return res.status(200).json({
             job,
             success: true
@@ -139,13 +153,21 @@ export const updateStatus = async (req, res) => {
         // Find application using application ID
         const application = await Application.findOne({
             _id: applicationId
-        });
+        }).populate("job");
 
         if (!application) {
             return res.status(404).json({
                 message: "Application not found.",
                 success: false
             })
+        }
+
+        // Authorize: Only the recruiter who posted the job can update candidate status
+        if (!application.job || application.job.created_by.toString() !== req.id) {
+            return res.status(403).json({
+                message: "You are not authorized to update this application status.",
+                success: false
+            });
         }
 
         // Update status

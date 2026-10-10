@@ -108,6 +108,22 @@ export const updateCompany = async (req, res) => {
     const file = req.file;
     const updateData = { name, description, website, location };
 
+    const existingCompany = await Company.findById(req.params.id);
+
+    if (!existingCompany) {
+      return res.status(404).json({
+        message: "Company not found.",
+        success: false
+      });
+    }
+
+    if (existingCompany.userId.toString() !== req.id) {
+      return res.status(403).json({
+        message: "You are not authorized to update this company.",
+        success: false
+      });
+    }
+
     if (file) {
       const fileUri = getDataUri(file);
       const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
@@ -121,13 +137,6 @@ export const updateCompany = async (req, res) => {
       updateData,
       { new: true }
     );
-
-    if (!company) {
-      return res.status(404).json({
-        message: "Company not found.",
-        success: false
-      });
-    }
 
     return res.status(200).json({
       message: "Company information updated.",

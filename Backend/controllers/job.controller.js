@@ -1,4 +1,5 @@
 import { Job } from "../models/job.model.js";
+import { Company } from "../models/company.model.js";
 
 
 // Here you see posted jobs by Admin
@@ -32,6 +33,22 @@ export const postJob = async (req, res) => {
         ) {
             return res.status(400).json({
                 message: "Something is missing",
+                success: false
+            });
+        }
+
+        // Verify company exists and belongs to this recruiter
+        const company = await Company.findById(companyId);
+        if (!company) {
+            return res.status(404).json({
+                message: "Company not found",
+                success: false
+            });
+        }
+
+        if (company.userId.toString() !== userId) {
+            return res.status(403).json({
+                message: "You can only post jobs for your own companies",
                 success: false
             });
         }

@@ -162,13 +162,13 @@ const AdminJobsTable = () => {
                     <div
                       onClick={() =>
                         navigate(
-                          `/admin/companies/${job._id}`
+                          `/admin/companies/${job?.company?._id || job?.company}`
                         )
                       }
                       className="flex items-center gap-2 cursor-pointer hover:text-[#6A38C2] transition-all"
                     >
                       <Edit2 size={16} />
-                      <span>Edit Job</span>
+                      <span>Company Info</span>
                     </div>
 
                     <div

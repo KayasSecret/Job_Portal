@@ -30,8 +30,6 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Badge } from "../ui/badge";
 
-const shortListingStatus = ["Accepted", "Rejected"];
-
 const ApplicantsTable = () => {
   const { applicants } = useSelector(
     (store) => store.application
@@ -39,11 +37,10 @@ const ApplicantsTable = () => {
 
   const statusHandler = async (status, id) => {
     try {
-      axios.defaults.withCredentials = true;
-
       const res = await axios.post(
         `${APPLICANT_API_ENDPOINT}/status/${id}/update`,
-        { status }
+        { status },
+        { withCredentials: true }
       );
 
       if (res.data.success) {

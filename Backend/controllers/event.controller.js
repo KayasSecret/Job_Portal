@@ -83,6 +83,22 @@ export const getEventById = async (req, res) => {
 // Update Event
 export const updateEvent = async (req, res) => {
   try {
+    const existingEvent = await Event.findById(req.params.id);
+
+    if (!existingEvent) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    if (existingEvent.createdBy && existingEvent.createdBy.toString() !== req.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this event",
+      });
+    }
+
     const event = await Event.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -105,6 +121,22 @@ export const updateEvent = async (req, res) => {
 // Delete Event
 export const deleteEvent = async (req, res) => {
   try {
+    const existingEvent = await Event.findById(req.params.id);
+
+    if (!existingEvent) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    if (existingEvent.createdBy && existingEvent.createdBy.toString() !== req.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this event",
+      });
+    }
+
     await Event.findByIdAndDelete(req.params.id);
 
     return res.status(200).json({

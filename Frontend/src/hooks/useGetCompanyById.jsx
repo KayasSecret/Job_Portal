@@ -1,5 +1,4 @@
 import { setSingleCompany } from '@/redux/companySlice'
-import { setAllJobs } from '@/redux/jobSlice'
 import { COMPANY_API_ENDPOINT } from '@/utils/constant'
 import axios from 'axios'
 import { useEffect } from 'react'
