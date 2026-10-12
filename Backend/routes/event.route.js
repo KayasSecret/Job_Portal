@@ -1,5 +1,6 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
+import authorizeRole from "../middlewares/authorizeRole.js";
 
 import {
   createEvent,
@@ -12,22 +13,20 @@ import {
 
 const router = express.Router();
 
-// Create Event
-router.post("/", isAuthenticated, createEvent);
+// Only recruiters can create, update, delete events or view their admin event list
+router.post("/", isAuthenticated, authorizeRole("recruiter"), createEvent);
 
-// Get All Events
+// Public: anyone can view events
 router.get("/", getAllEvents);
 
-// Get Admin Events (must be before /:id)
-router.get("/admin", isAuthenticated, getAdminEvents);
+// Recruiter admin events (must be before /:id)
+router.get("/admin", isAuthenticated, authorizeRole("recruiter"), getAdminEvents);
 
-// Get Single Event
+// Public: anyone can view a single event
 router.get("/:id", getEventById);
 
-// Update Event
-router.put("/:id", isAuthenticated, updateEvent);
+// Only recruiters can update or delete events
+router.put("/:id", isAuthenticated, authorizeRole("recruiter"), updateEvent);
+router.delete("/:id", isAuthenticated, authorizeRole("recruiter"), deleteEvent);
 
-// Delete Event
-router.delete("/:id", isAuthenticated, deleteEvent);
-
-export default router;
+export default router;

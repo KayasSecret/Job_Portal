@@ -188,8 +188,12 @@ function Navbar() {
                 <PopoverTrigger asChild>
                   <Avatar className="cursor-pointer border-2 border-purple-200 hover:border-[#6A38C2] transition-all">
                     <AvatarImage
-                      src={user?.profile?.profilePhoto}
+                      src={
+                        user?.profile?.profilePhoto ||
+                        "https://avatar.iran.liara.run/public"
+                      }
                       alt={user?.fullName}
+                      className="object-cover"
                     />
                   </Avatar>
                 </PopoverTrigger>
@@ -202,8 +206,12 @@ function Navbar() {
                     <div className="flex gap-4 items-start">
                       <Avatar className="h-14 w-14 border border-purple-200">
                         <AvatarImage
-                          src={user?.profile?.profilePhoto}
+                          src={
+                            user?.profile?.profilePhoto ||
+                            "https://avatar.iran.liara.run/public"
+                          }
                           alt={user?.fullName}
+                          className="object-cover"
                         />
                       </Avatar>
 

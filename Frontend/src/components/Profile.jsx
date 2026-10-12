@@ -11,10 +11,12 @@ import {
   FileText,
   User,
   Briefcase,
+  Camera,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
+import UpdateProfilePhotoDialog from "./UpdateProfilePhotoDialog";
 import { useSelector } from "react-redux";
 import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
 
@@ -22,6 +24,7 @@ const Profile = () => {
   useGetAppliedJobs();
 
   const [open, setOpen] = useState(false);
+  const [photoDialogOpen, setPhotoDialogOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
 
   const isResume = user?.profile?.resume;
@@ -56,20 +59,38 @@ const Profile = () => {
                 <div className="flex items-center gap-6">
 
                   <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      rotate: 3,
-                    }}
+                    whileHover={{ scale: 1.03 }}
+                    className="relative group cursor-pointer"
+                    onClick={() => setPhotoDialogOpen(true)}
+                    title="Change profile picture"
                   >
-                    <Avatar className="w-28 h-28 border-4 border-purple-100 shadow-lg">
+                    <Avatar className="w-28 h-28 border-4 border-purple-100 shadow-lg transition-all group-hover:border-[#6A38C2]">
                       <AvatarImage
                         src={
                           user?.profile?.profilePhoto ||
                           "https://avatar.iran.liara.run/public"
                         }
                         alt="profile"
+                        className="object-cover"
                       />
                     </Avatar>
+
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                      <Camera size={22} />
+                      <span className="text-[11px] font-medium mt-0.5">
+                        Edit
+                      </span>
+                    </div>
+
+                    {/* Floating Camera Badge */}
+                    <button
+                      type="button"
+                      aria-label="Update profile picture"
+                      className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-[#6A38C2] hover:bg-[#5B21B6] text-white border-2 border-white shadow-md flex items-center justify-center transition-transform group-hover:scale-110 cursor-pointer"
+                    >
+                      <Camera size={16} />
+                    </button>
                   </motion.div>
 
                   <div>
@@ -276,6 +297,11 @@ const Profile = () => {
         <UpdateProfileDialog
           open={open}
           setOpen={setOpen}
+        />
+
+        <UpdateProfilePhotoDialog
+          open={photoDialogOpen}
+          setOpen={setPhotoDialogOpen}
         />
       </div>
     </>

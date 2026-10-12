@@ -117,9 +117,9 @@ export const login = async (req, res) => {
             .status(200)
             .cookie("token", token, {
                 maxAge: 1 * 24 * 60 * 60 * 1000,
-                httpOnly: true,       // ✅ FIXED
+                httpOnly: true,
                 sameSite: "strict",
-                secure: false         // local dev
+                secure: process.env.NODE_ENV === "production"
             })
             .json({
                 message: `Welcome back ${user.fullName}`,
@@ -142,7 +142,12 @@ export const logout = async (req, res) => {
     try {
         return res
             .status(200)
-            .cookie("token", "", { maxAge: 0, httpOnly: true, sameSite: "strict" })
+            .cookie("token", "", {
+                maxAge: 0,
+                httpOnly: true,
+                sameSite: "strict",
+                secure: process.env.NODE_ENV === "production"
+            })
             .json({
                 message: "Logged out successfully",
                 success: true
@@ -230,6 +235,107 @@ export const updateProfile = async (req, res) => {
 
         return res.status(500).json({
             message: "Server error",
+            success: false
+        });
+    }
+};
+
+// ================= UPDATE PROFILE PHOTO =================
+export const updateProfilePhoto = async (req, res) => {
+    try {
+        const userId = req.id;
+        const { removePhoto } = req.body;
+        const file = req.file;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        if (!user.profile) {
+            user.profile = {};
+        }
+
+        if (removePhoto === "true" || removePhoto === true) {
+            user.profile.profilePhoto = "";
+            await user.save();
+
+            const updatedUser = {
+                _id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
+                role: user.role,
+                profile: user.profile
+            };
+
+            return res.status(200).json({
+                message: "Profile photo removed successfully",
+                user: updatedUser,
+                success: true
+            });
+        }
+
+        if (!file) {
+            return res.status(400).json({
+                message: "Please select an image file to upload",
+                success: false
+            });
+        }
+
+        const allowedImageTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+        if (!allowedImageTypes.includes(file.mimetype)) {
+            return res.status(400).json({
+                message: "Invalid image format. Only JPEG, PNG, and WebP images are allowed for profile pictures.",
+                success: false
+            });
+        }
+
+        const fileURI = getDataUri(file);
+
+        let photoUrl = fileURI.content;
+        if (process.env.CLOUD_NAME && process.env.API_KEY && process.env.API_SECRET) {
+            try {
+                const cloudResponse = await cloudinary.uploader.upload(fileURI.content, {
+                    folder: "hirenest_avatars",
+                    resource_type: "image"
+                });
+                if (cloudResponse && cloudResponse.secure_url) {
+                    photoUrl = cloudResponse.secure_url;
+                }
+            } catch (cloudError) {
+                console.error("CLOUDINARY PHOTO UPLOAD ERROR:", cloudError);
+                return res.status(500).json({
+                    message: "Failed to upload image to cloud storage",
+                    success: false
+                });
+            }
+        }
+
+        user.profile.profilePhoto = photoUrl;
+        await user.save();
+
+        const updatedUser = {
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        };
+
+        return res.status(200).json({
+            message: "Profile photo updated successfully",
+            user: updatedUser,
+            success: true
+        });
+    } catch (error) {
+        console.error("UPDATE PROFILE PHOTO ERROR:", error);
+        return res.status(500).json({
+            message: "Server error while updating profile photo",
             success: false
         });
     }
