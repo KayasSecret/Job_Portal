@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import axios from "axios";
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "../../utils/constant";
@@ -13,9 +13,17 @@ import {
   Loader2,
   Mail,
   Lock,
+  Eye,
+  EyeOff,
   Briefcase,
+  GraduationCap,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import HireNestAuthBrandPanel from "./HireNestAuthBrandPanel";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -23,9 +31,9 @@ const Login = () => {
     password: "",
     role: "student",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const { loading } = useSelector((state) => state.auth);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -39,19 +47,20 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    if (!input.email || !input.password) {
+      toast.error("Please fill in both your email and password.");
+      return;
+    }
+
     try {
       dispatch(setLoading(true));
 
-      const res = await axios.post(
-        `${USER_API_ENDPOINT}/login`,
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
 
       if (res.data.success) {
         dispatch(setUser(res.data.user));
@@ -62,14 +71,12 @@ const Login = () => {
           navigate("/");
         }
 
-        toast.success(res.data.message);
+        toast.success(res.data.message || `Welcome back, ${res.data.user.fullName}!`);
       }
     } catch (error) {
-      console.log(error);
-
+      console.error("Login error:", error);
       toast.error(
-        error?.response?.data?.message ||
-          "Login Failed"
+        error?.response?.data?.message || "Login failed. Please check your credentials."
       );
     } finally {
       dispatch(setLoading(false));
@@ -80,213 +87,198 @@ const Login = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-white py-10">
+      <div className="relative min-h-[calc(100vh-72px)] flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-10 bg-gradient-to-br from-purple-50/70 via-white to-purple-50/40 overflow-hidden">
+        {/* Subtle Ambient Background Gradients & Glow */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-10 left-1/4 w-96 h-96 rounded-full bg-purple-200/40 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-10 right-1/4 w-96 h-96 rounded-full bg-violet-200/30 blur-3xl"
+        />
 
-        <div className="max-w-7xl mx-auto px-4">
+        {/* Main Split-Screen Container Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="relative z-10 w-full max-w-5xl rounded-3xl bg-white border border-purple-100 shadow-[0_20px_60px_-15px_rgba(106,56,194,0.18)] overflow-hidden flex flex-col lg:flex-row"
+        >
+          {/* Left Hero & Ambient Branding Panel */}
+          <HireNestAuthBrandPanel mode="login" />
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 40,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.5,
-            }}
-            className="max-w-2xl mx-auto"
-          >
-
-            <div className="bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden">
-
-              {/* Top Gradient */}
-
-              <div className="h-2 bg-gradient-to-r from-[#6A38C2] via-violet-500 to-orange-500"></div>
-
-              <div className="p-8">
-
-                {/* Header */}
-
-                <div className="text-center mb-8">
-
-                  <div className="inline-flex items-center gap-2 bg-purple-100 text-[#6A38C2] px-4 py-2 rounded-full text-sm font-medium">
-                    🔐 Welcome Back
-                  </div>
-
-                  <h1 className="text-4xl font-bold mt-5">
-                    Login
-                  </h1>
-
-                  <p className="text-gray-500 mt-2">
-                    Access your account and continue your journey.
-                  </p>
-
-                </div>
-
-                {/* Form */}
-
-                <form onSubmit={submitHandler}>
-
-                  {/* Email */}
-
-                  <div className="mb-5">
-
-                    <Label className="mb-2 block">
-                      Email
-                    </Label>
-
-                    <div className="relative">
-
-                      <Mail
-                        size={18}
-                        className="absolute left-3 top-3.5 text-gray-400"
-                      />
-
-                      <Input
-                        type="email"
-                        name="email"
-                        value={input.email}
-                        onChange={changeEventHandler}
-                        placeholder="Enter your email"
-                        className="pl-10 h-12 rounded-xl"
-                        required
-                      />
-
-                    </div>
-
-                  </div>
-
-                  {/* Password */}
-
-                  <div className="mb-6">
-
-                    <Label className="mb-2 block">
-                      Password
-                    </Label>
-
-                    <div className="relative">
-
-                      <Lock
-                        size={18}
-                        className="absolute left-3 top-3.5 text-gray-400"
-                      />
-
-                      <Input
-                        type="password"
-                        name="password"
-                        value={input.password}
-                        onChange={changeEventHandler}
-                        placeholder="Enter your password"
-                        className="pl-10 h-12 rounded-xl"
-                        required
-                      />
-
-                    </div>
-
-                  </div>
-
-                  {/* Role Selection */}
-
-                  <Label className="block mb-3">
-                    Select Role
-                  </Label>
-
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-
-                    <div
-                      onClick={() =>
-                        setInput({
-                          ...input,
-                          role: "student",
-                        })
-                      }
-                      className={`cursor-pointer rounded-2xl border p-4 transition-all ${
-                        input.role === "student"
-                          ? "border-[#6A38C2] bg-purple-50"
-                          : "border-gray-200"
-                      }`}
-                    >
-                      <h3 className="font-semibold">
-                        Student
-                      </h3>
-
-                      <p className="text-sm text-gray-500 mt-1">
-                        Apply for jobs
-                      </p>
-                    </div>
-
-                    <div
-                      onClick={() =>
-                        setInput({
-                          ...input,
-                          role: "recruiter",
-                        })
-                      }
-                      className={`cursor-pointer rounded-2xl border p-4 transition-all ${
-                        input.role === "recruiter"
-                          ? "border-[#6A38C2] bg-purple-50"
-                          : "border-gray-200"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Briefcase size={16} />
-                        <h3 className="font-semibold">
-                          Recruiter
-                        </h3>
-                      </div>
-
-                      <p className="text-sm text-gray-500 mt-1">
-                        Hire candidates
-                      </p>
-                    </div>
-
-                  </div>
-
-                  {/* Login Button */}
-
-                  {loading ? (
-                    <Button
-                      className="w-full h-12 rounded-xl bg-[#6A38C2]"
-                      disabled
-                    >
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Please Wait...
-                    </Button>
-                  ) : (
-                    <Button
-                      type="submit"
-                      className="w-full h-12 rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6]"
-                    >
-                      Login
-                    </Button>
-                  )}
-
-                  {/* Footer */}
-
-                  <div className="text-center mt-6">
-
-                    <span className="text-gray-600">
-                      Don't have an account?
-                    </span>
-
-                    <Link
-                      to="/signup"
-                      className="ml-2 text-[#6A38C2] font-semibold hover:underline"
-                    >
-                      Sign Up
-                    </Link>
-
-                  </div>
-
-                </form>
-
+          {/* Right Form Panel */}
+          <div className="flex-1 flex flex-col justify-center p-6 sm:p-10 md:p-12 lg:p-12 xl:p-14 bg-white">
+            {/* Mobile Header Accent */}
+            <div className="lg:hidden mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-[#6A38C2] text-xs font-semibold">
+                <Sparkles size={13} />
+                <span>HireNest Authentication</span>
               </div>
             </div>
 
-          </motion.div>
-        </div>
+            {/* Form Header */}
+            <div className="mb-8">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                Welcome back
+              </h1>
+              <p className="text-sm text-gray-500 mt-1.5">
+                Sign in to manage your applications, profile, or job postings.
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={submitHandler} noValidate>
+              {/* Role Toggle Selector */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Signing in as
+                  </Label>
+                  <span className="text-[11px] font-medium text-purple-600">
+                    {input.role === "student" ? "Job Seeker" : "Talent Recruiter"}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 p-1 rounded-2xl bg-purple-50/80 border border-purple-100">
+                  <button
+                    type="button"
+                    onClick={() => setInput({ ...input, role: "student" })}
+                    className={`flex items-center justify-center gap-2.5 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                      input.role === "student"
+                        ? "bg-white text-[#6A38C2] shadow-sm shadow-purple-900/10 border border-purple-200/80"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                    }`}
+                  >
+                    <GraduationCap
+                      size={16}
+                      className={input.role === "student" ? "text-[#6A38C2]" : "text-gray-400"}
+                    />
+                    <span>Student / Seeker</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setInput({ ...input, role: "recruiter" })}
+                    className={`flex items-center justify-center gap-2.5 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                      input.role === "recruiter"
+                        ? "bg-white text-[#6A38C2] shadow-sm shadow-purple-900/10 border border-purple-200/80"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                    }`}
+                  >
+                    <Briefcase
+                      size={16}
+                      className={input.role === "recruiter" ? "text-[#6A38C2]" : "text-gray-400"}
+                    />
+                    <span>Recruiter</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Email Input */}
+              <div className="mb-5">
+                <Label htmlFor="login-email" className="text-xs font-semibold text-gray-700 block mb-1.5">
+                  Email Address
+                </Label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#6A38C2] transition-colors">
+                    <Mail size={18} />
+                  </div>
+                  <Input
+                    id="login-email"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    value={input.email}
+                    onChange={changeEventHandler}
+                    placeholder="you@example.com"
+                    className="pl-10 pr-4 h-12 rounded-xl border-gray-200 bg-gray-50/40 hover:bg-white focus:bg-white focus:border-[#6A38C2] focus:ring-2 focus:ring-[#6A38C2]/20 transition-all text-sm"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password Input with Visibility Toggle */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label
+                    htmlFor="login-password"
+                    className="text-xs font-semibold text-gray-700"
+                  >
+                    Password
+                  </Label>
+                  <span className="text-[11px] text-gray-400">Case-sensitive</span>
+                </div>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#6A38C2] transition-colors">
+                    <Lock size={18} />
+                  </div>
+                  <Input
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    autoComplete="current-password"
+                    value={input.password}
+                    onChange={changeEventHandler}
+                    placeholder="Enter your password"
+                    className="pl-10 pr-11 h-12 rounded-xl border-gray-200 bg-gray-50/40 hover:bg-white focus:bg-white focus:border-[#6A38C2] focus:ring-2 focus:ring-[#6A38C2]/20 transition-all text-sm"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-700 focus:outline-none cursor-pointer transition-colors"
+                    title={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              {loading ? (
+                <Button
+                  disabled
+                  className="w-full h-12 rounded-xl bg-[#6A38C2] text-white shadow-lg shadow-purple-600/25 font-semibold text-sm cursor-not-allowed opacity-90"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Authenticating...
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-sm shadow-lg shadow-purple-600/25 hover:shadow-purple-600/35 transition-all duration-200 group cursor-pointer"
+                >
+                  <span>Sign In</span>
+                  <ArrowRight
+                    size={16}
+                    className="ml-2 group-hover:translate-x-1 transition-transform"
+                  />
+                </Button>
+              )}
+
+              {/* Bottom Navigation */}
+              <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+                <span>
+                  Don't have an account yet?{" "}
+                  <Link
+                    to="/signup"
+                    className="font-semibold text-[#6A38C2] hover:text-[#5B21B6] hover:underline ml-1"
+                  >
+                    Create account
+                  </Link>
+                </span>
+
+                <div className="inline-flex items-center gap-1.5 text-emerald-600 font-medium">
+                  <ShieldCheck size={14} />
+                  <span>256-bit SSL Encrypted</span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </motion.div>
       </div>
     </>
   );

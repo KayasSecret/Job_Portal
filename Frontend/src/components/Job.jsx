@@ -1,189 +1,177 @@
-import React from 'react'
+import React, { useState } from "react";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
-import { Button } from './ui/Button'
-import { BookmarkIcon, MapPin, Briefcase, IndianRupee } from 'lucide-react'
-import { Avatar } from './ui/Avatar'
-import { AvatarImage } from './ui/Avatar'
-import { Badge } from './ui/Badge'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { Button } from "./ui/button";
+import {
+  Bookmark,
+  MapPin,
+  Briefcase,
+  IndianRupee,
+  Clock,
+  ArrowUpRight,
+  Sparkles,
+  Building2,
+  CheckCircle2,
+} from "lucide-react";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
-const Job = ({ job }) => {
-    const navigate = useNavigate();
+const Job = ({ job, isSaved = false, onSaveSuccess }) => {
+  const navigate = useNavigate();
+  const { user } = useSelector((store) => store.auth);
+  const [saved, setSaved] = useState(isSaved);
+  const [saving, setSaving] = useState(false);
 
-    const daysAgoFunction = (mongodbTime) => {
-        const createdAt = new Date(mongodbTime);
-        const currentTime = new Date();
-        const timeDifference = currentTime - createdAt;
-        return Math.floor(timeDifference / (1000 * 24 * 60 * 60));
-    };
+  const daysAgoFunction = (mongodbTime) => {
+    if (!mongodbTime) return "Recently";
+    const createdAt = new Date(mongodbTime);
+    const currentTime = new Date();
+    const diffDays = Math.floor(
+      (currentTime - createdAt) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays === 0) return "Posted Today";
+    if (diffDays === 1) return "1 Day Ago";
+    return `${diffDays} Days Ago`;
+  };
 
-    const saveJobHandler = async () => {
-        try {
-            const res = await axios.post(
-                `${USER_API_ENDPOINT}/savejob/${job?._id}`, {}, { withCredentials: true }
-            );
+  const saveJobHandler = async (e) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.error("Please log in to save this job.");
+      navigate("/login");
+      return;
+    }
 
-            if (res.data.success) {
-                toast.success(res.data.message);
-            }
+    try {
+      setSaving(true);
+      const res = await axios.post(
+        `${USER_API_ENDPOINT}/savejob/${job?._id}`,
+        {},
+        { withCredentials: true }
+      );
 
-        } catch (error) {
-            toast.error(
-                error?.response?.data?.message || "Something went wrong"
-            );
-        }
-    };
+      if (res.data.success) {
+        setSaved(true);
+        toast.success(res.data.message || "Job saved successfully!");
+        if (onSaveSuccess) onSaveSuccess(job._id);
+      }
+    } catch (error) {
+      const msg = error?.response?.data?.message || "Job already saved.";
+      if (msg.toLowerCase().includes("already saved")) {
+        setSaved(true);
+      }
+      toast.error(msg);
+    } finally {
+      setSaving(false);
+    }
+  };
 
-    return (
-        <motion.div
-            whileHover={{
-                y: -10,
-                scale: 1.02,
-            }}
-            transition={{ duration: 0.3 }}
-            className="
-                relative
-                overflow-hidden
-                rounded-2xl
-                bg-white
-                border
-                border-purple-100
-                shadow-md
-                hover:shadow-2xl
-                hover:border-purple-300
-                transition-all
-                duration-300
-                p-5
-                group
-            "
-        >
+  const companyInitial = job?.company?.name?.charAt(0)?.toUpperCase() || "H";
 
-            {/* Glow Effect */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-purple-500/5 via-transparent to-orange-500/5"></div>
+  return (
+    <motion.div
+      whileHover={{ y: -6, scale: 1.01 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      onClick={() => navigate(`/description/${job?._id}`)}
+      className="group relative rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-100/90 shadow-[0_10px_30px_-8px_rgba(106,56,194,0.08)] hover:shadow-[0_20px_45px_-10px_rgba(106,56,194,0.22)] hover:border-purple-300 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer overflow-hidden"
+    >
+      {/* Top Ambient Glow on Card Hover */}
+      <div className="pointer-events-none absolute -top-16 -right-16 w-36 h-36 rounded-full bg-purple-100/60 blur-2xl group-hover:scale-150 transition-transform duration-500" />
 
-            {/* Top Row */}
-            <div className="flex items-center justify-between relative z-10">
-                <p className="text-sm text-gray-500 font-medium">
-                    {daysAgoFunction(job?.createdAt) === 0
-                        ? "Posted Today"
-                        : `${daysAgoFunction(job?.createdAt)} Days Ago`}
-                </p>
+      <div>
+        {/* Top Header: Company Avatar + Timing + Bookmark */}
+        <div className="flex items-start justify-between gap-3 relative z-10">
+          <div className="flex items-center gap-3.5 min-w-0">
+            {job?.company?.logo ? (
+              <Avatar className="h-13 w-13 rounded-2xl border-2 border-purple-100 shadow-xs shrink-0 bg-white">
+                <AvatarImage src={job?.company?.logo} alt={job?.company?.name} className="object-cover" />
+              </Avatar>
+            ) : (
+              <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-[#6A38C2] to-[#9333EA] text-white font-extrabold text-lg flex items-center justify-center shadow-md shadow-purple-900/15 shrink-0 group-hover:scale-105 transition-transform">
+                {companyInitial}
+              </div>
+            )}
 
-                <Button
-                    onClick={saveJobHandler}
-                    variant="outline"
-                    size="icon"
-                    className="
-                        rounded-full
-                        hover:bg-purple-100
-                        hover:border-purple-400
-                        transition-all
-                    "
-                >
-                    <BookmarkIcon className="w-4 h-4" />
-                </Button>
+            <div className="min-w-0">
+              <h3 className="font-bold text-sm text-gray-900 group-hover:text-[#6A38C2] transition-colors truncate">
+                {job?.company?.name || "Verified Employer"}
+              </h3>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                <MapPin size={13} className="text-purple-500 shrink-0" />
+                <span className="truncate">{job?.location || "India"}</span>
+              </div>
             </div>
+          </div>
 
-            {/* Company */}
-            <div className="flex items-center gap-4 my-5 relative z-10">
-                <Avatar className="h-14 w-14 border border-gray-200">
-                    <AvatarImage src={job?.company?.logo} />
-                </Avatar>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            type="button"
+            onClick={saveJobHandler}
+            disabled={saving}
+            className={`p-2 rounded-xl transition-all cursor-pointer shrink-0 ${
+              saved
+                ? "bg-purple-100 text-[#6A38C2] shadow-xs"
+                : "bg-gray-50 text-gray-400 hover:text-[#6A38C2] hover:bg-purple-50"
+            }`}
+            title={saved ? "Saved" : "Save this job"}
+            aria-label="Save Job"
+          >
+            <Bookmark size={16} className={saved ? "fill-[#6A38C2]" : ""} />
+          </motion.button>
+        </div>
 
-                <div>
-                    <h1 className="font-bold text-lg text-gray-900">
-                        {job?.company?.name}
-                    </h1>
+        {/* Job Title & Snippet */}
+        <div className="mt-4 relative z-10">
+          <h2 className="text-lg font-extrabold text-gray-900 group-hover:text-[#6A38C2] transition-colors line-clamp-1">
+            {job?.title}
+          </h2>
 
-                    <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <MapPin className="w-3 h-3" />
-                        <span>{job?.location || "India"}</span>
-                    </div>
-                </div>
-            </div>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">
+            {job?.description}
+          </p>
+        </div>
 
-            {/* Title */}
-            <div className="relative z-10">
-                <h1 className="font-bold text-xl text-gray-900 mb-2">
-                    {job?.title}
-                </h1>
+        {/* Feature Badges Row */}
+        <div className="flex flex-wrap items-center gap-2 mt-4 relative z-10">
+          <Badge className="bg-purple-50 text-[#6A38C2] hover:bg-purple-100 border border-purple-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl">
+            {job?.position ? `${job.position} Openings` : "Actively Hiring"}
+          </Badge>
 
-                <p className="text-sm text-gray-600 line-clamp-2">
-                    {job?.description}
-                </p>
-            </div>
+          <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl">
+            {job?.jobType || "Full-time"}
+          </Badge>
 
-            {/* Badges */}
-            <div className="flex flex-wrap gap-2 mt-5 relative z-10">
+          <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl">
+            ₹ {job?.salary} LPA
+          </Badge>
+        </div>
+      </div>
 
-                <Badge className="bg-blue-50 text-blue-700 border border-blue-200">
-                    {job?.position} Positions
-                </Badge>
+      {/* Card Footer: Metadata + Actions */}
+      <div className="mt-6 pt-4 border-t border-purple-50/80 flex items-center justify-between gap-3 relative z-10">
+        <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+          <Clock size={13} />
+          <span>{daysAgoFunction(job?.createdAt)}</span>
+        </div>
 
-                <Badge className="bg-orange-50 text-orange-600 border border-orange-200">
-                    {job?.jobType}
-                </Badge>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-9 px-3 text-xs font-semibold text-purple-700 hover:text-[#5B21B6] hover:bg-purple-50 rounded-xl"
+          >
+            <span>Details</span>
+            <ArrowUpRight size={14} className="ml-0.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
-                <Badge className="bg-purple-50 text-purple-700 border border-purple-200">
-                    ₹ {job?.salary} LPA
-                </Badge>
-
-            </div>
-
-            {/* Bottom Info */}
-            <div className="flex items-center justify-between mt-5 relative z-10">
-
-                <div className="flex items-center gap-1 text-sm text-gray-500">
-                    <Briefcase className="w-4 h-4" />
-                    <span>{job?.experienceLevel ?? job?.experience ?? 0}+ Years</span>
-                </div>
-
-                <div className="flex items-center gap-1 text-sm text-green-600 font-semibold">
-                    <IndianRupee className="w-4 h-4" />
-                    Hiring Now
-                </div>
-
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-3 mt-5 relative z-10">
-
-                <Button
-                    onClick={() => navigate(`/description/${job?._id}`)}
-                    variant="outline"
-                    className="
-                        flex-1
-                        rounded-xl
-                        border-purple-200
-                        hover:bg-purple-50
-                        hover:border-purple-400
-                    "
-                >
-                    View Details
-                </Button>
-
-                <Button
-                    onClick={saveJobHandler}
-                    className="
-                        flex-1
-                        rounded-xl
-                        bg-gradient-to-r
-                        from-[#6A38C2]
-                        to-[#7E22CE]
-                        hover:from-[#5B21B6]
-                        hover:to-[#6D28D9]
-                        text-white
-                    "
-                >
-                    Save Job
-                </Button>
-
-            </div>
-        </motion.div>
-    )
-}
-
-export default Job
+export default Job;
