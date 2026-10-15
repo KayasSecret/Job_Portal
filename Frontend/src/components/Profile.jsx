@@ -19,13 +19,20 @@ import UpdateProfileDialog from "./UpdateProfileDialog";
 import UpdateProfilePhotoDialog from "./UpdateProfilePhotoDialog";
 import { useSelector } from "react-redux";
 import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
+import useGetUserProfile from "@/hooks/useGetUserProfile";
+import RecruiterProfile from "./admin/RecruiterProfile";
 
 const Profile = () => {
+  useGetUserProfile();
   useGetAppliedJobs();
 
   const [open, setOpen] = useState(false);
   const [photoDialogOpen, setPhotoDialogOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
+
+  if (user?.role === "recruiter") {
+    return <RecruiterProfile />;
+  }
 
   const isResume = user?.profile?.resume;
 

@@ -161,6 +161,32 @@ export const logout = async (req, res) => {
     }
 };
 
+// ================= GET USER PROFILE =================
+export const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.id;
+        const user = await User.findById(userId).select("-password");
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            user,
+            success: true
+        });
+    } catch (error) {
+        console.error("GET PROFILE ERROR:", error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
+    }
+};
+
 // ================= UPDATE PROFILE =================
 export const updateProfile = async (req, res) => {
     try {
@@ -176,40 +202,49 @@ export const updateProfile = async (req, res) => {
             });
         }
 
-        // Skills convert to array
-        let skillsArray;
-        if (skills) {
-            skillsArray = typeof skills === "string" ? skills.split(",").map(skill => skill.trim()).filter(Boolean) : skills;
-        }
+        // If recruiter, restrict updates strictly to permitted fields (name, email, phone, bio)
+        if (user.role === "recruiter") {
+            if (fullName) user.fullName = fullName.trim();
+            if (email) user.email = email.trim();
+            if (phoneNumber !== undefined) user.phoneNumber = phoneNumber.trim();
+            if (!user.profile) user.profile = {};
+            if (bio !== undefined) user.profile.bio = bio.trim();
+        } else {
+            // Student update logic
+            let skillsArray;
+            if (skills) {
+                skillsArray = typeof skills === "string" ? skills.split(",").map(skill => skill.trim()).filter(Boolean) : skills;
+            }
 
-        // Update basic fields
-        if (fullName) user.fullName = fullName;
-        if (email) user.email = email;
-        if (phoneNumber) user.phoneNumber = phoneNumber;
+            // Update basic fields
+            if (fullName) user.fullName = fullName;
+            if (email) user.email = email;
+            if (phoneNumber) user.phoneNumber = phoneNumber;
 
-        // Ensure profile exists
-        if (!user.profile) {
-            user.profile = {};
-        }
+            // Ensure profile exists
+            if (!user.profile) {
+                user.profile = {};
+            }
 
-        if (bio) user.profile.bio = bio;
-        if (skills) user.profile.skills = skillsArray;
+            if (bio) user.profile.bio = bio;
+            if (skills) user.profile.skills = skillsArray;
 
-        // Resume Upload
-        const file = req.file;
+            // Resume Upload
+            const file = req.file;
 
-        if (file) {
-            const fileURI = getDataUri(file);
-            const cloudResponse = await cloudinary.uploader.upload(
-                fileURI.content,
-                {
-                    resource_type: "raw"
+            if (file) {
+                const fileURI = getDataUri(file);
+                const cloudResponse = await cloudinary.uploader.upload(
+                    fileURI.content,
+                    {
+                        resource_type: "raw"
+                    }
+                );
+
+                if (cloudResponse) {
+                    user.profile.resume = cloudResponse.secure_url;
+                    user.profile.resumeOriginalName = file.originalname;
                 }
-            );
-
-            if (cloudResponse) {
-                user.profile.resume = cloudResponse.secure_url;
-                user.profile.resumeOriginalName = file.originalname;
             }
         }
 

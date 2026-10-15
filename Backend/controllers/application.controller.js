@@ -91,9 +91,50 @@ export const getAppliedJobs = async (req, res) => {
             success: false
         });
     }
-}
+};
 
-// Admin will see how many users have applied.
+// Recruiter will see all applicants across all jobs they posted
+export const getAllRecruiterApplicants = async (req, res) => {
+    try {
+        const recruiterId = req.id;
+
+        // Find all jobs created by this recruiter
+        const recruiterJobs = await Job.find({ created_by: recruiterId })
+            .select("_id title company location jobType salary position createdAt")
+            .populate("company", "name logo");
+
+        const jobIds = recruiterJobs.map((j) => j._id);
+
+        const applications = await Application.find({ job: { $in: jobIds } })
+            .populate({
+                path: "applicant",
+                select: "fullName email phoneNumber profile createdAt"
+            })
+            .populate({
+                path: "job",
+                select: "title location salary jobType company",
+                populate: {
+                    path: "company",
+                    select: "name logo"
+                }
+            })
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            applications,
+            jobs: recruiterJobs,
+            success: true
+        });
+    } catch (error) {
+        console.error("GET ALL RECRUITER APPLICANTS ERROR:", error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
+    }
+};
+
+// Admin will see how many users have applied for a specific job.
 export const getApplicants = async (req, res) => {
     try {
 

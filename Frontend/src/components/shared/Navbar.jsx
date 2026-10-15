@@ -19,6 +19,7 @@ import {
   ArrowRight,
   ShieldCheck,
   ChevronRight,
+  Users,
 } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -84,6 +85,7 @@ function Navbar() {
   const recruiterNavLinks = [
     { name: "Companies", path: "/admin/companies", icon: Building2 },
     { name: "Jobs", path: "/admin/jobs", icon: Briefcase },
+    { name: "Applicants", path: "/admin/applicants", icon: Users },
   ];
 
   const navLinks = isRecruiter ? recruiterNavLinks : studentNavLinks;
@@ -91,6 +93,12 @@ function Navbar() {
   const isActiveRoute = (path) => {
     if (path === "/") {
       return location.pathname === "/";
+    }
+    if (path === "/admin/applicants" && location.pathname.includes("/applicants")) {
+      return true;
+    }
+    if (path === "/admin/jobs" && location.pathname.includes("/applicants")) {
+      return false;
     }
     return location.pathname.startsWith(path);
   };
@@ -249,23 +257,21 @@ function Navbar() {
 
                     {/* Popover Actions */}
                     <div className="mt-3 space-y-1">
-                      {user?.role !== "recruiter" && (
-                        <Link
-                          to="/profile"
-                          className="flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-[#6A38C2] hover:bg-purple-50/80 transition-all group"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-purple-100 text-[#6A38C2] flex items-center justify-center group-hover:scale-105 transition-transform">
-                              <User2 size={14} />
-                            </div>
-                            <span>View Profile</span>
+                      <Link
+                        to={user?.role === "recruiter" ? "/admin/profile" : "/profile"}
+                        className="flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-[#6A38C2] hover:bg-purple-50/80 transition-all group"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-purple-100 text-[#6A38C2] flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <User2 size={14} />
                           </div>
-                          <ChevronRight
-                            size={14}
-                            className="text-gray-400 group-hover:translate-x-0.5 transition-transform"
-                          />
-                        </Link>
-                      )}
+                          <span>View Profile</span>
+                        </div>
+                        <ChevronRight
+                          size={14}
+                          className="text-gray-400 group-hover:translate-x-0.5 transition-transform"
+                        />
+                      </Link>
 
                       <button
                         type="button"
@@ -393,11 +399,20 @@ function Navbar() {
                   </Link>
                 </div>
               ) : (
-                <div className="pt-2 border-t border-purple-50">
+                <div className="pt-2 border-t border-purple-50 space-y-1">
+                  <Link
+                    to={user?.role === "recruiter" ? "/admin/profile" : "/profile"}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] transition-colors"
+                  >
+                    <User2 size={16} className="text-[#6A38C2]" />
+                    <span>View Profile</span>
+                  </Link>
+
                   <button
                     type="button"
                     onClick={logoutHandler}
-                    className="flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                    className="flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   >
                     <LogOut size={16} />
                     <span>Log Out</span>

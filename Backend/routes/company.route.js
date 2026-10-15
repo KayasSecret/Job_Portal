@@ -7,7 +7,7 @@ import { singleUpload } from "../middlewares/multer.js";
 const router = express.Router();
 
 // Only recruiters can register or update companies
-router.route("/register").post(isAuthenticated, authorizeRole("recruiter"), registerCompany);
+router.route("/register").post(isAuthenticated, authorizeRole("recruiter"), singleUpload, registerCompany);
 router.route("/get").get(isAuthenticated, authorizeRole("recruiter"), getCompany);
 router.route("/get/:id").get(isAuthenticated, getCompanyById);
 router.route("/update/:id").put(isAuthenticated, authorizeRole("recruiter"), singleUpload, updateCompany);

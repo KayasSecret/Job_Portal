@@ -191,3 +191,40 @@ export const getAdminJobs = async (req, res) => {
         });
     }
 };
+
+// ================= DELETE JOB =================
+export const deleteJob = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const userId = req.id;
+
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({
+                message: "Job not found",
+                success: false
+            });
+        }
+
+        // Verify the job was created by this recruiter
+        if (job.created_by.toString() !== userId) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this job",
+                success: false
+            });
+        }
+
+        await Job.findByIdAndDelete(jobId);
+
+        return res.status(200).json({
+            message: "Job deleted successfully",
+            success: true
+        });
+    } catch (error) {
+        console.error("DELETE JOB ERROR:", error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
+    }
+};

@@ -21,6 +21,7 @@ import AdminJobs from "./components/admin/AdminJobs";
 import PostJob from "./components/admin/PostJob";
 import Applicants from "./components/admin/Applicants";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
+import RecruiterProfile from "./components/admin/RecruiterProfile";
 
 import "./App.css";
 
@@ -72,6 +73,14 @@ const appRouter = createBrowserRouter([
 
   // Admin Routes
   {
+    path: "/admin/profile",
+    element: (
+      <ProtectedRoute>
+        <RecruiterProfile />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/admin/companies",
     element: (
       <ProtectedRoute>
@@ -108,6 +117,14 @@ const appRouter = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <PostJob />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/applicants",
+    element: (
+      <ProtectedRoute>
+        <Applicants />
       </ProtectedRoute>
     ),
   },

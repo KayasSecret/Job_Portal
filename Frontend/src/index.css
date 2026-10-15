@@ -128,3 +128,230 @@
     @apply font-sans;
     }
 }
+
+/* ==========================================================================
+   HireNest — Premium Global Notification & Toast System
+   ========================================================================== */
+
+/* Toaster Viewport & Stacking */
+[data-sonner-toaster] {
+  --width: 390px !important;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif) !important;
+  z-index: 9999999 !important;
+}
+
+@media (max-width: 640px) {
+  [data-sonner-toaster] {
+    --width: calc(100vw - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+  }
+}
+
+/* Base Toast Card */
+[data-sonner-toast],
+.hirenest-toast {
+  position: relative !important;
+  border-radius: 16px !important;
+  padding: 14px 44px 14px 16px !important;
+  font-family: inherit !important;
+  box-sizing: border-box !important;
+  background: rgba(18, 14, 30, 0.94) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(168, 85, 247, 0.25) !important;
+  box-shadow: 0 16px 36px -10px rgba(10, 5, 25, 0.65),
+              0 0 0 1px rgba(255, 255, 255, 0.05),
+              0 0 20px -4px rgba(106, 56, 194, 0.25) !important;
+  color: #ffffff !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  overflow: visible !important;
+}
+
+[data-sonner-toast]::before,
+.hirenest-toast::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 12px !important;
+  bottom: 12px !important;
+  width: 4px !important;
+  border-radius: 0 4px 4px 0 !important;
+  background: linear-gradient(180deg, #a855f7, #6A38C2) !important;
+  opacity: 0.95 !important;
+}
+
+/* Toast Title & Description */
+[data-sonner-toast] [data-content],
+.hirenest-toast [data-content] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+
+[data-sonner-toast] [data-title],
+.hirenest-toast-title {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  word-break: break-word !important;
+}
+
+[data-sonner-toast] [data-description],
+.hirenest-toast-desc {
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+  color: rgba(226, 232, 240, 0.85) !important;
+  word-break: break-word !important;
+}
+
+/* Toast Icon Container */
+[data-sonner-toast] [data-icon],
+.hirenest-toast [data-icon] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 12px !important;
+  margin-left: 2px !important;
+  flex-shrink: 0 !important;
+}
+
+/* ================= Toast Type Variants ================= */
+
+/* SUCCESS: Emerald & Mint */
+[data-sonner-toast][data-type="success"],
+.hirenest-toast[data-type="success"] {
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  background: linear-gradient(135deg, rgba(13, 28, 22, 0.96) 0%, rgba(14, 18, 30, 0.96) 100%) !important;
+  box-shadow: 0 16px 36px -10px rgba(5, 20, 15, 0.7),
+              0 0 0 1px rgba(16, 185, 129, 0.15),
+              0 0 24px -4px rgba(16, 185, 129, 0.28) !important;
+}
+[data-sonner-toast][data-type="success"]::before,
+.hirenest-toast[data-type="success"]::before {
+  background: linear-gradient(180deg, #34d399, #059669) !important;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6) !important;
+}
+
+/* ERROR: Crimson & Rose */
+[data-sonner-toast][data-type="error"],
+.hirenest-toast[data-type="error"] {
+  border-color: rgba(244, 63, 94, 0.35) !important;
+  background: linear-gradient(135deg, rgba(32, 14, 20, 0.96) 0%, rgba(18, 12, 26, 0.96) 100%) !important;
+  box-shadow: 0 16px 36px -10px rgba(25, 5, 10, 0.7),
+              0 0 0 1px rgba(244, 63, 94, 0.15),
+              0 0 24px -4px rgba(244, 63, 94, 0.28) !important;
+}
+[data-sonner-toast][data-type="error"]::before,
+.hirenest-toast[data-type="error"]::before {
+  background: linear-gradient(180deg, #f87171, #dc2626) !important;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.6) !important;
+}
+
+/* WARNING: Amber & Honey */
+[data-sonner-toast][data-type="warning"],
+.hirenest-toast[data-type="warning"] {
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  background: linear-gradient(135deg, rgba(30, 22, 10, 0.96) 0%, rgba(18, 14, 28, 0.96) 100%) !important;
+  box-shadow: 0 16px 36px -10px rgba(25, 15, 5, 0.7),
+              0 0 0 1px rgba(245, 158, 11, 0.15),
+              0 0 24px -4px rgba(245, 158, 11, 0.28) !important;
+}
+[data-sonner-toast][data-type="warning"]::before,
+.hirenest-toast[data-type="warning"]::before {
+  background: linear-gradient(180deg, #fbbf24, #d97706) !important;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.6) !important;
+}
+
+/* INFO: Indigo & Cyan */
+[data-sonner-toast][data-type="info"],
+.hirenest-toast[data-type="info"] {
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  background: linear-gradient(135deg, rgba(16, 18, 35, 0.96) 0%, rgba(13, 12, 26, 0.96) 100%) !important;
+  box-shadow: 0 16px 36px -10px rgba(10, 12, 30, 0.7),
+              0 0 0 1px rgba(99, 102, 241, 0.15),
+              0 0 24px -4px rgba(99, 102, 241, 0.28) !important;
+}
+[data-sonner-toast][data-type="info"]::before,
+.hirenest-toast[data-type="info"]::before {
+  background: linear-gradient(180deg, #818cf8, #4f46e5) !important;
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.6) !important;
+}
+
+/* LOADING: Royal Purple */
+[data-sonner-toast][data-type="loading"],
+.hirenest-toast[data-type="loading"] {
+  border-color: rgba(168, 85, 247, 0.45) !important;
+  background: linear-gradient(135deg, rgba(25, 14, 40, 0.96) 0%, rgba(15, 10, 26, 0.96) 100%) !important;
+  box-shadow: 0 16px 36px -10px rgba(20, 5, 30, 0.7),
+              0 0 0 1px rgba(168, 85, 247, 0.2),
+              0 0 28px -4px rgba(168, 85, 247, 0.35) !important;
+}
+[data-sonner-toast][data-type="loading"]::before,
+.hirenest-toast[data-type="loading"]::before {
+  background: linear-gradient(180deg, #c084fc, #9333ea) !important;
+  box-shadow: 0 0 8px rgba(192, 132, 252, 0.6) !important;
+}
+
+/* ================= Close Button (×) Overrides ================= */
+[data-sonner-toast] [data-close-button],
+[data-sonner-toast][data-styled="true"] [data-close-button],
+.hirenest-toast-close,
+button[data-close-button] {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  border-radius: 7px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  opacity: 0.85 !important;
+  z-index: 50 !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+[data-sonner-toast]:hover [data-close-button],
+[data-sonner-toast][data-styled="true"]:hover [data-close-button],
+.hirenest-toast-close:hover,
+button[data-close-button]:hover {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+  transform: scale(1.06) !important;
+}
+
+[data-sonner-toast] [data-close-button]:active,
+[data-sonner-toast][data-styled="true"] [data-close-button]:active,
+.hirenest-toast-close:active,
+button[data-close-button]:active {
+  transform: scale(0.92) !important;
+}
+
+[data-sonner-toast] [data-close-button]:focus-visible,
+[data-sonner-toast][data-styled="true"] [data-close-button]:focus-visible,
+.hirenest-toast-close:focus-visible,
+button[data-close-button]:focus-visible {
+  outline: none !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.7) !important;
+}

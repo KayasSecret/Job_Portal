@@ -2,33 +2,46 @@ import { Company } from "../models/company.model.js";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 
-// ✅ Register Company
+// ✅ Register Company (Supports single-step registration with name, description, website, location, and logo)
 export const registerCompany = async (req, res) => {
   try {
-    const { name } = req.body;   // ✅ use "name"
+    const { name, description, website, location } = req.body;
+    const file = req.file;
 
-    if (!name) {
+    if (!name || !name.trim()) {
       return res.status(400).json({
         message: "Company name is required.",
         success: false
       });
     }
 
-    // ✅ correct duplicate check
-    let company = await Company.findOne({ name });
+    // Duplicate check by name
+    let company = await Company.findOne({ name: name.trim() });
 
     if (company) {
       return res.status(400).json({
-        message: "Company already exists",
+        message: "A company with this name already exists.",
         success: false
       });
     }
 
-    // ✅ correct field
-    company = await Company.create({
-      name,
+    const companyData = {
+      name: name.trim(),
+      description: description?.trim() || "",
+      website: website?.trim() || "",
+      location: location?.trim() || "",
       userId: req.id
-    });
+    };
+
+    if (file) {
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      if (cloudResponse && cloudResponse.secure_url) {
+        companyData.logo = cloudResponse.secure_url;
+      }
+    }
+
+    company = await Company.create(companyData);
 
     return res.status(201).json({
       message: "Company registered successfully",
@@ -37,7 +50,7 @@ export const registerCompany = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error("REGISTER COMPANY ERROR:", error);
     res.status(500).json({
       message: "Server error",
       success: false
