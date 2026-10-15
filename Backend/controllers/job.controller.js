@@ -1,5 +1,7 @@
 import { Job } from "../models/job.model.js";
 import { Company } from "../models/company.model.js";
+import { Application } from "../models/application.model.js";
+import { User } from "../models/user.model.js";
 
 
 // Here you see posted jobs by Admin
@@ -139,9 +141,9 @@ export const getJobById = async (req, res) => {
     try {
         const jobId = req.params.id;
 
-        const job = await Job.findById(jobId).populate({
-            path: "applications"
-        });
+        const job = await Job.findById(jobId)
+            .populate({ path: "applications" })
+            .populate({ path: "company" });
 
         if (!job) {
             return res.status(404).json({
@@ -206,7 +208,7 @@ export const deleteJob = async (req, res) => {
             });
         }
 
-        // Verify the job was created by this recruiter
+        // Verify ownership: only the recruiter who created this job can delete it
         if (job.created_by.toString() !== userId) {
             return res.status(403).json({
                 message: "You are not authorized to delete this job",
@@ -214,16 +216,27 @@ export const deleteJob = async (req, res) => {
             });
         }
 
+        // 1. Cascade delete all candidate applications for this job
+        await Application.deleteMany({ job: jobId });
+
+        // 2. Remove this job from all users' savedJobs
+        await User.updateMany(
+            { savedJobs: jobId },
+            { $pull: { savedJobs: jobId } }
+        );
+
+        // 3. Delete the job record
         await Job.findByIdAndDelete(jobId);
 
         return res.status(200).json({
-            message: "Job deleted successfully",
-            success: true
+            message: "Job and all associated applications deleted successfully",
+            success: true,
+            deletedJobId: jobId
         });
     } catch (error) {
         console.error("DELETE JOB ERROR:", error);
         return res.status(500).json({
-            message: "Server error",
+            message: "Server error while deleting job",
             success: false
         });
     }

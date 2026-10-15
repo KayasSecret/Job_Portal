@@ -178,7 +178,7 @@ const CompanySetup = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50/70 via-white to-purple-50/40 py-10 sm:py-14">
+      <div className="min-h-screen bg-transparent py-10 sm:py-14">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

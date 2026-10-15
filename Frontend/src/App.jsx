@@ -4,7 +4,6 @@ import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import Jobs from "./components/Jobs";
-import Browse from "./components/Browse";
 import SavedJobs from "./components/SavedJobs";
 import Profile from "./components/Profile";
 import JobDescription from "./components/JobDescription";
@@ -23,14 +22,12 @@ import Applicants from "./components/admin/Applicants";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import RecruiterProfile from "./components/admin/RecruiterProfile";
 
+import AuthenticatedAppLayout from "./components/shared/AuthenticatedAppLayout";
+
 import "./App.css";
 
 const appRouter = createBrowserRouter([
-  // Public Routes
-  {
-    path: "/",
-    element: <Home />,
-  },
+  // Authentication-only pages (Strictly excluded from live wallpaper)
   {
     path: "/login",
     element: <Login />,
@@ -39,102 +36,109 @@ const appRouter = createBrowserRouter([
     path: "/signup",
     element: <Signup />,
   },
-  {
-    path: "/jobs",
-    element: <Jobs />,
-  },
-  {
-    path: "/description/:id",
-    element: <JobDescription />,
-  },
-  {
-    path: "/browse",
-    element: <Browse />,
-  },
-  {
-    path: "/savedjobs",
-    element: <SavedJobs />,
-  },
 
-  // Events
+  // Authenticated Student & Recruiter pages (Persistent global live wallpaper)
   {
-    path: "/events",
-    element: <Events />,
-  },
-  {
-    path: "/events/:id",
-    element: <EventDetails />,
-  },
+    element: <AuthenticatedAppLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/jobs",
+        element: <Jobs />,
+      },
+      {
+        path: "/description/:id",
+        element: <JobDescription />,
+      },
+      {
+        path: "/savedjobs",
+        element: <SavedJobs />,
+      },
 
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
+      // Events
+      {
+        path: "/events",
+        element: <Events />,
+      },
+      {
+        path: "/events/:id",
+        element: <EventDetails />,
+      },
 
-  // Admin Routes
-  {
-    path: "/admin/profile",
-    element: (
-      <ProtectedRoute>
-        <RecruiterProfile />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/companies",
-    element: (
-      <ProtectedRoute>
-        <Companies />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/companies/create",
-    element: (
-      <ProtectedRoute>
-        <CompanyCreate />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/companies/:id",
-    element: (
-      <ProtectedRoute>
-        <CompanySetup />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/jobs",
-    element: (
-      <ProtectedRoute>
-        <AdminJobs />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/jobs/create",
-    element: (
-      <ProtectedRoute>
-        <PostJob />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/applicants",
-    element: (
-      <ProtectedRoute>
-        <Applicants />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/admin/jobs/:id/applicants",
-    element: (
-      <ProtectedRoute>
-        <Applicants />
-      </ProtectedRoute>
-    ),
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+
+      // Admin / Recruiter Routes
+      {
+        path: "/admin/profile",
+        element: (
+          <ProtectedRoute>
+            <RecruiterProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/companies",
+        element: (
+          <ProtectedRoute>
+            <Companies />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/companies/create",
+        element: (
+          <ProtectedRoute>
+            <CompanyCreate />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/companies/:id",
+        element: (
+          <ProtectedRoute>
+            <CompanySetup />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/jobs",
+        element: (
+          <ProtectedRoute>
+            <AdminJobs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/jobs/create",
+        element: (
+          <ProtectedRoute>
+            <PostJob />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/applicants",
+        element: (
+          <ProtectedRoute>
+            <Applicants />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/jobs/:id/applicants",
+        element: (
+          <ProtectedRoute>
+            <Applicants />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);
 

@@ -56,7 +56,7 @@ const EventHero = () => {
                             size="lg"
                             variant="secondary"
                         >
-                            Browse Categories
+                            Event Categories
                         </Button>
 
                     </div>

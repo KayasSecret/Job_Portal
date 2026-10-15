@@ -50,7 +50,7 @@ const RecruiterProfile = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50/70 via-white to-purple-50/40 py-8 sm:py-12">
+      <div className="min-h-screen bg-transparent py-8 sm:py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* ================= PROFILE HEADER CARD ================= */}
           <motion.div

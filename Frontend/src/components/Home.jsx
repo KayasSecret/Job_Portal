@@ -4,7 +4,6 @@ import HeroSection from "./HeroSection";
 import CategoryCarausel from "./CategoryCarausel";
 import LatestJobs from "./LatestJobs";
 import FuturisticCareerShowcase from "./home/FuturisticCareerShowcase";
-import CinematicBackgroundCanvas from "./home/CinematicBackgroundCanvas";
 import Footer from "./shared/Footer";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import { useSelector } from "react-redux";
@@ -23,22 +22,19 @@ const Home = () => {
   }, [user, navigate]);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-purple-50/60 via-white to-purple-50/40 overflow-x-hidden selection:bg-[#6A38C2] selection:text-white">
-      {/* Interactive Cinematic Background Particle Constellation */}
-      <CinematicBackgroundCanvas />
-
-      {/* Top Navigation Bar (Preserved Completely) */}
+    <div className="relative selection:bg-[#6A38C2] selection:text-white">
+      {/* 1. Sticky Top Navigation Bar */}
       <Navbar />
 
-      {/* Main Cinematic Content */}
-      <main className="relative z-10">
+      {/* 4. Unified Main Sections with Cohesive SaaS Hierarchy */}
+      <main className="relative z-10 flex flex-col">
         <HeroSection />
         <CategoryCarausel />
         <LatestJobs />
         <FuturisticCareerShowcase />
       </main>
 
-      {/* Footer Section */}
+      {/* 5. Cohesive Footer Section with Integrated Atmosphere */}
       <Footer />
     </div>
   );

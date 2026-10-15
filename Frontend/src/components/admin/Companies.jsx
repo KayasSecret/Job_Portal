@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
+import RecruiterHero from "./RecruiterHero";
 import CompaniesTable from "./CompaniesTable";
 import { useNavigate } from "react-router-dom";
 import useGetAllCompanies from "@/hooks/useGetAllCompanies";
@@ -53,105 +54,58 @@ const Companies = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50/70 via-white to-purple-50/40 py-8 sm:py-12 overflow-x-hidden">
+      <div className="min-h-screen bg-transparent py-8 sm:py-12 overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* ================= HERO DASHBOARD BANNER ================= */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="relative rounded-3xl p-6 sm:p-10 md:p-12 mb-10 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-2xl"
-          >
-            {/* Ambient Lighting Orbs */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#8B5CF6]/30 blur-3xl animate-pulse"
-              style={{ animationDuration: "8s" }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#EC4899]/25 blur-3xl animate-pulse"
-              style={{ animationDuration: "10s" }}
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 opacity-[0.04] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]"
-            />
-
-            <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-purple-200 mb-4 shadow-sm">
-                  <Sparkles size={14} className="text-amber-300" />
-                  <span>Recruiter Brand Command Center</span>
-                </div>
-
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-                  Company{" "}
-                  <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-amber-200 bg-clip-text text-transparent">
-                    Management
-                  </span>
-                </h1>
-
-                <p className="mt-3 text-sm sm:text-base text-purple-100/80 leading-relaxed max-w-xl">
-                  Register, brand, and organize your recruitment entities. Seamlessly attach verified companies to job postings and applicant pipelines.
-                </p>
-              </div>
-
-              {/* Action Button: Create Company */}
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="shrink-0">
+          <RecruiterHero
+            badgeText="Recruiter Brand Command Center"
+            title={
+              <>
+                Company{" "}
+                <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-amber-200 bg-clip-text text-transparent">
+                  Management
+                </span>
+              </>
+            }
+            description="Register, brand, and organize your recruitment entities. Seamlessly attach verified companies to job postings and applicant pipelines."
+            action={
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button
                   onClick={() => navigate("/admin/companies/create")}
-                  className="h-12 px-6 rounded-2xl bg-white hover:bg-purple-50 text-[#4C1D95] font-bold text-sm shadow-xl shadow-purple-950/30 transition-all flex items-center gap-2 cursor-pointer"
+                  className="h-9 px-4 rounded-xl bg-white hover:bg-purple-50 text-[#4C1D95] font-bold text-xs shadow-md shadow-purple-950/30 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Plus size={18} className="text-[#6A38C2]" />
+                  <Plus size={15} className="text-[#6A38C2]" />
                   <span>Register New Company</span>
                 </Button>
               </motion.div>
-            </div>
-
-            {/* Quick Live Stats Row inside Hero */}
-            <div className="relative z-10 mt-10 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {totalCompaniesCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Building2 size={13} className="text-purple-300" />
-                  <span>Total Entities</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {totalActiveJobsCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Briefcase size={13} className="text-pink-300" />
-                  <span>Active Requisitions</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {companiesWithLogos}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Sparkles size={13} className="text-amber-300" />
-                  <span>Branded Profiles</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  100%
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <ShieldCheck size={13} className="text-emerald-400" />
-                  <span>Recruiter Verified</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+            }
+            stats={[
+              {
+                value: totalCompaniesCount,
+                label: "Total Entities",
+                icon: Building2,
+                iconColor: "text-purple-300",
+              },
+              {
+                value: totalActiveJobsCount,
+                label: "Active Requisitions",
+                icon: Briefcase,
+                iconColor: "text-pink-300",
+              },
+              {
+                value: companiesWithLogos,
+                label: "Branded Profiles",
+                icon: Sparkles,
+                iconColor: "text-amber-300",
+              },
+              {
+                value: "100%",
+                label: "Recruiter Verified",
+                icon: ShieldCheck,
+                iconColor: "text-emerald-400",
+              },
+            ]}
+          />
 
           {/* ================= CONTROLS: SEARCH & VIEW SWITCHER ================= */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8">

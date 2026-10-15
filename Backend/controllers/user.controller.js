@@ -430,6 +430,42 @@ export const saveJob = async (req, res) => {
     }
 };
 
+// ================ UNSAVE / REMOVE SAVED JOB ================
+export const unsaveJob = async (req, res) => {
+    try {
+        const userId = req.id;
+        const { jobId } = req.params;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.savedJobs = user.savedJobs.filter(
+            (id) => id.toString() !== jobId.toString()
+        );
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Job removed from saved collection"
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+};
+
 // =============== GET SAVED JOBS ===============
 export const getSavedJobs = async (req, res) => {
     try {

@@ -34,25 +34,39 @@ import { JOB_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllAdminJobs } from "@/redux/jobSlice";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
-const AdminJobsTable = ({ jobs = [] }) => {
+const AdminJobsTable = ({ jobs = [], onDelete }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
   const { allAdminJobs = [] } = useSelector((store) => store.job);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [openPopoverId, setOpenPopoverId] = useState(null);
+
+  // Helper: Only the authenticated recruiter who created this job can delete it
+  const canDeleteJob = (job) => {
+    if (!user) return false;
+    if (user.role && user.role.toLowerCase() !== "recruiter") return false;
+    const ownerId =
+      typeof job?.created_by === "object"
+        ? (job?.created_by?._id || job?.created_by?.id)?.toString()
+        : job?.created_by?.toString();
+    const currentUserId = (user?._id || user?.id)?.toString();
+    if (ownerId && currentUserId) {
+      return ownerId === currentUserId;
+    }
+    return true;
+  };
 
   const confirmDelete = (job) => {
+    if (onDelete) {
+      onDelete(job);
+      return;
+    }
     setJobToDelete(job);
     setDeleteDialogOpen(true);
   };
@@ -226,104 +240,121 @@ const AdminJobsTable = ({ jobs = [] }) => {
 
                     {/* Actions Menu */}
                     <TableCell className="py-4 px-6 text-right">
-                      <Popover>
-                        <PopoverTrigger asChild>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {canDeleteJob(job) && (
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 w-8 p-0 rounded-xl hover:bg-purple-100 text-gray-600 hover:text-[#6A38C2] cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenPopoverId(null);
+                              confirmDelete(job);
+                            }}
+                            className="h-8 w-8 p-0 rounded-xl text-rose-600 hover:bg-rose-50 hover:text-rose-700 cursor-pointer"
+                            title="Delete Job Requisition"
+                            aria-label="Delete Job Requisition"
                           >
-                            <MoreVertical size={16} />
+                            <Trash2 size={15} />
                           </Button>
-                        </PopoverTrigger>
+                        )}
 
-                        <PopoverContent
-                          align="end"
-                          className="w-48 p-1.5 rounded-2xl border border-purple-100 shadow-xl bg-white"
+                        <Popover
+                          open={openPopoverId === job._id}
+                          onOpenChange={(isOpen) =>
+                            setOpenPopoverId(isOpen ? job._id : null)
+                          }
                         >
-                          <button
-                            type="button"
-                            onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] rounded-xl transition-all cursor-pointer"
-                          >
-                            <Eye size={14} className="text-[#6A38C2]" />
-                            <span>View Applicants</span>
-                          </button>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => e.stopPropagation()}
+                              className="h-8 w-8 p-0 rounded-xl hover:bg-purple-100 text-gray-600 hover:text-[#6A38C2] cursor-pointer"
+                            >
+                              <MoreVertical size={16} />
+                            </Button>
+                          </PopoverTrigger>
 
-                          {companyId && (
+                          <PopoverContent
+                            align="end"
+                            sideOffset={6}
+                            className="w-48 p-1.5 rounded-2xl border border-purple-100 shadow-xl bg-white z-50"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               type="button"
-                              onClick={() => navigate(`/admin/companies/${companyId}`)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenPopoverId(null);
+                                navigate(`/admin/jobs/${job._id}/applicants`);
+                              }}
                               className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] rounded-xl transition-all cursor-pointer"
                             >
-                              <Building2 size={14} className="text-purple-600" />
-                              <span>Company Profile</span>
+                              <Eye size={14} className="text-[#6A38C2]" />
+                              <span>View Applicants</span>
                             </button>
-                          )}
 
-                          <div className="h-px bg-purple-50 my-1" />
+                            {companyId && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenPopoverId(null);
+                                  navigate(`/admin/companies/${companyId}`);
+                                }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] rounded-xl transition-all cursor-pointer"
+                              >
+                                <Building2 size={14} className="text-purple-600" />
+                                <span>Company Profile</span>
+                              </button>
+                            )}
 
-                          <button
-                            type="button"
-                            onClick={() => confirmDelete(job)}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
-                          >
-                            <Trash2 size={14} className="text-rose-500" />
-                            <span>Delete Job</span>
-                          </button>
-                        </PopoverContent>
-                      </Popover>
+                            {canDeleteJob(job) && (
+                              <>
+                                <div className="h-px bg-purple-50 my-1" />
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setOpenPopoverId(null);
+                                    setTimeout(() => {
+                                      confirmDelete(job);
+                                    }, 50);
+                                  }}
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
+                                >
+                                  <Trash2 size={14} className="text-rose-500" />
+                                  <span>Delete Job</span>
+                                </button>
+                              </>
+                            )}
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                     </TableCell>
-                  </motion.tr>
-                );
-              })}
-            </TableBody>
-          </Table>
+                    </motion.tr>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </div>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[420px] rounded-3xl p-6 border-purple-100 shadow-2xl">
-          <DialogHeader>
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-3">
-              <AlertTriangle size={24} />
-            </div>
-            <DialogTitle className="text-lg font-bold text-gray-900">
-              Delete Job Requisition?
-            </DialogTitle>
-            <DialogDescription className="text-xs text-gray-500 mt-1">
-              Are you sure you want to delete <span className="font-semibold text-gray-800 font-mono">"{jobToDelete?.title}"</span>? This will permanently remove the requisition and its associated candidate applications.
-            </DialogDescription>
-          </DialogHeader>
+        {/* Delete Confirmation Dialog (rendered if standalone) */}
+        {!onDelete && (
+          <DeleteConfirmationDialog
+            open={deleteDialogOpen}
+            onOpenChange={setDeleteDialogOpen}
+            title="Delete Job Requisition"
+            itemName={jobToDelete?.title}
+            itemType="job"
+            deleting={deleting}
+            onConfirm={handleDelete}
+          />
+        )}
+      </>
+    );
+  };
 
-          <DialogFooter className="mt-5 flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-              className="h-10 rounded-xl border-purple-200 text-xs font-semibold cursor-pointer"
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={deleting}
-              onClick={handleDelete}
-              className="h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold cursor-pointer shadow-md"
-            >
-              {deleting ? (
-                <>
-                  <Loader2 size={14} className="mr-2 animate-spin" />
-                  <span>Deleting...</span>
-                </>
-              ) : (
-                <span>Confirm Delete</span>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
-
-export default AdminJobsTable;
+  export default AdminJobsTable;

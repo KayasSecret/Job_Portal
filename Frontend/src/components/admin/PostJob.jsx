@@ -211,7 +211,7 @@ const PostJob = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50/70 via-white to-purple-50/40 py-8 sm:py-12">
+      <div className="min-h-screen bg-transparent py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Top Breadcrumb & Navigation */}
           <div className="flex items-center justify-between gap-4 mb-6">

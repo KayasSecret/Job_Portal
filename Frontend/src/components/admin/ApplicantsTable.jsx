@@ -26,6 +26,7 @@ import {
   Calendar,
   Briefcase,
   Clock,
+  Trash2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -35,6 +36,8 @@ const ApplicantsTable = ({
   applications = [],
   onStatusChange,
   statusUpdatingId,
+  onDelete,
+  canDelete,
 }) => {
   if (!applications || applications.length === 0) {
     return null;
@@ -265,6 +268,20 @@ const ApplicantsTable = ({
                               <FileText size={14} className="text-[#6A38C2]" />
                               <span>Open Resume</span>
                             </a>
+                          </>
+                        )}
+
+                        {canDelete?.(app) && (
+                          <>
+                            <div className="h-px bg-purple-50 my-1" />
+                            <button
+                              type="button"
+                              onClick={() => onDelete?.(app)}
+                              className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
+                            >
+                              <Trash2 size={14} className="text-rose-500" />
+                              <span>Remove Candidate</span>
+                            </button>
                           </>
                         )}
                       </PopoverContent>

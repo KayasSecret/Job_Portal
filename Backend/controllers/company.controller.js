@@ -1,4 +1,7 @@
 import { Company } from "../models/company.model.js";
+import { Job } from "../models/job.model.js";
+import { Application } from "../models/application.model.js";
+import { User } from "../models/user.model.js";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 
@@ -164,4 +167,70 @@ export const updateCompany = async (req, res) => {
       success: false
     });
   }
-};  
+};
+
+// ✅ Delete Company (with recruiter verification & cascade cleanup of jobs, applications, and savedJobs)
+export const deleteCompany = async (req, res) => {
+  try {
+    const companyId = req.params.id;
+    const userId = req.id;
+
+    const company = await Company.findById(companyId);
+
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found.",
+        success: false
+      });
+    }
+
+    // Verify ownership: Only the recruiter who created this company can delete it
+    if (company.userId.toString() !== userId) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this company.",
+        success: false
+      });
+    }
+
+    // 1. Identify all jobs linked to this company
+    const jobs = await Job.find({ company: companyId }).select("_id");
+    const jobIds = jobs.map((j) => j._id);
+
+    // 2. Cascade delete all candidate applications linked to these jobs
+    if (jobIds.length > 0) {
+      await Application.deleteMany({ job: { $in: jobIds } });
+
+      // 3. Remove these jobs from students' savedJobs lists
+      await User.updateMany(
+        { savedJobs: { $in: jobIds } },
+        { $pull: { savedJobs: { $in: jobIds } } }
+      );
+
+      // 4. Delete the associated jobs
+      await Job.deleteMany({ company: companyId });
+    }
+
+    // 5. Remove company reference from any user profile
+    await User.updateMany(
+      { "profile.company": companyId },
+      { $unset: { "profile.company": "" } }
+    );
+
+    // 6. Delete the company document itself
+    await Company.findByIdAndDelete(companyId);
+
+    return res.status(200).json({
+      message: "Company and all associated jobs/applications deleted successfully.",
+      success: true,
+      deletedCompanyId: companyId,
+      deletedJobsCount: jobIds.length
+    });
+
+  } catch (error) {
+    console.error("DELETE COMPANY ERROR:", error);
+    return res.status(500).json({
+      message: "Server error while deleting company.",
+      success: false
+    });
+  }
+};

@@ -1,17 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/constant";
+import { USER_API_ENDPOINT, APPLICANT_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import {
   Bookmark,
   MapPin,
-  Briefcase,
-  IndianRupee,
   Clock,
   ArrowUpRight,
-  Sparkles,
-  Building2,
   CheckCircle2,
 } from "lucide-react";
 import { Avatar, AvatarImage } from "./ui/avatar";
@@ -19,12 +15,25 @@ import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
+import ResumeRequiredModal from "./shared/ResumeRequiredModal";
 
 const Job = ({ job, isSaved = false, onSaveSuccess }) => {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
   const [saved, setSaved] = useState(isSaved);
   const [saving, setSaving] = useState(false);
+  const [isApplied, setIsApplied] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (job?.applications && user?._id) {
+      const alreadyApplied = job.applications.some(
+        (app) => app?.applicant === user._id || app === user._id
+      );
+      setIsApplied(alreadyApplied);
+    }
+  }, [job?.applications, user?._id]);
 
   const daysAgoFunction = (mongodbTime) => {
     if (!mongodbTime) return "Recently";
@@ -70,107 +79,203 @@ const Job = ({ job, isSaved = false, onSaveSuccess }) => {
     }
   };
 
+  const executeApply = async () => {
+    try {
+      setApplying(true);
+      const res = await axios.get(
+        `${APPLICANT_API_ENDPOINT}/apply/${job?._id}`,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        setIsApplied(true);
+        toast.success(res.data.message || "Job applied successfully!");
+      }
+    } catch (error) {
+      console.error("Apply error:", error);
+      if (error?.response?.data?.requireResume) {
+        setResumeModalOpen(true);
+      }
+      toast.error(error?.response?.data?.message || "Failed to apply for job.");
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const applyJobHandler = (e) => {
+    e.stopPropagation();
+
+    // 1. Must be authenticated
+    if (!user) {
+      toast.error("Please log in to apply for this job.");
+      navigate("/login");
+      return;
+    }
+
+    // 2. Prevent recruiters from applying
+    if (user.role === "recruiter") {
+      toast.error("Recruiter accounts cannot apply for jobs.");
+      return;
+    }
+
+    // 3. STRICT RESUME CHECK: Block immediately if no resume is present
+    const hasResume = Boolean(
+      user?.profile?.resume &&
+      typeof user.profile.resume === "string" &&
+      user.profile.resume.trim() !== ""
+    );
+
+    if (!hasResume) {
+      setResumeModalOpen(true);
+      return;
+    }
+
+    // 4. Resume present -> Proceed to apply
+    executeApply();
+  };
+
   const companyInitial = job?.company?.name?.charAt(0)?.toUpperCase() || "H";
 
   return (
-    <motion.div
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      onClick={() => navigate(`/description/${job?._id}`)}
-      className="group relative rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-100/90 shadow-[0_10px_30px_-8px_rgba(106,56,194,0.08)] hover:shadow-[0_20px_45px_-10px_rgba(106,56,194,0.22)] hover:border-purple-300 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer overflow-hidden"
-    >
-      {/* Top Ambient Glow on Card Hover */}
-      <div className="pointer-events-none absolute -top-16 -right-16 w-36 h-36 rounded-full bg-purple-100/60 blur-2xl group-hover:scale-150 transition-transform duration-500" />
+    <>
+      <motion.div
+        whileHover={{ y: -6, scale: 1.01 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        onClick={() => navigate(`/description/${job?._id}`)}
+        className="group relative rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-100/90 shadow-[0_10px_30px_-8px_rgba(106,56,194,0.08)] hover:shadow-[0_20px_45px_-10px_rgba(106,56,194,0.22)] hover:border-purple-300 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer overflow-hidden"
+      >
+        {/* Top Ambient Glow on Card Hover */}
+        <div className="pointer-events-none absolute -top-16 -right-16 w-36 h-36 rounded-full bg-purple-100/60 blur-2xl group-hover:scale-150 transition-transform duration-500" />
 
-      <div>
-        {/* Top Header: Company Avatar + Timing + Bookmark */}
-        <div className="flex items-start justify-between gap-3 relative z-10">
-          <div className="flex items-center gap-3.5 min-w-0">
-            {job?.company?.logo ? (
-              <Avatar className="h-13 w-13 rounded-2xl border-2 border-purple-100 shadow-xs shrink-0 bg-white">
-                <AvatarImage src={job?.company?.logo} alt={job?.company?.name} className="object-cover" />
-              </Avatar>
-            ) : (
-              <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-[#6A38C2] to-[#9333EA] text-white font-extrabold text-lg flex items-center justify-center shadow-md shadow-purple-900/15 shrink-0 group-hover:scale-105 transition-transform">
-                {companyInitial}
-              </div>
-            )}
+        <div>
+          {/* Top Header: Company Avatar + Timing + Bookmark */}
+          <div className="flex items-start justify-between gap-3 relative z-10">
+            <div className="flex items-center gap-3.5 min-w-0">
+              {job?.company?.logo ? (
+                <Avatar className="h-12 w-12 rounded-2xl border border-purple-100 shadow-xs shrink-0 bg-white">
+                  <AvatarImage
+                    src={job?.company?.logo}
+                    alt={job?.company?.name}
+                    className="object-contain p-1"
+                  />
+                </Avatar>
+              ) : (
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6A38C2] to-[#9333EA] text-white font-extrabold text-base flex items-center justify-center shadow-md shadow-purple-900/15 shrink-0 group-hover:scale-105 transition-transform">
+                  {companyInitial}
+                </div>
+              )}
 
-            <div className="min-w-0">
-              <h3 className="font-bold text-sm text-gray-900 group-hover:text-[#6A38C2] transition-colors truncate">
-                {job?.company?.name || "Verified Employer"}
-              </h3>
-              <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                <MapPin size={13} className="text-purple-500 shrink-0" />
-                <span className="truncate">{job?.location || "India"}</span>
+              <div className="min-w-0">
+                <h3 className="font-bold text-sm text-gray-900 group-hover:text-[#6A38C2] transition-colors truncate">
+                  {job?.company?.name || "Verified Employer"}
+                </h3>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                  <MapPin size={12} className="text-purple-500 shrink-0" />
+                  <span className="truncate">{job?.location || "India"}</span>
+                </div>
               </div>
             </div>
+
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              type="button"
+              onClick={saveJobHandler}
+              disabled={saving}
+              className={`p-2 rounded-xl transition-all cursor-pointer shrink-0 ${
+                saved
+                  ? "bg-purple-100 text-[#6A38C2] shadow-xs"
+                  : "bg-gray-50 text-gray-400 hover:text-[#6A38C2] hover:bg-purple-50"
+              }`}
+              title={saved ? "Saved" : "Save this job"}
+              aria-label="Save Job"
+            >
+              <Bookmark size={16} className={saved ? "fill-[#6A38C2]" : ""} />
+            </motion.button>
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            type="button"
-            onClick={saveJobHandler}
-            disabled={saving}
-            className={`p-2 rounded-xl transition-all cursor-pointer shrink-0 ${
-              saved
-                ? "bg-purple-100 text-[#6A38C2] shadow-xs"
-                : "bg-gray-50 text-gray-400 hover:text-[#6A38C2] hover:bg-purple-50"
-            }`}
-            title={saved ? "Saved" : "Save this job"}
-            aria-label="Save Job"
-          >
-            <Bookmark size={16} className={saved ? "fill-[#6A38C2]" : ""} />
-          </motion.button>
+          {/* Job Title & Snippet */}
+          <div className="mt-4 relative z-10">
+            <h2 className="text-lg font-extrabold text-gray-900 group-hover:text-[#6A38C2] transition-colors line-clamp-1">
+              {job?.title}
+            </h2>
+
+            <p className="text-xs sm:text-sm text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">
+              {job?.description}
+            </p>
+          </div>
+
+          {/* Feature Badges Row */}
+          <div className="flex flex-wrap items-center gap-2 mt-4 relative z-10">
+            <Badge className="bg-purple-50 text-[#6A38C2] hover:bg-purple-100 border border-purple-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl shadow-none">
+              {job?.position ? `${job.position} Openings` : "Actively Hiring"}
+            </Badge>
+
+            <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl shadow-none">
+              {job?.jobType || "Full-time"}
+            </Badge>
+
+            <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl shadow-none">
+              ₹ {job?.salary} LPA
+            </Badge>
+          </div>
         </div>
 
-        {/* Job Title & Snippet */}
-        <div className="mt-4 relative z-10">
-          <h2 className="text-lg font-extrabold text-gray-900 group-hover:text-[#6A38C2] transition-colors line-clamp-1">
-            {job?.title}
-          </h2>
+        {/* Card Footer: Metadata + Actions */}
+        <div className="mt-5 pt-4 border-t border-purple-50/80 flex items-center justify-between gap-3 relative z-10">
+          <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+            <Clock size={13} />
+            <span>{daysAgoFunction(job?.createdAt)}</span>
+          </div>
 
-          <p className="text-xs sm:text-sm text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">
-            {job?.description}
-          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/description/${job?._id}`);
+              }}
+              className="h-8 px-2.5 text-xs font-semibold text-purple-700 hover:text-[#5B21B6] hover:bg-purple-50 rounded-xl"
+            >
+              <span>Details</span>
+              <ArrowUpRight size={13} className="ml-0.5" />
+            </Button>
+
+            <Button
+              type="button"
+              disabled={isApplied || applying}
+              onClick={!isApplied && !applying ? applyJobHandler : undefined}
+              className={`h-8 px-3.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                isApplied
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default"
+                  : "bg-[#6A38C2] hover:bg-[#5B21B6] text-white shadow-xs"
+              }`}
+            >
+              {isApplied ? (
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 size={12} />
+                  <span>Applied</span>
+                </span>
+              ) : applying ? (
+                "Applying..."
+              ) : (
+                "Apply"
+              )}
+            </Button>
+          </div>
         </div>
+      </motion.div>
 
-        {/* Feature Badges Row */}
-        <div className="flex flex-wrap items-center gap-2 mt-4 relative z-10">
-          <Badge className="bg-purple-50 text-[#6A38C2] hover:bg-purple-100 border border-purple-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl">
-            {job?.position ? `${job.position} Openings` : "Actively Hiring"}
-          </Badge>
-
-          <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl">
-            {job?.jobType || "Full-time"}
-          </Badge>
-
-          <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/80 font-semibold text-xs px-2.5 py-1 rounded-xl">
-            ₹ {job?.salary} LPA
-          </Badge>
-        </div>
-      </div>
-
-      {/* Card Footer: Metadata + Actions */}
-      <div className="mt-6 pt-4 border-t border-purple-50/80 flex items-center justify-between gap-3 relative z-10">
-        <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-          <Clock size={13} />
-          <span>{daysAgoFunction(job?.createdAt)}</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-9 px-3 text-xs font-semibold text-purple-700 hover:text-[#5B21B6] hover:bg-purple-50 rounded-xl"
-          >
-            <span>Details</span>
-            <ArrowUpRight size={14} className="ml-0.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </Button>
-        </div>
-      </div>
-    </motion.div>
+      {/* Strict Resume Required Modal */}
+      <ResumeRequiredModal
+        open={resumeModalOpen}
+        setOpen={setResumeModalOpen}
+        jobTitle={job?.title}
+        companyName={job?.company?.name}
+        onUploadAndApply={executeApply}
+      />
+    </>
   );
 };
 

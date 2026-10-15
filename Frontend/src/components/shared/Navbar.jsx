@@ -13,7 +13,6 @@ import {
   Building2,
   Bookmark,
   Calendar,
-  Compass,
   Home as HomeIcon,
   Sparkles,
   ArrowRight,
@@ -77,7 +76,6 @@ function Navbar() {
   const studentNavLinks = [
     { name: "Home", path: "/", icon: HomeIcon },
     { name: "Jobs", path: "/jobs", icon: Briefcase },
-    { name: "Browse", path: "/browse", icon: Compass },
     { name: "Saved Jobs", path: "/savedjobs", icon: Bookmark },
     { name: "Events", path: "/events", icon: Calendar },
   ];

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Sparkles,
   ArrowRight,
   Briefcase,
   Flame,
@@ -16,10 +15,10 @@ const LatestJobs = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-16 sm:py-24 overflow-hidden">
+    <section className="relative py-12 sm:py-16 overflow-hidden">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-200/80 text-[#6A38C2] text-xs font-semibold mb-3">
               <Flame size={14} className="text-orange-500" />
@@ -40,7 +39,7 @@ const LatestJobs = () => {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="px-5 py-2.5 rounded-2xl bg-purple-50 hover:bg-purple-100 text-[#6A38C2] font-semibold text-xs sm:text-sm border border-purple-200/80 transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+              className="px-5 py-2.5 rounded-2xl bg-white/80 hover:bg-white text-[#6A38C2] font-semibold text-xs sm:text-sm border border-purple-200/80 transition-all flex items-center gap-2 cursor-pointer shadow-xs backdrop-blur-md"
             >
               <span>Explore All Jobs</span>
               <ArrowRight size={15} />
@@ -50,13 +49,13 @@ const LatestJobs = () => {
 
         {/* Jobs Grid */}
         {allJobs && allJobs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
             {allJobs.slice(0, 6).map((job) => (
               <LatestJobCards key={job._id} job={job} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 px-4 rounded-3xl bg-purple-50/50 border border-dashed border-purple-200">
+          <div className="text-center py-16 px-4 rounded-3xl bg-white/60 backdrop-blur-md border border-dashed border-purple-200">
             <div className="w-16 h-16 rounded-2xl bg-purple-100 text-[#6A38C2] flex items-center justify-center mx-auto mb-4">
               <Briefcase size={28} />
             </div>
@@ -64,15 +63,15 @@ const LatestJobs = () => {
               No Job Openings Live Right Now
             </h3>
             <p className="text-xs sm:text-sm text-gray-500 mt-1 max-w-sm mx-auto">
-              Check back shortly or browse through our complete job catalog to find active listings.
+              Check back shortly or explore our complete job catalog to find active listings.
             </p>
             <button
               type="button"
-              onClick={() => navigate("/browse")}
-              className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6A38C2] text-white text-xs font-semibold shadow-md hover:bg-[#5B21B6] transition-all"
+              onClick={() => navigate("/jobs")}
+              className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#6A38C2] text-white text-xs font-semibold shadow-md hover:bg-[#5B21B6] transition-all cursor-pointer"
             >
               <Search size={14} />
-              <span>Browse All Roles</span>
+              <span>Explore All Jobs</span>
             </button>
           </div>
         )}

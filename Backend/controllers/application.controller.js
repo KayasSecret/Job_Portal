@@ -1,5 +1,6 @@
 import { Application } from "../models/application.model.js"
 import { Job } from "../models/job.model.js"
+import { User } from "../models/user.model.js"
 
 export const applyJob = async (req, res) => {
     try {
@@ -11,6 +12,33 @@ export const applyJob = async (req, res) => {
                 message: "Job id not found.",
                 success: false
             })
+        }
+
+        // Verify the authenticated user exists
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found.",
+                success: false
+            });
+        }
+
+        // Prevent recruiters from applying
+        if (user.role === 'recruiter') {
+            return res.status(403).json({
+                message: "Recruiter accounts cannot apply for jobs.",
+                success: false
+            });
+        }
+
+        // STRICT RESUME CHECK: Candidate must have a valid uploaded resume URL
+        const resumeUrl = user.profile?.resume;
+        if (!resumeUrl || typeof resumeUrl !== 'string' || resumeUrl.trim() === '') {
+            return res.status(400).json({
+                message: "Resume required before applying. Please upload your resume to proceed.",
+                requireResume: true,
+                success: false
+            });
         }
 
         // Check whether the user has already applied for this job or not.
@@ -112,7 +140,7 @@ export const getAllRecruiterApplicants = async (req, res) => {
             })
             .populate({
                 path: "job",
-                select: "title location salary jobType company",
+                select: "title location salary jobType company created_by",
                 populate: {
                     path: "company",
                     select: "name logo"
@@ -229,3 +257,49 @@ export const updateStatus = async (req, res) => {
         });
     }
 }
+
+// ================= DELETE / REMOVE APPLICANT =================
+export const deleteApplication = async (req, res) => {
+    try {
+        const applicationId = req.params.id;
+        const userId = req.id;
+
+        const application = await Application.findById(applicationId).populate("job");
+
+        if (!application) {
+            return res.status(404).json({
+                message: "Applicant record not found.",
+                success: false
+            });
+        }
+
+        // Authorize: Only the recruiter who created this job can remove this candidate
+        if (!application.job || application.job.created_by.toString() !== userId) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this applicant record.",
+                success: false
+            });
+        }
+
+        // 1. Remove this application from the Job's applications array
+        await Job.findByIdAndUpdate(application.job._id, {
+            $pull: { applications: application._id }
+        });
+
+        // 2. Delete the application record itself
+        await Application.findByIdAndDelete(applicationId);
+
+        return res.status(200).json({
+            message: "Applicant record removed successfully.",
+            success: true,
+            deletedApplicationId: applicationId
+        });
+
+    } catch (error) {
+        console.error("DELETE APPLICATION ERROR:", error);
+        return res.status(500).json({
+            message: "Server error while deleting applicant record.",
+            success: false
+        });
+    }
+};

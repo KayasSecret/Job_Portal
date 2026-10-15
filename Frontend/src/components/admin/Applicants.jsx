@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Navbar from "../shared/Navbar";
 import ApplicantsTable from "./ApplicantsTable";
+import RecruiterHero from "./RecruiterHero";
 import axios from "axios";
 import { APPLICANT_API_ENDPOINT } from "@/utils/constant";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAllApplication } from "@/redux/applicationSlice";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import {
   Users,
   Search,
@@ -26,6 +28,7 @@ import {
   ChevronDown,
   Building2,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
@@ -48,6 +51,7 @@ const Applicants = () => {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
 
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState([]);
@@ -59,6 +63,72 @@ const Applicants = () => {
   const [selectedJobFilter, setSelectedJobFilter] = useState(params.id || "all");
   const [viewMode, setViewMode] = useState("cards"); // "cards" | "table"
   const [statusUpdatingId, setStatusUpdatingId] = useState(null);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [applicationToDelete, setApplicationToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
+  // Helper: Only authenticated recruiter owning this requisition can delete candidate records
+  const canDeleteApplicant = (app) => {
+    if (!user || user.role !== "recruiter") return false;
+    const jobOwnerId =
+      app?.job?.created_by?._id?.toString() ||
+      app?.job?.created_by?.toString() ||
+      jobDetails?.created_by?._id?.toString() ||
+      jobDetails?.created_by?.toString();
+    const currentUserId = user?._id?.toString();
+    if (jobOwnerId && currentUserId) {
+      return jobOwnerId === currentUserId;
+    }
+    return true;
+  };
+
+  const confirmDeleteApplicant = (app) => {
+    setApplicationToDelete(app);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteApplicant = async () => {
+    if (!applicationToDelete) return;
+    try {
+      setDeleting(true);
+      const res = await axios.delete(
+        `${APPLICANT_API_ENDPOINT}/delete/${applicationToDelete._id}`,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success(res.data.message || "Candidate record removed successfully.");
+
+        // Optimistically update local application state
+        const updatedApps = applications.filter(
+          (a) => a._id !== applicationToDelete._id
+        );
+        setApplications(updatedApps);
+
+        // Update Redux state if applicable
+        if (jobDetails) {
+          dispatch(
+            setAllApplication({
+              ...jobDetails,
+              applications: updatedApps,
+            })
+          );
+        } else {
+          dispatch(setAllApplication(updatedApps));
+        }
+      }
+    } catch (error) {
+      console.error("Delete applicant error:", error);
+      toast.error(
+        error?.response?.data?.message || "Failed to remove candidate record."
+      );
+    } finally {
+      setDeleting(false);
+      setDeleteDialogOpen(false);
+      setApplicationToDelete(null);
+    }
+  };
 
   // Fetch applicant data
   useEffect(() => {
@@ -204,7 +274,7 @@ const Applicants = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50/70 via-white to-purple-50/40 py-8 sm:py-12 overflow-x-hidden">
+      <div className="min-h-screen bg-transparent py-8 sm:py-12 overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* Top Breadcrumb when on specific job */}
           {params.id && (
@@ -226,82 +296,60 @@ const Applicants = () => {
           )}
 
           {/* ================= HERO DASHBOARD BANNER ================= */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="relative rounded-3xl bg-gradient-to-br from-[#2E1065] via-[#4C1D95] to-[#7C3AED] p-8 sm:p-12 text-white shadow-[0_25px_60px_-15px_rgba(106,56,194,0.4)] overflow-hidden mb-10"
-          >
-            {/* Ambient Lighting Orbs */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#A855F7]/30 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#EC4899]/25 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-[#06B6D4]/15 blur-3xl"
-            />
-
-            <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold text-purple-200 tracking-wide uppercase">
-                  <Sparkles size={13} className="text-amber-300" />
-                  <span>
-                    {params.id ? "Targeted Requisition Pipeline" : "Centralized Talent Pipeline"}
+          <RecruiterHero
+            gradient="from-[#2E1065] via-[#4C1D95] to-[#7C3AED]"
+            shadow="shadow-[0_20px_50px_-15px_rgba(106,56,194,0.35)]"
+            badgeText={
+              params.id ? "Targeted Requisition Pipeline" : "Centralized Talent Pipeline"
+            }
+            title={
+              jobDetails?.title ? (
+                <span className="truncate block max-w-2xl">
+                  {jobDetails.title} Candidates
+                </span>
+              ) : (
+                "Talent & Applicant Review"
+              )
+            }
+            description={
+              jobDetails?.company?.name ? (
+                <span>
+                  Review and manage active candidates for{" "}
+                  <span className="text-white font-semibold">
+                    {jobDetails.company.name}
                   </span>
-                </div>
-
-                <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-                  {jobDetails?.title ? (
-                    <span className="truncate block max-w-2xl">
-                      {jobDetails.title} Candidates
-                    </span>
-                  ) : (
-                    "Talent & Applicant Review"
-                  )}
-                </h1>
-                <p className="mt-3 text-sm sm:text-base text-purple-100/80 leading-relaxed max-w-xl">
-                  {jobDetails?.company?.name ? (
-                    <span>
-                      Review and manage active candidates for{" "}
-                      <span className="text-white font-semibold">
-                        {jobDetails.company.name}
-                      </span>
-                      .
-                    </span>
-                  ) : (
-                    "Evaluate candidate resumes, verify engineering credentials, and fast-track top tech talent into hiring pipelines."
-                  )}
-                </p>
-              </div>
-
-              {/* Job Selector Dropdown if multiple jobs exist */}
-              {recruiterJobs && recruiterJobs.length > 0 && (
-                <div className="w-full sm:w-auto shrink-0">
-                  <div className="text-[11px] font-bold text-purple-200 uppercase tracking-wider mb-2">
+                  .
+                </span>
+              ) : (
+                "Evaluate candidate resumes, verify engineering credentials, and fast-track top tech talent into hiring pipelines."
+              )
+            }
+            action={
+              recruiterJobs && recruiterJobs.length > 0 ? (
+                <div className="w-full sm:w-auto">
+                  <div className="text-[9.5px] font-bold text-purple-200 uppercase tracking-wider mb-0.5">
                     Filter by Requisition
                   </div>
                   <Select
                     value={selectedJobFilter}
                     onValueChange={handleJobSelectionChange}
                   >
-                    <SelectTrigger className="h-11 px-4 rounded-2xl bg-white/15 border-white/20 text-white font-semibold text-xs backdrop-blur-md w-full sm:w-[260px] shadow-sm">
+                    <SelectTrigger className="h-8 px-2.5 rounded-lg bg-white/15 border-white/20 text-white font-semibold text-[11px] backdrop-blur-md w-full sm:w-[220px] shadow-xs">
                       <SelectValue placeholder="All Active Requisitions" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-2xl border-purple-100 bg-white shadow-2xl">
+                    <SelectContent className="rounded-xl border-purple-100 bg-white shadow-2xl">
                       <SelectGroup>
-                        <SelectItem value="all" className="cursor-pointer text-xs font-semibold py-2">
+                        <SelectItem
+                          value="all"
+                          className="cursor-pointer text-xs font-semibold py-1.5"
+                        >
                           All Requisitions ({recruiterJobs.length})
                         </SelectItem>
                         {recruiterJobs.map((job) => (
                           <SelectItem
                             key={job._id}
                             value={job._id}
-                            className="cursor-pointer text-xs font-semibold py-2"
+                            className="cursor-pointer text-xs font-semibold py-1.5"
                           >
                             <span className="truncate max-w-[200px] block">
                               {job.title} ({job?.company?.name || "Company"})
@@ -312,52 +360,38 @@ const Applicants = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              )}
-            </div>
-
-            {/* Quick Live Stats Row inside Hero */}
-            <div className="relative z-10 mt-10 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {totalCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Users size={13} className="text-purple-300" />
-                  <span>Total Candidates</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-emerald-400">
-                  {acceptedCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <CheckCircle2 size={13} className="text-emerald-400" />
-                  <span>Shortlisted</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-amber-300">
-                  {pendingCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Clock size={13} className="text-amber-300" />
-                  <span>Under Review</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-rose-300">
-                  {rejectedCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <XCircle size={13} className="text-rose-400" />
-                  <span>Archived</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+              ) : null
+            }
+            stats={[
+              {
+                value: totalCount,
+                label: "Total Candidates",
+                icon: Users,
+                iconColor: "text-purple-300",
+              },
+              {
+                value: acceptedCount,
+                label: "Shortlisted",
+                icon: CheckCircle2,
+                iconColor: "text-emerald-400",
+                valueColor: "text-emerald-400",
+              },
+              {
+                value: pendingCount,
+                label: "Under Review",
+                icon: Clock,
+                iconColor: "text-amber-300",
+                valueColor: "text-amber-300",
+              },
+              {
+                value: rejectedCount,
+                label: "Archived",
+                icon: XCircle,
+                iconColor: "text-rose-400",
+                valueColor: "text-rose-300",
+              },
+            ]}
+          />
 
           {/* ================= CONTROLS: SEARCH, FILTERS & VIEW MODE ================= */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
@@ -540,23 +574,39 @@ const Applicants = () => {
                           </div>
                         </div>
 
-                        {/* Status Pill */}
-                        {status === "accepted" ? (
-                          <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[11px] font-bold px-2.5 py-0.5 shrink-0 flex items-center gap-1">
-                            <CheckCircle2 size={12} />
-                            <span>Accepted</span>
-                          </Badge>
-                        ) : status === "rejected" ? (
-                          <Badge className="bg-rose-50 text-rose-700 border-rose-200 text-[11px] font-bold px-2.5 py-0.5 shrink-0 flex items-center gap-1">
-                            <XCircle size={12} />
-                            <span>Rejected</span>
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-amber-50 text-amber-700 border-amber-200 text-[11px] font-bold px-2.5 py-0.5 shrink-0 flex items-center gap-1">
-                            <Clock size={12} />
-                            <span>Pending</span>
-                          </Badge>
-                        )}
+                        {/* Status Pill & Delete Button */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {status === "accepted" ? (
+                            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[11px] font-bold px-2.5 py-0.5 shrink-0 flex items-center gap-1">
+                              <CheckCircle2 size={12} />
+                              <span>Accepted</span>
+                            </Badge>
+                          ) : status === "rejected" ? (
+                            <Badge className="bg-rose-50 text-rose-700 border-rose-200 text-[11px] font-bold px-2.5 py-0.5 shrink-0 flex items-center gap-1">
+                              <XCircle size={12} />
+                              <span>Rejected</span>
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-amber-50 text-amber-700 border-amber-200 text-[11px] font-bold px-2.5 py-0.5 shrink-0 flex items-center gap-1">
+                              <Clock size={12} />
+                              <span>Pending</span>
+                            </Badge>
+                          )}
+
+                          {canDeleteApplicant(app) && (
+                            <motion.button
+                              whileHover={{ scale: 1.08 }}
+                              whileTap={{ scale: 0.92 }}
+                              type="button"
+                              onClick={() => confirmDeleteApplicant(app)}
+                              className="p-1 rounded-lg text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                              title="Remove Candidate Application"
+                              aria-label="Remove Candidate Application"
+                            >
+                              <Trash2 size={14} />
+                            </motion.button>
+                          )}
+                        </div>
                       </div>
 
                       {/* Requisition Pill */}
@@ -671,10 +721,23 @@ const Applicants = () => {
               applications={filteredApplications}
               onStatusChange={handleStatusChange}
               statusUpdatingId={statusUpdatingId}
+              onDelete={confirmDeleteApplicant}
+              canDelete={canDeleteApplicant}
             />
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Remove Candidate Application"
+        itemName={applicationToDelete?.applicant?.fullName}
+        itemType="applicant"
+        deleting={deleting}
+        onConfirm={handleDeleteApplicant}
+      />
     </>
   );
 };

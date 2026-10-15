@@ -3,6 +3,7 @@ import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import AdminJobsTable from "./AdminJobsTable";
+import RecruiterHero from "./RecruiterHero";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
@@ -36,14 +37,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../ui/popover";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import axios from "axios";
 import { JOB_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
@@ -55,6 +49,7 @@ const AdminJobs = () => {
   const [searchInput, setSearchInput] = useState("");
   const [selectedJobType, setSelectedJobType] = useState("All");
   const [viewMode, setViewMode] = useState("cards"); // "cards" | "table"
+  const [openPopoverId, setOpenPopoverId] = useState(null);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
@@ -63,8 +58,25 @@ const AdminJobs = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { user } = useSelector((store) => store.auth);
   const { allAdminJobs = [] } = useSelector((store) => store.job);
   const { companies = [] } = useSelector((store) => store.company);
+
+  // Helper: Only the authenticated recruiter who created this job can delete it
+  const canDeleteJob = (job) => {
+    if (!user) return false;
+    if (user.role && user.role.toLowerCase() !== "recruiter") return false;
+    const ownerId =
+      typeof job?.created_by === "object"
+        ? (job?.created_by?._id || job?.created_by?.id)?.toString()
+        : job?.created_by?.toString();
+    const currentUserId = (user?._id || user?.id)?.toString();
+    if (ownerId && currentUserId) {
+      return ownerId === currentUserId;
+    }
+    // Fallback: All jobs on this recruiter dashboard were fetched by this recruiter's ID
+    return true;
+  };
 
   // Sync search input to Redux store
   useEffect(() => {
@@ -150,103 +162,53 @@ const AdminJobs = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-b from-purple-50/70 via-white to-purple-50/40 py-8 sm:py-12 overflow-x-hidden">
+      <div className="min-h-screen bg-transparent py-8 sm:py-12 overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* ================= HERO DASHBOARD BANNER ================= */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="relative rounded-3xl bg-gradient-to-br from-[#2E1065] via-[#4C1D95] to-[#7C3AED] p-8 sm:p-12 text-white shadow-[0_25px_60px_-15px_rgba(106,56,194,0.4)] overflow-hidden mb-10"
-          >
-            {/* Ambient Lighting Orbs */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#A855F7]/30 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#EC4899]/25 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-[#06B6D4]/15 blur-3xl"
-            />
-
-            <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold text-purple-200 tracking-wide uppercase">
-                  <Sparkles size={13} className="text-amber-300" />
-                  <span>Recruiter Command Center &bull; Talent Requisitions</span>
-                </div>
-
-                <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-                  Manage Tech Requisitions
-                </h1>
-                <p className="mt-3 text-sm sm:text-base text-purple-100/80 leading-relaxed max-w-xl">
-                  Publish high-impact roles, track incoming talent pipelines in real time, and scale your engineering teams.
-                </p>
-              </div>
-
-              {/* Action Button: Post New Job */}
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="shrink-0"
-              >
+          <RecruiterHero
+            gradient="from-[#2E1065] via-[#4C1D95] to-[#7C3AED]"
+            shadow="shadow-[0_20px_50px_-15px_rgba(106,56,194,0.35)]"
+            badgeText="Recruiter Command Center • Talent Requisitions"
+            title="Manage Tech Requisitions"
+            description="Publish high-impact roles, track incoming talent pipelines in real time, and scale your engineering teams."
+            action={
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button
                   onClick={() => navigate("/admin/jobs/create")}
-                  className="h-12 px-6 rounded-2xl bg-white hover:bg-purple-50 text-[#4C1D95] font-bold text-sm shadow-xl shadow-purple-950/30 transition-all flex items-center gap-2 cursor-pointer"
+                  className="h-9 px-4 rounded-xl bg-white hover:bg-purple-50 text-[#4C1D95] font-bold text-xs shadow-md shadow-purple-950/30 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Plus size={18} className="text-[#6A38C2]" />
+                  <Plus size={15} className="text-[#6A38C2]" />
                   <span>Post New Requisition</span>
                 </Button>
               </motion.div>
-            </div>
-
-            {/* Quick Live Stats Row inside Hero */}
-            <div className="relative z-10 mt-10 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {totalJobsCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Briefcase size={13} className="text-purple-300" />
-                  <span>Total Requisitions</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {totalApplicantsCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Users size={13} className="text-pink-300" />
-                  <span>Total Applicants</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {fullTimeCount}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Clock size={13} className="text-amber-300" />
-                  <span>Full-Time Roles</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <div className="text-2xl sm:text-3xl font-black text-white">
-                  {companies?.length || uniqueCompaniesLinked}
-                </div>
-                <div className="text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5 flex items-center gap-1.5">
-                  <Building2 size={13} className="text-cyan-300" />
-                  <span>Managed Entities</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+            }
+            stats={[
+              {
+                value: totalJobsCount,
+                label: "Total Requisitions",
+                icon: Briefcase,
+                iconColor: "text-purple-300",
+              },
+              {
+                value: totalApplicantsCount,
+                label: "Total Applicants",
+                icon: Users,
+                iconColor: "text-pink-300",
+              },
+              {
+                value: fullTimeCount,
+                label: "Full-Time Roles",
+                icon: Clock,
+                iconColor: "text-amber-300",
+              },
+              {
+                value: companies?.length || uniqueCompaniesLinked,
+                label: "Managed Entities",
+                icon: Building2,
+                iconColor: "text-cyan-300",
+              },
+            ]}
+          />
 
           {/* ================= CONTROLS: SEARCH, FILTERS & VIEW MODE ================= */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
@@ -413,57 +375,102 @@ const AdminJobs = () => {
                           </div>
                         </div>
 
-                        {/* Action Popover */}
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0 rounded-xl hover:bg-purple-50 text-gray-400 hover:text-[#6A38C2] cursor-pointer shrink-0"
-                            >
-                              <MoreVertical size={16} />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            align="end"
-                            className="w-44 p-1.5 rounded-2xl border border-purple-100 shadow-xl bg-white"
-                          >
-                            <button
+                        {/* Top-Right Card Actions */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Clearly Visible Direct Delete Button */}
+                          {canDeleteJob(job) && (
+                            <motion.button
+                              whileHover={{ scale: 1.08 }}
+                              whileTap={{ scale: 0.92 }}
                               type="button"
-                              onClick={() =>
-                                navigate(`/admin/jobs/${job._id}/applicants`)
-                              }
-                              className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] rounded-xl transition-all cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setOpenPopoverId(null);
+                                confirmDelete(job);
+                              }}
+                              className="p-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white transition-all cursor-pointer shadow-xs shrink-0"
+                              title="Delete Requisition"
+                              aria-label="Delete Requisition"
                             >
-                              <Eye size={14} className="text-[#6A38C2]" />
-                              <span>View Applicants</span>
-                            </button>
+                              <Trash2 size={15} />
+                            </motion.button>
+                          )}
 
-                            {companyId && (
+                          {/* 3-Dot More Actions Menu */}
+                          <Popover
+                            open={openPopoverId === job._id}
+                            onOpenChange={(isOpen) =>
+                              setOpenPopoverId(isOpen ? job._id : null)
+                            }
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => e.stopPropagation()}
+                                className="h-8 w-8 p-0 rounded-xl hover:bg-purple-50 text-gray-400 hover:text-[#6A38C2] cursor-pointer shrink-0"
+                              >
+                                <MoreVertical size={16} />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              align="end"
+                              sideOffset={6}
+                              className="w-44 p-1.5 rounded-2xl border border-purple-100 shadow-xl bg-white z-50"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <button
                                 type="button"
-                                onClick={() =>
-                                  navigate(`/admin/companies/${companyId}`)
-                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenPopoverId(null);
+                                  navigate(`/admin/jobs/${job._id}/applicants`);
+                                }}
                                 className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] rounded-xl transition-all cursor-pointer"
                               >
-                                <Building2 size={14} className="text-purple-600" />
-                                <span>Company Profile</span>
+                                <Eye size={14} className="text-[#6A38C2]" />
+                                <span>View Applicants</span>
                               </button>
-                            )}
 
-                            <div className="h-px bg-purple-50 my-1" />
+                              {companyId && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenPopoverId(null);
+                                    navigate(`/admin/companies/${companyId}`);
+                                  }}
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-purple-50 hover:text-[#6A38C2] rounded-xl transition-all cursor-pointer"
+                                >
+                                  <Building2 size={14} className="text-purple-600" />
+                                  <span>Company Profile</span>
+                                </button>
+                              )}
 
-                            <button
-                              type="button"
-                              onClick={() => confirmDelete(job)}
-                              className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
-                            >
-                              <Trash2 size={14} className="text-rose-500" />
-                              <span>Delete Job</span>
-                            </button>
-                          </PopoverContent>
-                        </Popover>
+                              {canDeleteJob(job) && (
+                                <>
+                                  <div className="h-px bg-purple-50 my-1" />
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      setOpenPopoverId(null);
+                                      setTimeout(() => {
+                                        confirmDelete(job);
+                                      }, 50);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
+                                  >
+                                    <Trash2 size={14} className="text-rose-500" />
+                                    <span>Delete Job</span>
+                                  </button>
+                                </>
+                              )}
+                            </PopoverContent>
+                          </Popover>
+                        </div>
                       </div>
 
                       {/* Job Title */}
@@ -553,55 +560,21 @@ const AdminJobs = () => {
             </div>
           ) : (
             /* ================= ENHANCED TABLE VIEW ================= */
-            <AdminJobsTable jobs={filteredJobs} />
+            <AdminJobsTable jobs={filteredJobs} onDelete={confirmDelete} />
           )}
         </div>
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[420px] rounded-3xl p-6 border-purple-100 shadow-2xl">
-          <DialogHeader>
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-3">
-              <AlertTriangle size={24} />
-            </div>
-            <DialogTitle className="text-lg font-bold text-gray-900">
-              Delete Job Requisition?
-            </DialogTitle>
-            <DialogDescription className="text-xs text-gray-500 mt-1">
-              Are you sure you want to delete{" "}
-              <span className="font-semibold text-gray-800 font-mono">
-                "{jobToDelete?.title}"
-              </span>
-              ? This action is permanent and removes all candidate applications attached to this requisition.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter className="mt-5 flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-              className="h-10 rounded-xl border-purple-200 text-xs font-semibold cursor-pointer"
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={deleting}
-              onClick={handleDelete}
-              className="h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold cursor-pointer shadow-md"
-            >
-              {deleting ? (
-                <>
-                  <Loader2 size={14} className="mr-2 animate-spin" />
-                  <span>Deleting...</span>
-                </>
-              ) : (
-                <span>Confirm Delete</span>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Job Requisition"
+        itemName={jobToDelete?.title}
+        itemType="job"
+        deleting={deleting}
+        onConfirm={handleDelete}
+      />
     </>
   );
 };
