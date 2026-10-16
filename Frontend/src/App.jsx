@@ -26,8 +26,6 @@ import CreateEvent from "./components/admin/CreateEvent";
 
 import AuthenticatedAppLayout from "./components/shared/AuthenticatedAppLayout";
 
-import "./App.css";
-
 const appRouter = createBrowserRouter([
   // Authentication-only pages (Strictly excluded from live wallpaper)
   {
