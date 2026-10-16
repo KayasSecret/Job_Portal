@@ -45,9 +45,15 @@ const Signup = () => {
   const [fileError, setFileError] = useState("");
   const fileInputRef = useRef(null);
 
-  const { loading } = useSelector((state) => state.auth);
+  const { loading, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === "recruiter" ? "/admin/companies" : "/", { replace: true });
+    }
+  }, [user, navigate]);
 
   // Clean up preview object URL on unmount or file change
   useEffect(() => {

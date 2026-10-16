@@ -25,6 +25,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { setUser } from "@/redux/authSlice";
+import { setAllAdminJobs, setAllAppliedJobs } from "@/redux/jobSlice";
+import { setAllApplication } from "@/redux/applicationSlice";
+import { setCompanies, setSingleCompany } from "@/redux/companySlice";
+import { setAllAdminEvents } from "@/redux/eventSlice";
+import { persistor } from "@/redux/store";
 import { USER_API_ENDPOINT } from "@/utils/constant";
 import Logo from "../../assets/Logo_Org.png";
 
@@ -55,18 +60,46 @@ function Navbar() {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.get(`${USER_API_ENDPOINT}/logout`, {
-        withCredentials: true,
-      });
+      // Call backend logout endpoint (supports both POST and GET)
+      const res = await axios.post(
+        `${USER_API_ENDPOINT}/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
-      if (res.data.success) {
-        dispatch(setUser(null));
-        navigate("/");
+      if (res?.data?.success) {
         toast.success(res.data.message || "Logged out successfully");
       }
     } catch (error) {
-      console.error("Logout error:", error);
-      toast.error(error?.response?.data?.message || "Logout failed");
+      console.warn("Server logout request encountered an issue, proceeding with complete local cleanup:", error);
+      toast.info("Logged out");
+    } finally {
+      // 1. Clear user authentication in Redux
+      dispatch(setUser(null));
+
+      // 2. Clear role-specific cached private data
+      dispatch(setAllAdminJobs([]));
+      dispatch(setAllAppliedJobs([]));
+      dispatch(setAllApplication([]));
+      dispatch(setCompanies([]));
+      dispatch(setSingleCompany(null));
+      dispatch(setAllAdminEvents([]));
+
+      // 3. Purge Redux Persist storage
+      try {
+        await persistor.purge();
+        localStorage.removeItem("persist:root");
+      } catch (storageErr) {
+        console.error("Storage purge error:", storageErr);
+      }
+
+      // 4. Close mobile menu
+      setMobileMenuOpen(false);
+
+      // 5. Navigate to login page with replace to prevent browser Back re-entry
+      navigate("/login", { replace: true });
     }
   };
 
@@ -84,6 +117,7 @@ function Navbar() {
     { name: "Companies", path: "/admin/companies", icon: Building2 },
     { name: "Jobs", path: "/admin/jobs", icon: Briefcase },
     { name: "Applicants", path: "/admin/applicants", icon: Users },
+    { name: "Events", path: "/admin/events", icon: Calendar },
   ];
 
   const navLinks = isRecruiter ? recruiterNavLinks : studentNavLinks;
@@ -97,6 +131,9 @@ function Navbar() {
     }
     if (path === "/admin/jobs" && location.pathname.includes("/applicants")) {
       return false;
+    }
+    if (path === "/admin/events" && location.pathname.startsWith("/admin/events")) {
+      return true;
     }
     return location.pathname.startsWith(path);
   };

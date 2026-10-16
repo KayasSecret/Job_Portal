@@ -185,54 +185,55 @@ const Jobs = () => {
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* ================= HERO & SEARCH HEADER ================= */}
           <motion.div
+            id="jobs-hero"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative rounded-3xl px-5 py-3.5 sm:px-7 sm:py-4 md:px-8 md:py-4 mb-5 sm:mb-6 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-2xl"
+            className="relative rounded-3xl px-6 py-6 sm:px-8 sm:py-7 md:px-10 md:py-8 mb-8 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-2xl"
           >
             {/* Ambient Lighting Orbs */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -top-16 -left-16 w-60 h-60 rounded-full bg-[#8B5CF6]/30 blur-3xl animate-pulse"
+              className="pointer-events-none absolute -top-20 -left-20 w-72 h-72 rounded-full bg-[#8B5CF6]/30 blur-3xl animate-pulse"
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-[#EC4899]/25 blur-3xl"
+              className="pointer-events-none absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-[#EC4899]/25 blur-3xl"
             />
 
             <div className="relative z-10 max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10.5px] font-semibold text-purple-200 mb-1.5">
-                <Sparkles size={11} className="text-amber-300" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-purple-200 mb-2 self-start shadow-xs">
+                <Sparkles size={12} className="text-amber-300" />
                 <span>Next-Generation Career Explorer</span>
               </div>
 
-              <h1 className="text-xl sm:text-2xl lg:text-[26px] font-black tracking-tight leading-tight">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
                 Explore Verified{" "}
                 <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-amber-200 bg-clip-text text-transparent">
                   Tech Openings
                 </span>
               </h1>
 
-              <p className="mt-0.5 text-[11.5px] sm:text-xs text-purple-100/80 max-w-xl leading-normal">
+              <p className="mt-2 text-xs sm:text-sm text-purple-100/80 max-w-2xl leading-normal">
                 Connect directly with hiring managers across startups and Fortune 500 innovators with 1-click apply.
               </p>
 
               {/* Integrated Search Input */}
-              <form onSubmit={handleSearchSubmit} className="mt-2.5 sm:mt-3">
-                <div className="relative flex items-center bg-white rounded-xl sm:rounded-2xl p-0.5 sm:p-1 shadow-lg border border-white/20 max-w-2xl">
-                  <div className="pl-2.5 sm:pl-3 pr-1.5 sm:pr-2 text-purple-600">
-                    <Search size={15} />
+              <form onSubmit={handleSearchSubmit} className="mt-3.5">
+                <div className="relative flex items-center bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-lg border border-white/20 max-w-2xl">
+                  <div className="pl-3 sm:pl-3.5 pr-2 text-purple-600">
+                    <Search size={16} />
                   </div>
                   <input
                     type="text"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search by job title, skills, or company..."
-                    className="w-full h-8 text-xs sm:text-sm text-gray-800 placeholder-gray-400 bg-transparent outline-none font-medium pr-2"
+                    className="w-full h-8 sm:h-9 text-xs sm:text-sm text-gray-800 placeholder-gray-400 bg-transparent outline-none font-medium pr-2"
                   />
                   <Button
                     type="submit"
-                    className="h-7 sm:h-8 px-3.5 sm:px-4 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-[11px] sm:text-xs shadow-md shrink-0 cursor-pointer"
+                    className="h-7 sm:h-8 px-4 sm:px-5 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-xs shadow-md shrink-0 cursor-pointer"
                   >
                     Search
                   </Button>
@@ -241,39 +242,39 @@ const Jobs = () => {
             </div>
 
             {/* Quick Live Stats Row inside Hero */}
-            <div className="relative z-10 mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="relative z-10 mt-4 pt-3.5 sm:pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
               <div>
-                <div className="text-base sm:text-lg font-black text-white leading-none">
+                <div className="text-lg sm:text-xl font-black text-white leading-none">
                   {allJobs.length}
                 </div>
-                <div className="text-[9.5px] sm:text-[10px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Available Roles
                 </div>
               </div>
 
               <div>
-                <div className="text-base sm:text-lg font-black text-white leading-none">
+                <div className="text-lg sm:text-xl font-black text-white leading-none">
                   {filteredJobs.length}
                 </div>
-                <div className="text-[9.5px] sm:text-[10px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Matching Query
                 </div>
               </div>
 
               <div>
-                <div className="text-base sm:text-lg font-black text-white leading-none">
+                <div className="text-lg sm:text-xl font-black text-white leading-none">
                   100%
                 </div>
-                <div className="text-[9.5px] sm:text-[10px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Verified Recruiters
                 </div>
               </div>
 
               <div>
-                <div className="text-base sm:text-lg font-black text-white leading-none">
+                <div className="text-lg sm:text-xl font-black text-white leading-none">
                   24 hrs
                 </div>
-                <div className="text-[9.5px] sm:text-[10px] font-semibold text-purple-200/70 uppercase tracking-wider mt-0.5">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Average Response
                 </div>
               </div>

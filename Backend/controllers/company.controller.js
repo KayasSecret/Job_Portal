@@ -3,7 +3,7 @@ import { Job } from "../models/job.model.js";
 import { Application } from "../models/application.model.js";
 import { User } from "../models/user.model.js";
 import getDataUri from "../utils/datauri.js";
-import cloudinary from "../utils/cloudinary.js";
+import cloudinary, { deleteCloudinaryAsset } from "../utils/cloudinary.js";
 
 // ✅ Register Company (Supports single-step registration with name, description, website, location, and logo)
 export const registerCompany = async (req, res) => {
@@ -37,10 +37,22 @@ export const registerCompany = async (req, res) => {
     };
 
     if (file) {
-      const fileUri = getDataUri(file);
-      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-      if (cloudResponse && cloudResponse.secure_url) {
-        companyData.logo = cloudResponse.secure_url;
+      try {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+          folder: "hirenest/company-logos",
+          resource_type: "image"
+        });
+        if (cloudResponse && cloudResponse.secure_url) {
+          companyData.logo = cloudResponse.secure_url;
+          companyData.logoPublicId = cloudResponse.public_id;
+        }
+      } catch (uploadError) {
+        console.error("REGISTER COMPANY LOGO UPLOAD ERROR:", uploadError);
+        return res.status(400).json({
+          message: "Failed to upload company logo. Please check file format and size.",
+          success: false
+        });
       }
     }
 
@@ -141,10 +153,26 @@ export const updateCompany = async (req, res) => {
     }
 
     if (file) {
-      const fileUri = getDataUri(file);
-      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-      if (cloudResponse) {
-        updateData.logo = cloudResponse.secure_url;
+      try {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+          folder: "hirenest/company-logos",
+          resource_type: "image"
+        });
+        if (cloudResponse && cloudResponse.secure_url) {
+          // Clean up previously uploaded logo if present
+          if (existingCompany.logoPublicId) {
+            await deleteCloudinaryAsset(existingCompany.logoPublicId, "image");
+          }
+          updateData.logo = cloudResponse.secure_url;
+          updateData.logoPublicId = cloudResponse.public_id;
+        }
+      } catch (uploadError) {
+        console.error("UPDATE COMPANY LOGO UPLOAD ERROR:", uploadError);
+        return res.status(400).json({
+          message: "Failed to upload updated company logo. Please check file format and size.",
+          success: false
+        });
       }
     }
 
@@ -161,7 +189,7 @@ export const updateCompany = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error("UPDATE COMPANY ERROR:", error);
     res.status(500).json({
       message: "Server error",
       success: false
@@ -169,7 +197,7 @@ export const updateCompany = async (req, res) => {
   }
 };
 
-// ✅ Delete Company (with recruiter verification & cascade cleanup of jobs, applications, and savedJobs)
+// ✅ Delete Company (with recruiter verification & cascade cleanup of jobs, applications, savedJobs, and Cloudinary logo)
 export const deleteCompany = async (req, res) => {
   try {
     const companyId = req.params.id;
@@ -216,7 +244,12 @@ export const deleteCompany = async (req, res) => {
       { $unset: { "profile.company": "" } }
     );
 
-    // 6. Delete the company document itself
+    // 6. Delete company logo asset from Cloudinary if tracked
+    if (company.logoPublicId) {
+      await deleteCloudinaryAsset(company.logoPublicId, "image");
+    }
+
+    // 7. Delete the company document itself
     await Company.findByIdAndDelete(companyId);
 
     return res.status(200).json({

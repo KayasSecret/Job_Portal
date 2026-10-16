@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -33,9 +33,15 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loading } = useSelector((state) => state.auth);
+  const { loading, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === "recruiter" ? "/admin/companies" : "/", { replace: true });
+    }
+  }, [user, navigate]);
 
   const changeEventHandler = (e) => {
     setInput({

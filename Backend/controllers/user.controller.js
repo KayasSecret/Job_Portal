@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
-import cloudinary from "../utils/cloudinary.js";
+import cloudinary, { deleteCloudinaryAsset } from "../utils/cloudinary.js";
 import { Job } from "../models/job.model.js";
 
 
@@ -21,8 +21,19 @@ export const register = async (req, res) => {
         const file = req.file;
         let cloudResponse = null;
         if (file) {
-            const fileUri = getDataUri(file);
-            cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            try {
+                const fileUri = getDataUri(file);
+                cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+                    folder: "hirenest/avatars",
+                    resource_type: "image"
+                });
+            } catch (uploadError) {
+                console.error("REGISTER AVATAR UPLOAD ERROR:", uploadError);
+                return res.status(400).json({
+                    message: "Failed to upload profile photo. Please verify image format and size.",
+                    success: false
+                });
+            }
         }
 
         const existingUser = await User.findOne({ email });
@@ -42,7 +53,8 @@ export const register = async (req, res) => {
             password: hashedPassword,
             role,
             profile: {
-                profilePhoto: cloudResponse ? cloudResponse.secure_url : ""
+                profilePhoto: cloudResponse ? cloudResponse.secure_url : "",
+                profilePhotoPublicId: cloudResponse ? cloudResponse.public_id : ""
             }
         });
 
@@ -113,13 +125,16 @@ export const login = async (req, res) => {
             profile: user.profile
         };
 
+        const isProd = process.env.NODE_ENV === "production";
+
         return res
             .status(200)
             .cookie("token", token, {
                 maxAge: 1 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
-                sameSite: "strict",
-                secure: process.env.NODE_ENV === "production"
+                sameSite: isProd ? "none" : "lax",
+                secure: isProd,
+                path: "/"
             })
             .json({
                 message: `Welcome back ${user.fullName}`,
@@ -140,13 +155,25 @@ export const login = async (req, res) => {
 // ================= LOGOUT =================
 export const logout = async (req, res) => {
     try {
+        const isProd = process.env.NODE_ENV === "production";
+
+        // Explicitly clear cookie with matching options
+        res.clearCookie("token", {
+            path: "/",
+            httpOnly: true,
+            sameSite: isProd ? "none" : "lax",
+            secure: isProd
+        });
+
         return res
             .status(200)
             .cookie("token", "", {
                 maxAge: 0,
+                expires: new Date(0),
+                path: "/",
                 httpOnly: true,
-                sameSite: "strict",
-                secure: process.env.NODE_ENV === "production"
+                sameSite: isProd ? "none" : "lax",
+                secure: isProd
             })
             .json({
                 message: "Logged out successfully",
@@ -233,17 +260,36 @@ export const updateProfile = async (req, res) => {
             const file = req.file;
 
             if (file) {
-                const fileURI = getDataUri(file);
-                const cloudResponse = await cloudinary.uploader.upload(
-                    fileURI.content,
-                    {
-                        resource_type: "raw"
-                    }
-                );
+                try {
+                    const fileURI = getDataUri(file);
+                    const cloudResponse = await cloudinary.uploader.upload(
+                        fileURI.content,
+                        {
+                            folder: "hirenest/resumes",
+                            resource_type: "raw"
+                        }
+                    );
 
-                if (cloudResponse) {
-                    user.profile.resume = cloudResponse.secure_url;
-                    user.profile.resumeOriginalName = file.originalname;
+                    if (cloudResponse && cloudResponse.secure_url) {
+                        // Safely remove previous resume file from Cloudinary if exists
+                        if (user.profile.resumePublicId) {
+                            await deleteCloudinaryAsset(user.profile.resumePublicId, "raw");
+                        }
+                        user.profile.resume = cloudResponse.secure_url;
+                        user.profile.resumePublicId = cloudResponse.public_id;
+                        user.profile.resumeOriginalName = file.originalname;
+                    } else {
+                        return res.status(400).json({
+                            message: "Failed to upload resume document to cloud storage.",
+                            success: false
+                        });
+                    }
+                } catch (uploadError) {
+                    console.error("RESUME UPLOAD ERROR:", uploadError);
+                    return res.status(400).json({
+                        message: "Failed to upload resume to cloud storage. Please check PDF file and retry.",
+                        success: false
+                    });
                 }
             }
         }
@@ -295,7 +341,11 @@ export const updateProfilePhoto = async (req, res) => {
         }
 
         if (removePhoto === "true" || removePhoto === true) {
+            if (user.profile.profilePhotoPublicId) {
+                await deleteCloudinaryAsset(user.profile.profilePhotoPublicId, "image");
+            }
             user.profile.profilePhoto = "";
+            user.profile.profilePhotoPublicId = "";
             await user.save();
 
             const updatedUser = {
@@ -329,28 +379,35 @@ export const updateProfilePhoto = async (req, res) => {
             });
         }
 
-        const fileURI = getDataUri(file);
-
-        let photoUrl = fileURI.content;
-        if (process.env.CLOUD_NAME && process.env.API_KEY && process.env.API_SECRET) {
-            try {
-                const cloudResponse = await cloudinary.uploader.upload(fileURI.content, {
-                    folder: "hirenest_avatars",
-                    resource_type: "image"
-                });
-                if (cloudResponse && cloudResponse.secure_url) {
-                    photoUrl = cloudResponse.secure_url;
-                }
-            } catch (cloudError) {
-                console.error("CLOUDINARY PHOTO UPLOAD ERROR:", cloudError);
-                return res.status(500).json({
-                    message: "Failed to upload image to cloud storage",
-                    success: false
-                });
-            }
+        let cloudResponse = null;
+        try {
+            const fileURI = getDataUri(file);
+            cloudResponse = await cloudinary.uploader.upload(fileURI.content, {
+                folder: "hirenest/avatars",
+                resource_type: "image"
+            });
+        } catch (cloudError) {
+            console.error("CLOUDINARY PHOTO UPLOAD ERROR:", cloudError);
+            return res.status(400).json({
+                message: "Failed to upload image to cloud storage. Please check image format and size.",
+                success: false
+            });
         }
 
-        user.profile.profilePhoto = photoUrl;
+        if (!cloudResponse || !cloudResponse.secure_url) {
+            return res.status(400).json({
+                message: "Failed to obtain secure URL from cloud storage.",
+                success: false
+            });
+        }
+
+        // Clean up previous photo asset from Cloudinary
+        if (user.profile.profilePhotoPublicId) {
+            await deleteCloudinaryAsset(user.profile.profilePhotoPublicId, "image");
+        }
+
+        user.profile.profilePhoto = cloudResponse.secure_url;
+        user.profile.profilePhotoPublicId = cloudResponse.public_id;
         await user.save();
 
         const updatedUser = {

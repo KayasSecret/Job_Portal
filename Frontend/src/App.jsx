@@ -21,6 +21,8 @@ import PostJob from "./components/admin/PostJob";
 import Applicants from "./components/admin/Applicants";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import RecruiterProfile from "./components/admin/RecruiterProfile";
+import AdminEvents from "./components/admin/AdminEvents";
+import CreateEvent from "./components/admin/CreateEvent";
 
 import AuthenticatedAppLayout from "./components/shared/AuthenticatedAppLayout";
 
@@ -55,7 +57,11 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/savedjobs",
-        element: <SavedJobs />,
+        element: (
+          <ProtectedRoute requiredRole={null}>
+            <SavedJobs />
+          </ProtectedRoute>
+        ),
       },
 
       // Events
@@ -70,7 +76,11 @@ const appRouter = createBrowserRouter([
 
       {
         path: "/profile",
-        element: <Profile />,
+        element: (
+          <ProtectedRoute requiredRole={null}>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
 
       // Admin / Recruiter Routes
@@ -135,6 +145,30 @@ const appRouter = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Applicants />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/events",
+        element: (
+          <ProtectedRoute>
+            <AdminEvents />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/events/create",
+        element: (
+          <ProtectedRoute>
+            <CreateEvent />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/events/:id/edit",
+        element: (
+          <ProtectedRoute>
+            <CreateEvent isEdit={true} />
           </ProtectedRoute>
         ),
       },
