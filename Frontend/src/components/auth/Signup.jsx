@@ -50,6 +50,10 @@ const Signup = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    dispatch(setLoading(false));
+  }, [dispatch]);
+
+  useEffect(() => {
     if (user) {
       navigate(user.role === "recruiter" ? "/admin/companies" : "/", { replace: true });
     }

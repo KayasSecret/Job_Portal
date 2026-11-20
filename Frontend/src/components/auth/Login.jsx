@@ -38,6 +38,10 @@ const Login = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setLoading(false));
+  }, [dispatch]);
+
+  useEffect(() => {
     if (user) {
       navigate(user.role === "recruiter" ? "/admin/companies" : "/", { replace: true });
     }
