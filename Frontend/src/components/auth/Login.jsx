@@ -165,7 +165,7 @@ const Login = () => {
                       size={16}
                       className={input.role === "student" ? "text-[#6A38C2]" : "text-gray-400"}
                     />
-                    <span>Student / Seeker</span>
+                    <span>Student</span>
                   </button>
 
                   <button

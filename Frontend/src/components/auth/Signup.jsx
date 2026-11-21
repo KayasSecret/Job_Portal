@@ -269,7 +269,7 @@ const Signup = () => {
                       size={16}
                       className={input.role === "student" ? "text-[#6A38C2]" : "text-gray-400"}
                     />
-                    <span>Student / Seeker</span>
+                    <span>Student</span>
                   </button>
 
                   <button
@@ -413,8 +413,8 @@ const Signup = () => {
 
               {/* Profile Photo Upload Card */}
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-1.5">
-                  <Label className="text-xs font-semibold text-gray-700">
+                <div className="flex flex-col items-start gap-0.5 min-[481px]:flex-row min-[481px]:items-center min-[481px]:justify-between min-[481px]:gap-2 mb-1.5">
+                  <Label className="text-xs font-semibold text-gray-700 whitespace-nowrap">
                     Profile Photo <span className="text-gray-400 font-normal">(Optional)</span>
                   </Label>
                   <span className="text-[11px] text-gray-400">JPEG, PNG, WebP (Max 5MB)</span>
@@ -452,13 +452,13 @@ const Signup = () => {
                 ) : (
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center justify-between p-3.5 rounded-2xl border border-dashed border-purple-200 hover:border-[#6A38C2] bg-purple-50/30 hover:bg-purple-50/70 transition-all cursor-pointer group"
+                    className="flex items-center justify-between gap-3 p-3.5 rounded-2xl border border-dashed border-purple-200 hover:border-[#6A38C2] bg-purple-50/30 hover:bg-purple-50/70 transition-all cursor-pointer group"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <Upload size={18} />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-xs font-semibold text-gray-800">
                           Upload profile avatar
                         </div>
@@ -467,7 +467,7 @@ const Signup = () => {
                         </div>
                       </div>
                     </div>
-                    <span className="text-xs font-semibold text-[#6A38C2] group-hover:underline">
+                    <span className="text-xs font-semibold text-[#6A38C2] group-hover:underline shrink-0">
                       Browse
                     </span>
                   </div>
