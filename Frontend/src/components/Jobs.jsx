@@ -214,9 +214,9 @@ const Jobs = () => {
                 </span>
               </h1>
 
-              <p className="mt-2 text-xs sm:text-sm text-purple-100/80 max-w-2xl leading-normal">
+              {/* <p className="mt-2 text-xs sm:text-sm text-purple-100/80 max-w-2xl leading-normal">
                 Connect directly with hiring managers across startups and Fortune 500 innovators with 1-click apply.
-              </p>
+              </p> */}
 
               {/* Integrated Search Input */}
               <form onSubmit={handleSearchSubmit} className="mt-3.5">
