@@ -12,6 +12,10 @@ import JobDescription from "./components/JobDescription";
 import Events from "./components/events/Events";
 import EventDetails from "./components/events/EventDetails";
 
+// AI Services (Job Seeker Only)
+import AIServices from "./components/ai-services/AIServices";
+import ATSScoreChecker from "./components/ai-services/ATSScoreChecker";
+
 // Admin
 import Companies from "./components/admin/Companies";
 import CompanyCreate from "./components/admin/CompanyCreate";
@@ -70,6 +74,24 @@ const appRouter = createBrowserRouter([
       {
         path: "/events/:id",
         element: <EventDetails />,
+      },
+
+      // AI Services (Strictly Job Seeker / Student Role Only)
+      {
+        path: "/ai-services",
+        element: (
+          <ProtectedRoute requiredRole="student">
+            <AIServices />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/ai-services/ats-checker",
+        element: (
+          <ProtectedRoute requiredRole="student">
+            <ATSScoreChecker />
+          </ProtectedRoute>
+        ),
       },
 
       {

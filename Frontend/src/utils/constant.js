@@ -5,3 +5,4 @@ export const JOB_API_ENDPOINT = `${API_BASE_URL}/api/v1/job`;
 export const APPLICANT_API_ENDPOINT = `${API_BASE_URL}/api/v1/application`;
 export const COMPANY_API_ENDPOINT = `${API_BASE_URL}/api/v1/company`;
 export const EVENT_API_ENDPOINT = `${API_BASE_URL}/api/v1/event`;
+export const ATS_API_ENDPOINT = `${API_BASE_URL}/api/v1/ats`;

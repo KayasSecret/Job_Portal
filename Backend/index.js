@@ -8,6 +8,7 @@ import companyRoute from './routes/company.route.js';
 import jobRoute from './routes/job.route.js';
 import applicationRoute from "./routes/application.route.js";
 import eventRoute from "./routes/event.route.js";
+import atsRoute from "./routes/ats.route.js";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/event", eventRoute);
+app.use("/api/v1/ats", atsRoute);
 
 const startServer = async () => {
     try {

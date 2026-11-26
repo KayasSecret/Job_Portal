@@ -111,6 +111,7 @@ function Navbar() {
     { name: "Jobs", path: "/jobs", icon: Briefcase },
     { name: "Saved Jobs", path: "/savedjobs", icon: Bookmark },
     { name: "Events", path: "/events", icon: Calendar },
+    { name: "AI Services", path: "/ai-services", icon: Sparkles },
   ];
 
   const recruiterNavLinks = [

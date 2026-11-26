@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children, requiredRole = "recruiter" }) => {
         if (!user) {
             navigate("/login", { replace: true });
         } else if (requiredRole && user.role !== requiredRole) {
-            navigate("/", { replace: true });
+            navigate(user.role === "recruiter" ? "/admin/companies" : "/", { replace: true });
         }
     }, [user, requiredRole, navigate]);
 

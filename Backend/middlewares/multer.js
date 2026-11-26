@@ -11,6 +11,13 @@ const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 const RESUME_MIME_TYPES = ["application/pdf"];
 const RESUME_EXTENSIONS = [".pdf"];
 
+// Allowed ATS Checker resume types (PDF and DOCX, Max 5MB)
+const ATS_RESUME_MIME_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+const ATS_RESUME_EXTENSIONS = [".pdf", ".docx"];
+
 // 1. Image Filter (Max 5MB)
 const imageFileFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname || "").toLowerCase();
@@ -113,3 +120,52 @@ export const resumeUpload = (req, res, next) => {
 
 // Backward-compatible alias for existing imports
 export const singleUpload = imageUpload;
+
+// 3. ATS Resume Filter (Max 5MB, PDF & DOCX only)
+const atsResumeFileFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname || "").toLowerCase();
+  const isMimeValid = ATS_RESUME_MIME_TYPES.includes(file.mimetype);
+  const isExtValid = ATS_RESUME_EXTENSIONS.includes(ext);
+
+  if (isMimeValid && isExtValid) {
+    cb(null, true);
+  } else {
+    const error = new Error(
+      "Unsupported file format. Please upload a PDF (.pdf) or Word (.docx) resume."
+    );
+    error.statusCode = 400;
+    cb(error, false);
+  }
+};
+
+const rawAtsResumeUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit for ATS analysis
+  fileFilter: atsResumeFileFilter,
+}).single("file");
+
+/**
+ * Middleware for in-memory ATS resume analysis uploads (PDF and DOCX, max 5MB)
+ */
+export const atsResumeUpload = (req, res, next) => {
+  rawAtsResumeUpload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.status(413).json({
+          message: "Resume file exceeds the 5MB size limit.",
+          success: false,
+        });
+      }
+      return res.status(400).json({
+        message: err.message || "Resume upload error.",
+        success: false,
+      });
+    } else if (err) {
+      return res.status(err.statusCode || 400).json({
+        message: err.message || "Invalid resume file.",
+        success: false,
+      });
+    }
+    next();
+  });
+};
