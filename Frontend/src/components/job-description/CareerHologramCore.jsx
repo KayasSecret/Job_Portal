@@ -102,8 +102,8 @@ const CareerHologramCore = ({
     const resize = () => {
       if (!containerRef.current || !canvas) return;
       const rect = containerRef.current.getBoundingClientRect();
-      width = Math.max(rect.width, 160);
-      height = Math.max(rect.height, 160);
+      width = Math.max(rect.width, 130);
+      height = Math.max(rect.height, 130);
       dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.floor(width * dpr);
@@ -111,7 +111,7 @@ const CareerHologramCore = ({
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     // IntersectionObserver to pause loop when out of viewport
@@ -385,7 +385,7 @@ const CareerHologramCore = ({
       onMouseLeave={() => setIsHovered(false)}
       className={
         compact
-          ? "relative w-[185px] h-[185px] sm:w-[200px] sm:h-[200px] mx-auto flex items-center justify-center select-none group shrink-0"
+          ? "relative w-full max-w-[230px] h-[145px] sm:max-w-none sm:w-[200px] sm:h-[200px] mx-auto flex items-center justify-center select-none group shrink-0"
           : "relative w-full max-w-[340px] h-[340px] sm:max-w-[380px] sm:h-[380px] mx-auto flex items-center justify-center select-none group"
       }
       aria-label="3D Holographic Career Command Core"
@@ -406,8 +406,8 @@ const CareerHologramCore = ({
       {/* Floating Futuristic HUD Telemetry Corner Elements */}
       {/* Top Left: Status Pill with Active Role */}
       <div
-        className={`absolute top-1.5 left-1.5 flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-sm pointer-events-none ${
-          compact ? "px-2 py-0.5 max-w-[110px]" : "px-3 py-1 max-w-[180px]"
+        className={`absolute top-1 left-1 sm:top-1.5 sm:left-1.5 flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-sm pointer-events-none ${
+          compact ? "px-2 py-0.5 max-w-[115px] sm:max-w-[110px]" : "px-3 py-1 max-w-[180px]"
         }`}
       >
         <span className="relative flex h-1.5 w-1.5 shrink-0">
@@ -416,16 +416,16 @@ const CareerHologramCore = ({
         </span>
         <span
           className={`font-mono font-bold tracking-wider uppercase text-purple-200 truncate ${
-            compact ? "text-[8.5px]" : "text-[10px]"
+            compact ? "text-[8px] sm:text-[8.5px]" : "text-[10px]"
           }`}
         >
           {company}
         </span>
       </div>
 
-      {/* Top Right: Hologram Coordinates */}
+      {/* Top Right: Hologram Coordinates (Desktop/Tablet only to prevent mobile badge collision) */}
       <div
-        className={`absolute top-1.5 right-1.5 flex items-center gap-1 rounded-md bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs font-mono text-purple-200/80 pointer-events-none ${
+        className={`hidden sm:flex absolute top-1.5 right-1.5 items-center gap-1 rounded-md bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs font-mono text-purple-200/80 pointer-events-none ${
           compact ? "px-1.5 py-0.5 text-[7.5px]" : "px-2.5 py-0.5 text-[9px]"
         }`}
       >
@@ -433,9 +433,9 @@ const CareerHologramCore = ({
         <span>3D•GEO</span>
       </div>
 
-      {/* Bottom Left: Quantum Match Badge with Role Title */}
+      {/* Bottom Left: Quantum Match Badge with Role Title (Desktop/Tablet only) */}
       <div
-        className={`absolute bottom-2 left-1.5 flex items-center gap-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 shadow-sm pointer-events-none ${
+        className={`hidden sm:flex absolute bottom-2 left-1.5 items-center gap-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 shadow-sm pointer-events-none ${
           compact ? "px-2 py-0.5 max-w-[125px]" : "px-3 py-1 max-w-[210px]"
         }`}
       >
@@ -455,7 +455,7 @@ const CareerHologramCore = ({
 
       {/* Bottom Right: Security Verification Shield */}
       <div
-        className={`absolute bottom-2 right-1.5 flex items-center gap-1 rounded-md bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 font-bold text-emerald-300 pointer-events-none ${
+        className={`absolute bottom-1 right-1 sm:bottom-2 sm:right-1.5 flex items-center gap-1 rounded-md bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 font-bold text-emerald-300 pointer-events-none ${
           compact ? "px-1.5 py-0.5 text-[8px]" : "px-2.5 py-1 text-[10px]"
         }`}
       >

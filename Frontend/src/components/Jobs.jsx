@@ -25,6 +25,7 @@ import { setSearchedQuery } from "@/redux/jobSlice";
 import { Button } from "./ui/button";
 
 const JOBS_PER_PAGE = 9;
+const MOBILE_JOBS_PER_PAGE = 4;
 
 const Jobs = () => {
   useGetAllJobs();
@@ -49,19 +50,47 @@ const Jobs = () => {
 
   // Pagination / Load More state
   const [visibleCount, setVisibleCount] = useState(JOBS_PER_PAGE);
+  const [mobileVisibleCount, setMobileVisibleCount] = useState(MOBILE_JOBS_PER_PAGE);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 767px)").matches
+      : false
+  );
 
   // Mobile filter drawer state
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const handleMediaChange = (e) => setIsMobile(e.matches);
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
 
   // Sync searchedQuery from Redux to local searchInput
   useEffect(() => {
     setSearchInput(searchedQuery || "");
   }, [searchedQuery]);
 
+  // Reset mobile pagination when filters or search change
+  useEffect(() => {
+    setMobileVisibleCount(MOBILE_JOBS_PER_PAGE);
+  }, [
+    searchedQuery,
+    selectedLocation,
+    selectedIndustry,
+    selectedSalary,
+    selectedJobType,
+    sortBy,
+  ]);
+
   const handleSearchSubmit = (e) => {
     e?.preventDefault();
     dispatch(setSearchedQuery(searchInput.trim()));
     setVisibleCount(JOBS_PER_PAGE);
+    setMobileVisibleCount(MOBILE_JOBS_PER_PAGE);
   };
 
   const handleResetFilters = () => {
@@ -73,6 +102,7 @@ const Jobs = () => {
     setSortBy("latest");
     dispatch(setSearchedQuery(""));
     setVisibleCount(JOBS_PER_PAGE);
+    setMobileVisibleCount(MOBILE_JOBS_PER_PAGE);
   };
 
   // User's saved jobs list for fast lookup
@@ -167,8 +197,13 @@ const Jobs = () => {
     sortBy,
   ]);
 
-  const displayedJobs = filteredJobs.slice(0, visibleCount);
-  const hasMoreJobs = visibleCount < filteredJobs.length;
+  const isJobSeeker = !user || user.role?.toLowerCase() === "student";
+  const shouldUseMobileLimit = isMobile && isJobSeeker;
+  const activeVisibleCount = shouldUseMobileLimit
+    ? mobileVisibleCount
+    : visibleCount;
+  const displayedJobs = filteredJobs.slice(0, activeVisibleCount);
+  const hasMoreJobs = activeVisibleCount < filteredJobs.length;
 
   const activeFiltersCount =
     (selectedLocation ? 1 : 0) +
@@ -181,7 +216,7 @@ const Jobs = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-transparent py-8 sm:py-12 overflow-x-hidden">
+      <div className="min-h-screen bg-transparent py-5 sm:py-12 overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* ================= HERO & SEARCH HEADER ================= */}
           <motion.div
@@ -189,7 +224,7 @@ const Jobs = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative rounded-3xl px-6 py-6 sm:px-8 sm:py-7 md:px-10 md:py-8 mb-8 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-2xl"
+            className="relative rounded-2xl sm:rounded-3xl px-4 py-4 sm:px-8 sm:py-7 md:px-10 md:py-8 mb-5 sm:mb-8 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-lg sm:shadow-2xl"
           >
             {/* Ambient Lighting Orbs */}
             <div
@@ -202,26 +237,26 @@ const Jobs = () => {
             />
 
             <div className="relative z-10 max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-purple-200 mb-2 self-start shadow-xs">
+              <div className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-purple-200 mb-2 self-start shadow-xs">
                 <Sparkles size={12} className="text-amber-300" />
                 <span>Next-Generation Career Explorer</span>
               </div>
 
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
+              <h1 className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight leading-snug">
                 Explore Verified{" "}
                 <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-amber-200 bg-clip-text text-transparent">
                   Tech Openings
                 </span>
               </h1>
 
-              {/* <p className="mt-2 text-xs sm:text-sm text-purple-100/80 max-w-2xl leading-normal">
-                Connect directly with hiring managers across startups and Fortune 500 innovators with 1-click apply.
-              </p> */}
+              <p className="mt-1 text-xs sm:text-sm text-purple-100/85 max-w-xl leading-relaxed">
+                Search verified engineering and product roles from top companies and apply in one click.
+              </p>
 
               {/* Integrated Search Input */}
-              <form onSubmit={handleSearchSubmit} className="mt-3.5">
-                <div className="relative flex items-center bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-lg border border-white/20 max-w-2xl">
-                  <div className="pl-3 sm:pl-3.5 pr-2 text-purple-600">
+              <form onSubmit={handleSearchSubmit} className="mt-3 sm:mt-3.5">
+                <div className="relative flex items-center bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-md sm:shadow-lg border border-white/20 max-w-2xl">
+                  <div className="pl-2.5 sm:pl-3.5 pr-2 text-purple-600 shrink-0">
                     <Search size={16} />
                   </div>
                   <input
@@ -229,11 +264,24 @@ const Jobs = () => {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search by job title, skills, or company..."
-                    className="w-full h-8 sm:h-9 text-xs sm:text-sm text-gray-800 placeholder-gray-400 bg-transparent outline-none font-medium pr-2"
+                    className="w-full h-8 sm:h-9 text-xs sm:text-sm text-gray-800 placeholder-gray-400 bg-transparent outline-none font-medium pr-2 min-w-0"
                   />
+                  {searchInput && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchInput("");
+                        dispatch(setSearchedQuery(""));
+                      }}
+                      className="p-1 mr-1 text-gray-400 hover:text-gray-600 shrink-0 cursor-pointer"
+                      aria-label="Clear search"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                   <Button
                     type="submit"
-                    className="h-7 sm:h-8 px-4 sm:px-5 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-xs shadow-md shrink-0 cursor-pointer"
+                    className="h-8 px-3.5 sm:px-5 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-semibold text-xs shadow-md shrink-0 cursor-pointer"
                   >
                     Search
                   </Button>
@@ -241,40 +289,40 @@ const Jobs = () => {
               </form>
             </div>
 
-            {/* Quick Live Stats Row inside Hero */}
-            <div className="relative z-10 mt-4 pt-3.5 sm:pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+            {/* Quick Live Stats Row inside Hero (Desktop & Tablet only) */}
+            <div className="hidden md:grid relative z-10 mt-4 pt-4 border-t border-white/10 grid-cols-4 gap-4">
               <div>
-                <div className="text-lg sm:text-xl font-black text-white leading-none">
+                <div className="text-xl font-black text-white leading-none">
                   {allJobs.length}
                 </div>
-                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
+                <div className="text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Available Roles
                 </div>
               </div>
 
               <div>
-                <div className="text-lg sm:text-xl font-black text-white leading-none">
+                <div className="text-xl font-black text-white leading-none">
                   {filteredJobs.length}
                 </div>
-                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
+                <div className="text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Matching Query
                 </div>
               </div>
 
               <div>
-                <div className="text-lg sm:text-xl font-black text-white leading-none">
+                <div className="text-xl font-black text-white leading-none">
                   100%
                 </div>
-                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
+                <div className="text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Verified Recruiters
                 </div>
               </div>
 
               <div>
-                <div className="text-lg sm:text-xl font-black text-white leading-none">
+                <div className="text-xl font-black text-white leading-none">
                   24 hrs
                 </div>
-                <div className="text-[10px] sm:text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
+                <div className="text-[11px] font-semibold text-purple-200/80 uppercase tracking-wider mt-1">
                   Average Response
                 </div>
               </div>
@@ -282,100 +330,111 @@ const Jobs = () => {
           </motion.div>
 
           {/* ================= ACTIVE FILTER TAGS & CONTROLS ================= */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Mobile Filter Button */}
-              <button
-                type="button"
-                onClick={() => setMobileFilterOpen(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-purple-200 text-xs font-semibold text-gray-800 shadow-xs hover:bg-purple-50"
-              >
-                <SlidersHorizontal size={14} className="text-[#6A38C2]" />
-                <span>Filters</span>
-                {activeFiltersCount > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-[#6A38C2] text-white text-[10px] flex items-center justify-center">
-                    {activeFiltersCount}
+          <div className="mb-6 sm:mb-8 space-y-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 p-3 sm:p-0 rounded-2xl sm:rounded-none bg-white/95 sm:bg-transparent border border-purple-100/90 sm:border-0 shadow-xs sm:shadow-none">
+              {/* Left: Filters Button + Showing Opportunities Count */}
+              <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setMobileFilterOpen(true)}
+                  className="lg:hidden inline-flex items-center justify-center gap-2 h-9 px-3.5 rounded-xl bg-purple-50/80 sm:bg-white border border-purple-200/90 text-xs font-bold text-[#6A38C2] sm:text-gray-800 shadow-2xs hover:bg-purple-100/70 transition-all shrink-0 cursor-pointer"
+                >
+                  <SlidersHorizontal size={14} className="text-[#6A38C2] shrink-0" />
+                  <span>Filters</span>
+                  {activeFiltersCount > 0 && (
+                    <span className="w-5 h-5 rounded-full bg-[#6A38C2] text-white text-[10px] font-black flex items-center justify-center">
+                      {activeFiltersCount}
+                    </span>
+                  )}
+                </button>
+
+                <span className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Showing{" "}
+                  <span className="text-[#6A38C2] font-black">
+                    {filteredJobs.length}
+                  </span>{" "}
+                  {filteredJobs.length === 1 ? "Opportunity" : "Opportunities"}
+                </span>
+              </div>
+
+              {/* Right: Sort Dropdown */}
+              <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto pt-2.5 sm:pt-0 border-t border-purple-50 sm:border-t-0">
+                <span className="text-xs text-gray-500 sm:text-gray-400 font-semibold sm:font-medium whitespace-nowrap inline-flex items-center gap-1.5">
+                  <ArrowUpDown size={13} className="text-[#6A38C2] sm:hidden shrink-0" />
+                  <span>Sort by:</span>
+                </span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="h-9 px-3 rounded-xl bg-gray-50/80 sm:bg-white border border-purple-100 text-xs font-bold sm:font-semibold text-gray-800 sm:text-gray-700 focus:outline-none focus:border-[#6A38C2] focus:ring-2 focus:ring-[#6A38C2]/15 shadow-2xs sm:shadow-xs cursor-pointer flex-1 sm:flex-initial max-w-[200px] sm:max-w-none"
+                >
+                  <option value="latest">Latest First</option>
+                  <option value="salary-high">Salary: High to Low</option>
+                  <option value="salary-low">Salary: Low to High</option>
+                  <option value="openings">Most Openings</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Active Filter Pills */}
+            {activeFiltersCount > 0 && (
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                {selectedIndustry && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-[#6A38C2] text-xs font-semibold">
+                    <span>{selectedIndustry}</span>
+                    <X
+                      size={13}
+                      className="cursor-pointer hover:text-red-500"
+                      onClick={() => {
+                        setSelectedIndustry("");
+                        dispatch(setSearchedQuery(""));
+                      }}
+                    />
                   </span>
                 )}
-              </button>
 
-              <span className="text-xs sm:text-sm font-semibold text-gray-700">
-                Showing <span className="text-[#6A38C2] font-black">{filteredJobs.length}</span> Opportunities
-              </span>
+                {selectedLocation && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+                    <span>{selectedLocation}</span>
+                    <X
+                      size={13}
+                      className="cursor-pointer hover:text-red-500"
+                      onClick={() => setSelectedLocation("")}
+                    />
+                  </span>
+                )}
 
-              {/* Active Filter Pills */}
-              {selectedIndustry && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-[#6A38C2] text-xs font-semibold">
-                  <span>{selectedIndustry}</span>
-                  <X
-                    size={13}
-                    className="cursor-pointer hover:text-red-500"
-                    onClick={() => {
-                      setSelectedIndustry("");
-                      dispatch(setSearchedQuery(""));
-                    }}
-                  />
-                </span>
-              )}
+                {selectedSalary && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
+                    <span>{selectedSalary}</span>
+                    <X
+                      size={13}
+                      className="cursor-pointer hover:text-red-500"
+                      onClick={() => setSelectedSalary("")}
+                    />
+                  </span>
+                )}
 
-              {selectedLocation && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
-                  <span>{selectedLocation}</span>
-                  <X
-                    size={13}
-                    className="cursor-pointer hover:text-red-500"
-                    onClick={() => setSelectedLocation("")}
-                  />
-                </span>
-              )}
+                {selectedJobType && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
+                    <span>{selectedJobType}</span>
+                    <X
+                      size={13}
+                      className="cursor-pointer hover:text-red-500"
+                      onClick={() => setSelectedJobType("")}
+                    />
+                  </span>
+                )}
 
-              {selectedSalary && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
-                  <span>{selectedSalary}</span>
-                  <X
-                    size={13}
-                    className="cursor-pointer hover:text-red-500"
-                    onClick={() => setSelectedSalary("")}
-                  />
-                </span>
-              )}
-
-              {selectedJobType && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
-                  <span>{selectedJobType}</span>
-                  <X
-                    size={13}
-                    className="cursor-pointer hover:text-red-500"
-                    onClick={() => setSelectedJobType("")}
-                  />
-                </span>
-              )}
-
-              {activeFiltersCount > 0 && (
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors ml-1"
+                  className="text-xs font-semibold text-gray-400 hover:text-red-500 transition-colors ml-1 cursor-pointer"
                 >
                   Clear All
                 </button>
-              )}
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2 self-end sm:self-auto">
-              <span className="text-xs text-gray-400 font-medium">Sort by:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-white border border-purple-100 text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#6A38C2] shadow-xs cursor-pointer"
-              >
-                <option value="latest">Latest First</option>
-                <option value="salary-high">Salary: High to Low</option>
-                <option value="salary-low">Salary: Low to High</option>
-                <option value="openings">Most Openings</option>
-              </select>
-            </div>
+              </div>
+            )}
           </div>
 
           {/* ================= MAIN CONTENT LAYOUT ================= */}
@@ -429,19 +488,29 @@ const Jobs = () => {
                     ))}
                   </div>
 
-                  {/* Load More Button */}
+                  {/* More Jobs / Load More Button */}
                   {hasMoreJobs && (
-                    <div className="mt-12 text-center">
+                    <div className="mt-8 sm:mt-12 flex justify-center">
                       <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         type="button"
-                        onClick={() =>
-                          setVisibleCount((prev) => prev + JOBS_PER_PAGE)
-                        }
-                        className="px-8 py-3.5 rounded-2xl bg-white border border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
+                        onClick={() => {
+                          if (shouldUseMobileLimit) {
+                            setMobileVisibleCount(
+                              (prev) => prev + MOBILE_JOBS_PER_PAGE
+                            );
+                          } else {
+                            setVisibleCount((prev) => prev + JOBS_PER_PAGE);
+                          }
+                        }}
+                        className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-2xl bg-white border border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-xs sm:text-sm font-bold shadow-sm sm:shadow-md hover:shadow-lg transition-all cursor-pointer"
                       >
-                        Load More Jobs ({filteredJobs.length - visibleCount} remaining)
+                        <span className="md:hidden">More Jobs</span>
+                        <span className="hidden md:inline">
+                          Load More Jobs ({filteredJobs.length - activeVisibleCount} remaining)
+                        </span>
+                        <ChevronDown size={15} />
                       </motion.button>
                     </div>
                   )}

@@ -45,9 +45,9 @@ const EventLivePreview = ({ formData, bannerPreview }) => {
   return (
     <div className="space-y-6">
       {/* Simulation Label */}
-      <div className="flex items-center justify-between pb-2 border-b border-purple-100">
+      <div className="flex flex-wrap items-center justify-between gap-1 pb-2 border-b border-purple-100">
         <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#6A38C2]">
-          <Sparkles size={14} className="text-amber-400" />
+          <Sparkles size={14} className="text-amber-400 shrink-0" />
           <span>Live Student Discovery Simulation</span>
         </div>
         <span className="text-[11px] font-bold text-gray-400">

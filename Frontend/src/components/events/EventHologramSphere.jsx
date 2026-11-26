@@ -118,15 +118,15 @@ const EventHologramSphere = ({ eventCount = 0 }) => {
         ? containerRef.current.getBoundingClientRect()
         : { width: 220, height: 220 };
 
-      width = Math.max(rect.width, 170);
-      height = Math.max(rect.height, 170);
+      width = Math.max(rect.width, 140);
+      height = Math.max(rect.height, 140);
 
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     const handleMouseMove = (e) => {
@@ -172,7 +172,9 @@ const EventHologramSphere = ({ eventCount = 0 }) => {
     resize();
 
     // 3D Projection Engine
-    function project3D(x, y, z, fov = 3.8, scaleMultiplier = 58) {
+    function project3D(x, y, z, fov = 3.8, scaleMultiplier) {
+      const effectiveScale =
+        scaleMultiplier ?? (Math.min(width, height) < 190 ? Math.min(width, height) * 0.27 : 58);
       // Rotate around X
       let y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
       let z1 = y * Math.sin(rotX) + z * Math.cos(rotX);
@@ -188,7 +190,7 @@ const EventHologramSphere = ({ eventCount = 0 }) => {
       // Perspective projection
       const cameraDist = 5.2;
       const depth = z2 + cameraDist;
-      const f = depth > 0.1 ? (fov / depth) * scaleMultiplier : 1;
+      const f = depth > 0.1 ? (fov / depth) * effectiveScale : 1;
 
       return {
         x: width / 2 + x3 * f,
@@ -365,7 +367,7 @@ const EventHologramSphere = ({ eventCount = 0 }) => {
       ref={containerRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative w-[190px] h-[190px] sm:w-[215px] sm:h-[215px] mx-auto flex items-center justify-center select-none group shrink-0"
+      className="relative w-full max-w-[240px] h-[155px] sm:max-w-none sm:w-[215px] sm:h-[215px] mx-auto flex items-center justify-center select-none group shrink-0"
       aria-label="3D Holographic Event Sphere"
     >
       {/* Outer Volumetric Halo Backdrop */}
@@ -383,24 +385,24 @@ const EventHologramSphere = ({ eventCount = 0 }) => {
 
       {/* Floating Futuristic HUD Telemetry Corner Elements */}
       {/* Top Left: Live Status */}
-      <div className="absolute top-1.5 left-1.5 flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs pointer-events-none px-2 py-0.5 max-w-[130px]">
+      <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs pointer-events-none px-2 py-0.5 max-w-[115px] sm:max-w-[130px]">
         <span className="relative flex h-1.5 w-1.5 shrink-0">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-400" />
         </span>
-        <span className="font-mono font-bold tracking-wider uppercase text-cyan-200 text-[8.5px] truncate">
+        <span className="font-mono font-bold tracking-wider uppercase text-cyan-200 text-[8px] sm:text-[8.5px] truncate">
           EVENT MATRIX // LIVE
         </span>
       </div>
 
-      {/* Top Right: Coordinate Badge */}
-      <div className="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-md bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs font-mono text-purple-200/80 pointer-events-none px-1.5 py-0.5 text-[7.5px]">
+      {/* Top Right: Coordinate Badge (Desktop/Tablet only to prevent mobile badge collision) */}
+      <div className="hidden sm:flex absolute top-1.5 right-1.5 items-center gap-1 rounded-md bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs font-mono text-purple-200/80 pointer-events-none px-1.5 py-0.5 text-[7.5px]">
         <Activity size={8} className="text-cyan-400" />
         <span>3D•SPHERE</span>
       </div>
 
-      {/* Bottom Left: Event Sessions Count */}
-      <div className="absolute bottom-2 left-1.5 flex items-center gap-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs pointer-events-none px-2 py-0.5 max-w-[135px]">
+      {/* Bottom Left: Event Sessions Count (Desktop/Tablet only) */}
+      <div className="hidden sm:flex absolute bottom-2 left-1.5 items-center gap-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 shadow-2xs pointer-events-none px-2 py-0.5 max-w-[135px]">
         <Calendar size={9} className="text-cyan-300 shrink-0" />
         <span className="font-bold text-white tracking-wide text-[9px] truncate">
           {eventCount} {eventCount === 1 ? "Session" : "Sessions"} Synced
@@ -408,7 +410,7 @@ const EventHologramSphere = ({ eventCount = 0 }) => {
       </div>
 
       {/* Bottom Right: Verified Security Shield */}
-      <div className="absolute bottom-2 right-1.5 flex items-center gap-1 rounded-md bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 font-bold text-emerald-300 pointer-events-none px-1.5 py-0.5 text-[8px]">
+      <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-1.5 flex items-center gap-1 rounded-md bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 font-bold text-emerald-300 pointer-events-none px-1.5 py-0.5 text-[8px]">
         <Shield size={9} className="text-emerald-400" />
         <span className="font-mono">VERIFIED</span>
       </div>

@@ -235,18 +235,30 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="sm:max-w-[440px] rounded-3xl border border-purple-100 shadow-2xl p-0 overflow-hidden bg-white"
+        showCloseButton={false}
+        className="w-[calc(100vw-1.75rem)] max-w-[380px] sm:max-w-[440px] max-h-[88dvh] sm:max-h-[90vh] rounded-2xl sm:rounded-3xl border border-purple-100 shadow-2xl p-0 gap-0 overflow-hidden bg-white flex flex-col"
         onInteractOutside={() => !loading && setOpen(false)}
       >
         {/* Top Gradient Bar */}
-        <div className="h-2 bg-gradient-to-r from-[#6A38C2] via-violet-500 to-orange-500" />
+        <div className="h-2 bg-gradient-to-r from-[#6A38C2] via-violet-500 to-orange-500 shrink-0" />
 
-        <div className="p-6">
-          <DialogHeader className="text-center sm:text-center">
-            <DialogTitle className="text-2xl font-bold text-gray-900">
+        {/* Dedicated Always-Visible Top-Right Close Button */}
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => !loading && setOpen(false)}
+          aria-label="Close modal"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 w-8 h-8 rounded-xl bg-gray-100/80 hover:bg-purple-100 text-gray-500 hover:text-[#6A38C2] border border-gray-200/70 flex items-center justify-center transition-all cursor-pointer disabled:opacity-50"
+        >
+          <X size={16} />
+        </button>
+
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-w-0">
+          <DialogHeader className="text-center sm:text-center px-7">
+            <DialogTitle className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
               Profile Picture
             </DialogTitle>
-            <DialogDescription className="text-gray-500 text-sm mt-1">
+            <DialogDescription className="text-gray-500 text-xs sm:text-sm mt-1 font-medium">
               Supported formats: JPEG, PNG, WebP (Max 5 MB)
             </DialogDescription>
           </DialogHeader>
@@ -270,17 +282,17 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
 
           {/* Validation Error Banner */}
           {validationError && (
-            <div className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 px-3.5 py-2.5 text-xs font-medium text-red-600">
+            <div className="mt-3.5 sm:mt-4 flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs font-medium text-red-600">
               <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
-              <span>{validationError}</span>
+              <span className="leading-snug">{validationError}</span>
             </div>
           )}
 
           {/* MODE 1: MAIN MENU */}
           {mode === "menu" && (
-            <div className="mt-6 flex flex-col items-center">
+            <div className="mt-4 sm:mt-6 flex flex-col items-center">
               <div className="relative group">
-                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-100 shadow-lg bg-purple-50">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-purple-100 ring-4 ring-purple-50/70 shadow-md sm:shadow-lg bg-purple-50">
                   <img
                     src={currentPhoto || DEFAULT_AVATAR}
                     alt={user?.fullName || "Profile"}
@@ -289,21 +301,21 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                 </div>
               </div>
 
-              <div className="w-full mt-6 space-y-3">
+              <div className="w-full mt-4 sm:mt-6 space-y-2.5 sm:space-y-3">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl border border-purple-100 bg-purple-50/60 hover:bg-purple-100/80 text-gray-800 font-medium transition-all cursor-pointer group"
+                  className="w-full min-h-[58px] sm:min-h-[68px] flex items-center gap-3 sm:gap-3.5 px-3.5 py-2.5 sm:px-4 sm:py-3.5 rounded-xl sm:rounded-2xl border border-purple-100/90 bg-purple-50/50 hover:bg-purple-100/80 hover:border-purple-200 text-gray-800 transition-all cursor-pointer group shadow-2xs"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#6A38C2] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                    <Upload size={18} />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#6A38C2] to-[#7C3AED] text-white flex items-center justify-center shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                    <Upload size={17} />
                   </div>
-                  <div className="text-left">
-                    <div className="text-sm font-semibold text-gray-900">
+                  <div className="text-left min-w-0 flex-1">
+                    <div className="text-xs sm:text-sm font-bold text-gray-900 leading-snug">
                       Choose from Device
                     </div>
-                    <div className="text-xs text-gray-500">
-                      Upload a JPEG, PNG, or WebP photo
+                    <div className="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-snug">
+                      Upload a new profile photo
                     </div>
                   </div>
                 </button>
@@ -311,17 +323,17 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                 <button
                   type="button"
                   onClick={startCamera}
-                  className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl border border-purple-100 bg-purple-50/60 hover:bg-purple-100/80 text-gray-800 font-medium transition-all cursor-pointer group"
+                  className="w-full min-h-[58px] sm:min-h-[68px] flex items-center gap-3 sm:gap-3.5 px-3.5 py-2.5 sm:px-4 sm:py-3.5 rounded-xl sm:rounded-2xl border border-purple-100/90 bg-purple-50/50 hover:bg-purple-100/80 hover:border-purple-200 text-gray-800 transition-all cursor-pointer group shadow-2xs"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                    <Camera size={18} />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                    <Camera size={17} />
                   </div>
-                  <div className="text-left">
-                    <div className="text-sm font-semibold text-gray-900">
+                  <div className="text-left min-w-0 flex-1">
+                    <div className="text-xs sm:text-sm font-bold text-gray-900 leading-snug">
                       Take a Photo
                     </div>
-                    <div className="text-xs text-gray-500">
-                      Use your camera to capture a new photo
+                    <div className="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-snug">
+                      Capture a photo using the camera
                     </div>
                   </div>
                 </button>
@@ -330,27 +342,29 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                   <button
                     type="button"
                     onClick={() => setMode("remove-confirm")}
-                    className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl border border-red-100 bg-red-50/50 hover:bg-red-100/70 text-red-600 font-medium transition-all cursor-pointer group"
+                    className="w-full min-h-[58px] sm:min-h-[68px] flex items-center gap-3 sm:gap-3.5 px-3.5 py-2.5 sm:px-4 sm:py-3.5 rounded-xl sm:rounded-2xl border border-red-100 bg-red-50/50 hover:bg-red-100/70 hover:border-red-200 text-red-600 transition-all cursor-pointer group shadow-2xs"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                      <Trash2 size={18} />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Trash2 size={17} />
                     </div>
-                    <div className="text-left">
-                      <div className="text-sm font-semibold">Remove Photo</div>
-                      <div className="text-xs text-red-400">
-                        Reset to the default profile avatar
+                    <div className="text-left min-w-0 flex-1">
+                      <div className="text-xs sm:text-sm font-bold leading-snug">
+                        Remove Photo
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-red-400 mt-0.5 leading-snug">
+                        Restore the default profile avatar
                       </div>
                     </div>
                   </button>
                 )}
               </div>
 
-              <div className="w-full mt-5">
+              <div className="w-full mt-4 sm:mt-5">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="w-full rounded-xl border-gray-200 text-gray-600 hover:bg-gray-50"
+                  className="w-full h-10 sm:h-11 rounded-xl border-purple-100 text-gray-600 hover:text-gray-900 hover:bg-purple-50/50 text-xs font-bold cursor-pointer"
                 >
                   Cancel
                 </Button>
@@ -360,8 +374,8 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
 
           {/* MODE 2: LIVE CAMERA CAPTURE */}
           {mode === "camera" && (
-            <div className="mt-5 flex flex-col items-center">
-              <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-[#6A38C2] shadow-xl bg-black">
+            <div className="mt-4 sm:mt-5 flex flex-col items-center">
+              <div className="relative w-48 h-48 sm:w-64 sm:h-64 rounded-full overflow-hidden border-4 border-[#6A38C2] shadow-xl bg-black">
                 <video
                   ref={videoRef}
                   autoPlay
@@ -370,26 +384,26 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                   className="w-full h-full object-cover scale-x-[-1]"
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-3">
+              <p className="text-xs text-gray-500 mt-2.5 sm:mt-3 text-center">
                 Center your face in the circle and click Capture
               </p>
 
-              <div className="flex gap-3 w-full mt-6">
+              <div className="flex gap-2.5 sm:gap-3 w-full mt-5 sm:mt-6">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleCancelPreview}
-                  className="flex-1 rounded-xl border-purple-200 hover:bg-purple-50"
+                  className="flex-1 h-10 sm:h-11 rounded-xl border-purple-200 hover:bg-purple-50 text-xs font-bold"
                 >
-                  <X className="mr-1.5 h-4 w-4" />
+                  <X className="mr-1.5 h-4 w-4 shrink-0" />
                   Cancel
                 </Button>
                 <Button
                   type="button"
                   onClick={capturePhotoFromVideo}
-                  className="flex-1 rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6] text-white"
+                  className="flex-1 h-10 sm:h-11 rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6] text-white text-xs font-bold"
                 >
-                  <Camera className="mr-1.5 h-4 w-4" />
+                  <Camera className="mr-1.5 h-4 w-4 shrink-0" />
                   Capture
                 </Button>
               </div>
@@ -398,8 +412,8 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
 
           {/* MODE 3: IMAGE PREVIEW & SAVE / CANCEL */}
           {mode === "preview" && (
-            <div className="mt-5 flex flex-col items-center">
-              <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-[#6A38C2] shadow-xl bg-purple-50">
+            <div className="mt-4 sm:mt-5 flex flex-col items-center">
+              <div className="relative w-28 h-28 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-[#6A38C2] shadow-xl bg-purple-50">
                 <img
                   src={previewUrl}
                   alt="New profile preview"
@@ -407,11 +421,11 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                 />
               </div>
 
-              <div className="mt-3 text-center">
-                <p className="text-sm font-medium text-gray-800 truncate max-w-[260px]">
+              <div className="mt-3 text-center max-w-full px-2">
+                <p className="text-xs sm:text-sm font-bold text-gray-800 truncate max-w-[220px] sm:max-w-[260px] mx-auto">
                   {selectedFile?.name}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
                   {selectedFile
                     ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
                     : ""}
@@ -422,21 +436,21 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                 type="button"
                 disabled={loading}
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[#6A38C2] hover:underline cursor-pointer"
+                className="mt-2.5 sm:mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6A38C2] hover:underline cursor-pointer"
               >
                 <RefreshCw size={13} />
-                Choose a different image
+                <span>Choose a different image</span>
               </button>
 
-              <div className="flex gap-3 w-full mt-6">
+              <div className="flex gap-2.5 sm:gap-3 w-full mt-5 sm:mt-6">
                 <Button
                   type="button"
                   variant="outline"
                   disabled={loading}
                   onClick={handleCancelPreview}
-                  className="flex-1 rounded-xl border-gray-200 text-gray-700 hover:bg-gray-50"
+                  className="flex-1 h-10 sm:h-11 rounded-xl border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-bold"
                 >
-                  <X className="mr-1.5 h-4 w-4" />
+                  <X className="mr-1.5 h-4 w-4 shrink-0" />
                   Cancel
                 </Button>
 
@@ -444,17 +458,17 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                   type="button"
                   disabled={loading}
                   onClick={handleSavePhoto}
-                  className="flex-1 rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6] text-white shadow-md"
+                  className="flex-1 h-10 sm:h-11 rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6] text-white shadow-md text-xs font-bold"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
+                      <Loader2 className="mr-1.5 h-4 w-4 animate-spin shrink-0" />
+                      <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <Check className="mr-1.5 h-4 w-4" />
-                      Save Photo
+                      <Check className="mr-1.5 h-4 w-4 shrink-0" />
+                      <span>Save Photo</span>
                     </>
                   )}
                 </Button>
@@ -464,24 +478,24 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
 
           {/* MODE 4: REMOVE CONFIRMATION */}
           {mode === "remove-confirm" && (
-            <div className="mt-5 flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-red-50 border-2 border-red-100 flex items-center justify-center text-red-500 mb-3">
-                <Trash2 size={36} />
+            <div className="mt-4 sm:mt-5 flex flex-col items-center text-center">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-red-50 border-2 border-red-100 flex items-center justify-center text-red-500 mb-3">
+                <Trash2 className="w-7 h-7 sm:w-9 sm:h-9" />
               </div>
-              <h3 className="text-base font-semibold text-gray-900">
+              <h3 className="text-sm sm:text-base font-bold text-gray-900">
                 Remove Current Photo?
               </h3>
-              <p className="text-xs text-gray-500 mt-1 max-w-xs">
+              <p className="text-xs text-gray-500 mt-1 max-w-xs leading-relaxed">
                 Your profile picture will be reset to the default avatar across HireNest.
               </p>
 
-              <div className="flex gap-3 w-full mt-6">
+              <div className="flex gap-2.5 sm:gap-3 w-full mt-5 sm:mt-6">
                 <Button
                   type="button"
                   variant="outline"
                   disabled={loading}
                   onClick={() => setMode("menu")}
-                  className="flex-1 rounded-xl border-gray-200"
+                  className="flex-1 h-10 sm:h-11 rounded-xl border-gray-200 text-xs font-bold"
                 >
                   Cancel
                 </Button>
@@ -489,12 +503,12 @@ const UpdateProfilePhotoDialog = ({ open, setOpen }) => {
                   type="button"
                   disabled={loading}
                   onClick={handleRemovePhoto}
-                  className="flex-1 rounded-xl bg-red-600 hover:bg-red-700 text-white"
+                  className="flex-1 h-10 sm:h-11 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Removing...
+                      <Loader2 className="mr-1.5 h-4 w-4 animate-spin shrink-0" />
+                      <span>Removing...</span>
                     </>
                   ) : (
                     "Remove"

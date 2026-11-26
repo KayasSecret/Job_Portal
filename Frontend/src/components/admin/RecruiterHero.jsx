@@ -42,13 +42,15 @@ const RecruiterHero = ({
 
       {/* Top Row: Heading, Badge, Description & Action */}
       <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-5">
-        <div className="max-w-2xl min-w-0">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10.5px] font-semibold text-purple-200 mb-1 shadow-2xs">
+        <div className="w-full sm:w-auto max-w-2xl min-w-0">
+          <div className="inline-flex items-center gap-1.5 max-w-full px-2.5 py-1 sm:py-0.5 rounded-xl sm:rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] sm:text-[10.5px] font-semibold text-purple-200 mb-1.5 sm:mb-1 shadow-2xs leading-snug">
             {BadgeIcon && <BadgeIcon size={11} className="text-amber-300 shrink-0" />}
-            <span className="truncate">{badgeText}</span>
+            <span className="whitespace-normal break-words sm:whitespace-nowrap sm:truncate">
+              {badgeText}
+            </span>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight truncate">
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight break-words sm:truncate">
             {title}
           </h1>
 

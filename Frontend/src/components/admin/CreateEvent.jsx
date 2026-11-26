@@ -471,32 +471,32 @@ const CreateEvent = ({ isEdit = false }) => {
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* Top Breadcrumb & Header */}
           <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
+            <div className="min-w-0">
               <Link
                 to="/admin/events"
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-700 hover:text-purple-900 mb-2 transition-colors"
               >
-                <ArrowLeft size={14} />
+                <ArrowLeft size={14} className="shrink-0" />
                 <span>Back to Recruiter Events</span>
               </Link>
-              <h1 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight flex items-center gap-2.5">
+              <h1 className="text-xl min-[380px]:text-2xl sm:text-3xl font-black text-gray-950 tracking-tight flex flex-wrap items-center gap-2 sm:gap-2.5 leading-tight">
                 <span>{isEdit ? "Edit Tech Event" : "Create & Host Tech Event"}</span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-100 text-[#6A38C2] text-xs font-bold">
-                  <Sparkles size={12} className="text-amber-500" />
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-100 text-[#6A38C2] text-[11px] sm:text-xs font-bold whitespace-nowrap shrink-0">
+                  <Sparkles size={12} className="text-amber-500 shrink-0" />
                   <span>Pro Wizard</span>
                 </span>
               </h1>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-0.5 leading-relaxed">
                 Design an attractive tech session, seminar, or coding hackathon with real-time student discovery.
               </p>
             </div>
 
             {/* Quick Actions (Draft / Cancel) */}
-            <div className="flex items-center gap-2">
+            <div className="grid grid-cols-2 sm:flex items-center gap-2.5 sm:gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 onClick={() => navigate("/admin/events")}
-                className="h-10 px-4 rounded-xl border-purple-200 text-xs font-bold text-gray-600 hover:bg-purple-50"
+                className="h-10 px-3 sm:px-4 w-full sm:w-auto justify-center rounded-xl border-purple-200 text-xs font-bold text-gray-600 hover:bg-purple-50"
               >
                 Discard & Exit
               </Button>
@@ -504,7 +504,7 @@ const CreateEvent = ({ isEdit = false }) => {
                 variant="secondary"
                 disabled={submitting}
                 onClick={() => handleSubmit("Draft")}
-                className="h-10 px-4 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#6A38C2] text-xs font-bold border border-purple-200/80 shadow-2xs"
+                className="h-10 px-3 sm:px-4 w-full sm:w-auto justify-center rounded-xl bg-purple-50 hover:bg-purple-100 text-[#6A38C2] text-xs font-bold border border-purple-200/80 shadow-2xs"
               >
                 Save as Draft
               </Button>
@@ -512,8 +512,8 @@ const CreateEvent = ({ isEdit = false }) => {
           </div>
 
           {/* ================= STEPPER PROGRESS BAR ================= */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-purple-100 shadow-[0_4px_20px_-4px_rgba(106,56,194,0.06)] p-3 sm:p-5 mb-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-purple-100 shadow-[0_4px_20px_-4px_rgba(106,56,194,0.06)] p-3 sm:p-5 mb-6 sm:mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
               {WIZARD_STEPS.map((step) => {
                 const isActive = currentStep === step.id;
                 const isPassed = currentStep > step.id;
@@ -527,12 +527,12 @@ const CreateEvent = ({ isEdit = false }) => {
                         setCurrentStep(step.id);
                       }
                     }}
-                    className={`flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl text-left transition-all cursor-pointer ${
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all cursor-pointer ${
                       isActive
                         ? "bg-purple-100/70 border border-purple-300/80 shadow-xs"
                         : isPassed
-                        ? "bg-purple-50/40 hover:bg-purple-50 border border-transparent"
-                        : "opacity-60 hover:opacity-100 border border-transparent"
+                        ? "bg-purple-50/50 hover:bg-purple-50 border border-purple-100/60 sm:border-transparent"
+                        : "bg-gray-50/60 sm:bg-transparent opacity-75 sm:opacity-60 hover:opacity-100 border border-gray-100 sm:border-transparent"
                     }`}
                   >
                     <div
@@ -547,11 +547,11 @@ const CreateEvent = ({ isEdit = false }) => {
                       {isPassed ? <CheckCircle2 size={16} /> : step.id}
                     </div>
 
-                    <div className="min-w-0">
-                      <span className="block text-xs font-black text-gray-900 truncate">
+                    <div className="min-w-0 flex-1">
+                      <span className="block text-xs font-black text-gray-900 whitespace-normal sm:truncate leading-snug">
                         {step.title}
                       </span>
-                      <span className="text-[10.5px] font-medium text-gray-500 truncate hidden sm:block">
+                      <span className="text-[11px] sm:text-[10.5px] font-medium text-gray-500 block whitespace-normal sm:truncate mt-0.5 sm:mt-0">
                         {step.desc}
                       </span>
                     </div>
@@ -562,34 +562,34 @@ const CreateEvent = ({ isEdit = false }) => {
           </div>
 
           {/* ================= MAIN WIZARD BODY (2 Columns: Form & Live Preview) ================= */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
             {/* Left 8 Columns: Form Steps */}
-            <div className="lg:col-span-8 bg-white/95 backdrop-blur-xl rounded-3xl border border-purple-100/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 sm:p-8">
+            <div className="lg:col-span-8 min-w-0 bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-purple-100/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-8 overflow-hidden">
               {/* ================= STEP 1: BASIC INFORMATION ================= */}
               {currentStep === 1 && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="space-y-6"
+                  className="space-y-5 sm:space-y-6"
                 >
-                  <div className="border-b border-purple-50 pb-4">
-                    <h2 className="text-lg font-black text-gray-950 flex items-center gap-2">
-                      <FileText size={18} className="text-[#6A38C2]" />
+                  <div className="border-b border-purple-50 pb-3.5 sm:pb-4">
+                    <h2 className="text-base sm:text-lg font-black text-gray-950 flex items-start sm:items-center gap-2 leading-snug">
+                      <FileText size={18} className="text-[#6A38C2] shrink-0 mt-0.5 sm:mt-0" />
                       <span>1. Event Overview & Branding</span>
                     </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-1 sm:mt-0.5 leading-relaxed">
                       Enter the primary title, category, description, and cover image for student discovery.
                     </p>
                   </div>
 
                   {/* Title */}
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
                       <Label className="text-xs font-black text-gray-900">
                         Event Title <span className="text-rose-500">*</span>
                       </Label>
-                      <span className="text-[11px] font-bold text-gray-400">
+                      <span className="text-[11px] font-bold text-gray-400 shrink-0">
                         {formData.title.length}/100
                       </span>
                     </div>
@@ -600,13 +600,13 @@ const CreateEvent = ({ isEdit = false }) => {
                       onChange={(e) =>
                         setFormData((prev) => ({ ...prev, title: e.target.value }))
                       }
-                      className={`h-11 rounded-xl text-sm font-semibold border-purple-100 focus-visible:ring-[#6A38C2] ${
+                      className={`h-11 rounded-xl text-xs sm:text-sm font-semibold border-purple-100 focus-visible:ring-[#6A38C2] ${
                         errors.title ? "border-rose-400 bg-rose-50/20" : ""
                       }`}
                     />
                     {errors.title && (
                       <p className="text-xs text-rose-500 mt-1 font-semibold flex items-center gap-1">
-                        <AlertCircle size={12} />
+                        <AlertCircle size={12} className="shrink-0" />
                         <span>{errors.title}</span>
                       </p>
                     )}
@@ -641,7 +641,7 @@ const CreateEvent = ({ isEdit = false }) => {
                           setFormData((prev) => ({ ...prev, category: val }))
                         }
                       >
-                        <SelectTrigger className="h-11 rounded-xl border-purple-100 font-bold text-xs sm:text-sm">
+                        <SelectTrigger className="w-full h-11 rounded-xl border-purple-100 font-bold text-xs sm:text-sm">
                           <SelectValue placeholder="Select Category" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl border-purple-100 bg-white">
@@ -689,8 +689,8 @@ const CreateEvent = ({ isEdit = false }) => {
 
                   {/* Detailed Description */}
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <Label className="text-xs font-black text-gray-900">
+                    <div className="flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:justify-between mb-1.5">
+                      <Label className="text-xs font-black text-gray-900 whitespace-nowrap">
                         Detailed Description <span className="text-rose-500">*</span>
                       </Label>
                       <span className="text-[11px] font-bold text-gray-400">
@@ -710,7 +710,7 @@ const CreateEvent = ({ isEdit = false }) => {
                     />
                     {errors.description && (
                       <p className="text-xs text-rose-500 mt-1 font-semibold flex items-center gap-1">
-                        <AlertCircle size={12} />
+                        <AlertCircle size={12} className="shrink-0" />
                         <span>{errors.description}</span>
                       </p>
                     )}
@@ -721,7 +721,7 @@ const CreateEvent = ({ isEdit = false }) => {
                     <Label className="text-xs font-black text-gray-900 mb-1.5 block">
                       Technology & Skill Tags (Max 8)
                     </Label>
-                    <div className="flex items-center gap-2 mb-2.5">
+                    <div className="flex flex-col min-[420px]:flex-row items-stretch min-[420px]:items-center gap-2 mb-2.5">
                       <Input
                         placeholder="Add tag (e.g. Next.js, Docker, WebAssembly)..."
                         value={tagInput}
@@ -732,12 +732,12 @@ const CreateEvent = ({ isEdit = false }) => {
                             handleAddTag();
                           }
                         }}
-                        className="h-10 rounded-xl text-xs border-purple-100"
+                        className="h-11 sm:h-10 rounded-xl text-xs border-purple-100"
                       />
                       <Button
                         type="button"
                         onClick={handleAddTag}
-                        className="h-10 px-4 rounded-xl bg-purple-100 hover:bg-purple-200 text-[#6A38C2] font-bold text-xs shrink-0"
+                        className="h-11 sm:h-10 px-4 w-full min-[420px]:w-auto justify-center rounded-xl bg-purple-100 hover:bg-purple-200 text-[#6A38C2] font-bold text-xs shrink-0"
                       >
                         Add Tag
                       </Button>
@@ -763,17 +763,17 @@ const CreateEvent = ({ isEdit = false }) => {
                   </div>
 
                   {/* Cover Image Upload / Selection */}
-                  <div className="pt-2">
+                  <div className="pt-1 sm:pt-2">
                     <Label className="text-xs font-black text-gray-900 mb-1.5 block">
                       Cover Banner Image
                     </Label>
 
                     {/* Preset Picker */}
                     <div className="mb-3">
-                      <span className="text-[11px] font-bold text-gray-400 block mb-1.5">
+                      <span className="text-[11px] font-bold text-gray-400 block mb-2 sm:mb-1.5">
                         Choose a high-res tech preset or upload your own:
                       </span>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-2">
                         {PRESET_BANNERS.map((preset) => (
                           <button
                             key={preset.name}
@@ -786,10 +786,10 @@ const CreateEvent = ({ isEdit = false }) => {
                                 banner: preset.url,
                               }));
                             }}
-                            className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                            className={`relative h-20 sm:h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                               formData.banner === preset.url && !coverFile
-                                ? "border-[#6A38C2] ring-2 ring-[#6A38C2]/30 scale-102"
-                                : "border-purple-100 hover:border-purple-300 opacity-80 hover:opacity-100"
+                                ? "border-[#6A38C2] ring-2 ring-[#6A38C2]/30 sm:scale-102"
+                                : "border-purple-100 hover:border-purple-300 opacity-85 hover:opacity-100"
                             }`}
                           >
                             <img
@@ -797,7 +797,7 @@ const CreateEvent = ({ isEdit = false }) => {
                               alt={preset.name}
                               className="w-full h-full object-cover"
                             />
-                            <span className="absolute inset-0 bg-black/40 flex items-center justify-center text-[10.5px] font-black text-white px-1 text-center">
+                            <span className="absolute inset-0 bg-black/45 flex items-center justify-center text-xs sm:text-[10.5px] font-black text-white px-1.5 text-center">
                               {preset.name}
                             </span>
                           </button>
@@ -806,7 +806,7 @@ const CreateEvent = ({ isEdit = false }) => {
                     </div>
 
                     {/* File Upload Area */}
-                    <div className="relative border-2 border-dashed border-purple-200 hover:border-[#6A38C2] rounded-2xl p-5 text-center transition-all bg-purple-50/20">
+                    <div className="relative border-2 border-dashed border-purple-200 hover:border-[#6A38C2] rounded-2xl p-4 sm:p-5 text-center transition-all bg-purple-50/20">
                       <input
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
@@ -817,16 +817,16 @@ const CreateEvent = ({ isEdit = false }) => {
                         size={28}
                         className="text-[#6A38C2] mx-auto mb-1.5"
                       />
-                      <span className="text-xs font-bold text-gray-900 block">
+                      <span className="text-xs font-bold text-gray-900 block leading-snug">
                         Upload Custom Event Banner (PNG, JPG, WEBP)
                       </span>
                       <span className="text-[11px] text-gray-400 block mt-0.5">
                         Recommended 16:9 ratio (1200x675) • Max 5MB
                       </span>
                       {coverFile && (
-                        <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
-                          <CheckCircle2 size={13} />
-                          <span>Selected: {coverFile.name}</span>
+                        <div className="mt-2 inline-flex items-center gap-1.5 max-w-full px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                          <CheckCircle2 size={13} className="shrink-0" />
+                          <span className="truncate">Selected: {coverFile.name}</span>
                         </div>
                       )}
                     </div>
@@ -842,12 +842,12 @@ const CreateEvent = ({ isEdit = false }) => {
                   transition={{ duration: 0.25 }}
                   className="space-y-6"
                 >
-                  <div className="border-b border-purple-50 pb-4">
-                    <h2 className="text-lg font-black text-gray-950 flex items-center gap-2">
-                      <CalendarDays size={18} className="text-[#6A38C2]" />
+                  <div className="border-b border-purple-50 pb-3.5 sm:pb-4">
+                    <h2 className="text-base sm:text-lg font-black text-gray-950 flex items-start sm:items-center gap-2 leading-snug">
+                      <CalendarDays size={18} className="text-[#6A38C2] shrink-0 mt-0.5 sm:mt-0" />
                       <span>2. Schedule, Timezone & Venue</span>
                     </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-1 sm:mt-0.5 leading-relaxed">
                       Configure your event format, calendar dates, timezone, and virtual link or physical venue.
                     </p>
                   </div>
@@ -1005,7 +1005,7 @@ const CreateEvent = ({ isEdit = false }) => {
                         setFormData((prev) => ({ ...prev, timezone: val }))
                       }
                     >
-                      <SelectTrigger className="h-11 rounded-xl border-purple-100 font-bold text-xs sm:text-sm">
+                      <SelectTrigger className="w-full h-11 rounded-xl border-purple-100 font-bold text-xs sm:text-sm">
                         <SelectValue placeholder="Select Timezone" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-purple-100 bg-white">
@@ -1051,12 +1051,12 @@ const CreateEvent = ({ isEdit = false }) => {
                       </div>
 
                       {/* Public vs Registered Attendees Only Toggle */}
-                      <div className="flex items-center justify-between pt-1">
-                        <div>
+                      <div className="flex items-center justify-between gap-3 pt-1">
+                        <div className="min-w-0">
                           <span className="text-xs font-bold text-gray-800 block">
                             Public Meeting Access
                           </span>
-                          <span className="text-[11px] text-gray-500 block">
+                          <span className="text-[11px] text-gray-500 block leading-snug">
                             If disabled, link is only revealed to registered candidates.
                           </span>
                         </div>
@@ -1069,7 +1069,7 @@ const CreateEvent = ({ isEdit = false }) => {
                               isMeetingLinkPublic: e.target.checked,
                             }))
                           }
-                          className="w-4 h-4 accent-[#6A38C2] rounded cursor-pointer"
+                          className="w-4 h-4 shrink-0 accent-[#6A38C2] rounded cursor-pointer"
                         />
                       </div>
                     </div>
@@ -1156,23 +1156,23 @@ const CreateEvent = ({ isEdit = false }) => {
                   transition={{ duration: 0.25 }}
                   className="space-y-6"
                 >
-                  <div className="border-b border-purple-50 pb-4">
-                    <h2 className="text-lg font-black text-gray-950 flex items-center gap-2">
-                      <Users size={18} className="text-[#6A38C2]" />
+                  <div className="border-b border-purple-50 pb-3.5 sm:pb-4">
+                    <h2 className="text-base sm:text-lg font-black text-gray-950 flex items-start sm:items-center gap-2 leading-snug">
+                      <Users size={18} className="text-[#6A38C2] shrink-0 mt-0.5 sm:mt-0" />
                       <span>3. Registration, Capacity & Agenda</span>
                     </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-1 sm:mt-0.5 leading-relaxed">
                       Set capacity limits, RSVP deadlines, ticket pricing, and session schedule timeline.
                     </p>
                   </div>
 
                   {/* Enable Registration Switch */}
-                  <div className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100 flex items-center justify-between">
-                    <div>
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-purple-50/50 border border-purple-100 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
                       <span className="font-bold text-xs sm:text-sm text-gray-900 block">
                         Accept Student Registrations (RSVP)
                       </span>
-                      <span className="text-[11px] text-gray-500 block">
+                      <span className="text-[11px] text-gray-500 block leading-snug mt-0.5">
                         Allow students to register for this event with 1-click on the HireNest portal.
                       </span>
                     </div>
@@ -1185,7 +1185,7 @@ const CreateEvent = ({ isEdit = false }) => {
                           isRegistrationEnabled: e.target.checked,
                         }))
                       }
-                      className="w-5 h-5 accent-[#6A38C2] rounded cursor-pointer"
+                      className="w-5 h-5 shrink-0 accent-[#6A38C2] rounded cursor-pointer"
                     />
                   </div>
 
@@ -1193,11 +1193,11 @@ const CreateEvent = ({ isEdit = false }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Capacity */}
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
                         <Label className="text-xs font-black text-gray-900">
                           Maximum Capacity (Seats)
                         </Label>
-                        <label className="flex items-center gap-1.5 text-xs font-bold text-purple-700 cursor-pointer">
+                        <label className="flex items-center gap-1.5 text-xs font-bold text-purple-700 cursor-pointer shrink-0">
                           <input
                             type="checkbox"
                             checked={formData.isUnlimitedCapacity}
@@ -1254,7 +1254,7 @@ const CreateEvent = ({ isEdit = false }) => {
                       Event Pricing Model
                     </Label>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                       <button
                         type="button"
                         onClick={() =>
@@ -1264,7 +1264,7 @@ const CreateEvent = ({ isEdit = false }) => {
                             price: 0,
                           }))
                         }
-                        className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                        className={`p-2.5 sm:p-3 rounded-xl border text-center text-xs sm:text-sm transition-all cursor-pointer ${
                           formData.priceType === "free"
                             ? "bg-emerald-500 text-white border-emerald-600 font-black shadow-xs"
                             : "bg-white text-gray-700 border-amber-200 font-bold"
@@ -1282,7 +1282,7 @@ const CreateEvent = ({ isEdit = false }) => {
                             price: prev.price || 499,
                           }))
                         }
-                        className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                        className={`p-2.5 sm:p-3 rounded-xl border text-center text-xs sm:text-sm transition-all cursor-pointer ${
                           formData.priceType === "paid"
                             ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-600 font-black shadow-xs"
                             : "bg-white text-gray-700 border-amber-200 font-bold"
@@ -1409,12 +1409,12 @@ const CreateEvent = ({ isEdit = false }) => {
                   transition={{ duration: 0.25 }}
                   className="space-y-6"
                 >
-                  <div className="border-b border-purple-50 pb-4">
-                    <h2 className="text-lg font-black text-gray-950 flex items-center gap-2">
-                      <CheckCircle2 size={18} className="text-emerald-500" />
+                  <div className="border-b border-purple-50 pb-3.5 sm:pb-4">
+                    <h2 className="text-base sm:text-lg font-black text-gray-950 flex items-start sm:items-center gap-2 leading-snug">
+                      <CheckCircle2 size={18} className="text-emerald-500 shrink-0 mt-0.5 sm:mt-0" />
                       <span>4. Pre-Launch Verification</span>
                     </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-1 sm:mt-0.5 leading-relaxed">
                       Review all configured event parameters before publishing live to the student portal.
                     </p>
                   </div>
@@ -1491,7 +1491,7 @@ const CreateEvent = ({ isEdit = false }) => {
                       variant="outline"
                       disabled={submitting}
                       onClick={() => handleSubmit("Draft")}
-                      className="h-11 px-5 rounded-2xl border-purple-200 text-[#6A38C2] font-bold text-xs hover:bg-purple-50"
+                      className="h-11 px-5 w-full sm:w-auto justify-center rounded-2xl border-purple-200 text-[#6A38C2] font-bold text-xs hover:bg-purple-50"
                     >
                       Save as Private Draft
                     </Button>
@@ -1499,7 +1499,7 @@ const CreateEvent = ({ isEdit = false }) => {
                     <Button
                       disabled={submitting}
                       onClick={() => handleSubmit("Published")}
-                      className="h-11 px-7 rounded-2xl bg-gradient-to-r from-[#6A38C2] via-purple-600 to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-black text-xs sm:text-sm shadow-xl shadow-purple-600/30 flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-102 active:scale-98"
+                      className="h-11 px-6 sm:px-7 w-full sm:w-auto justify-center rounded-2xl bg-gradient-to-r from-[#6A38C2] via-purple-600 to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-black text-xs sm:text-sm shadow-xl shadow-purple-600/30 flex items-center gap-2 cursor-pointer transition-all hover:scale-102 active:scale-98"
                     >
                       {submitting ? (
                         <>
@@ -1518,41 +1518,41 @@ const CreateEvent = ({ isEdit = false }) => {
               )}
 
               {/* Bottom Wizard Stepper Navigation */}
-              <div className="mt-8 pt-6 border-t border-purple-100 flex items-center justify-between">
+              <div className="mt-7 sm:mt-8 pt-5 sm:pt-6 border-t border-purple-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
                 <Button
                   variant="outline"
                   disabled={currentStep === 1 || submitting}
                   onClick={handlePrevStep}
-                  className="h-10 px-4 rounded-xl border-purple-200 text-xs font-bold text-gray-700 hover:bg-purple-50"
+                  className="h-11 sm:h-10 px-4 w-full sm:w-auto justify-center rounded-xl border-purple-200 text-xs font-bold text-gray-700 hover:bg-purple-50"
                 >
-                  <ArrowLeft size={14} className="mr-1.5" />
+                  <ArrowLeft size={14} className="mr-1.5 shrink-0" />
                   <span>Previous</span>
                 </Button>
 
                 {currentStep < 4 ? (
                   <Button
                     onClick={handleNextStep}
-                    className="h-10 px-5 rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6] text-white text-xs font-bold shadow-xs"
+                    className="h-11 sm:h-10 px-4 sm:px-5 w-full sm:w-auto justify-center rounded-xl bg-[#6A38C2] hover:bg-[#5B21B6] text-white text-xs font-bold shadow-xs"
                   >
-                    <span>Next: {WIZARD_STEPS[currentStep].title}</span>
-                    <ArrowRight size={14} className="ml-1.5" />
+                    <span className="truncate">Next: {WIZARD_STEPS[currentStep].title}</span>
+                    <ArrowRight size={14} className="ml-1.5 shrink-0" />
                   </Button>
                 ) : (
                   <Button
                     disabled={submitting}
                     onClick={() => handleSubmit("Published")}
-                    className="h-10 px-6 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] text-white text-xs font-black shadow-xs"
+                    className="h-11 sm:h-10 px-6 w-full sm:w-auto justify-center rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] text-white text-xs font-black shadow-xs"
                   >
                     <span>Publish Event</span>
-                    <Sparkles size={14} className="ml-1.5 text-amber-300" />
+                    <Sparkles size={14} className="ml-1.5 text-amber-300 shrink-0" />
                   </Button>
                 )}
               </div>
             </div>
 
             {/* Right 4 Columns: Live Student Discovery Preview */}
-            <div className="lg:col-span-4 sticky top-24">
-              <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-purple-100/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5">
+            <div className="lg:col-span-4 min-w-0 lg:sticky lg:top-24">
+              <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-purple-100/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-5 overflow-hidden">
                 <EventLivePreview
                   formData={formData}
                   bannerPreview={coverPreview}

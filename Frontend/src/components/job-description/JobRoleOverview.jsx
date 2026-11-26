@@ -84,13 +84,13 @@ const JobRoleOverview = ({ singleJob }) => {
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-4 sm:space-y-8">
       {/* 1. Main Role Overview & Specification Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative rounded-3xl p-6 sm:p-8 lg:p-10 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)] overflow-hidden"
+        className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)] overflow-hidden"
       >
         {/* Ambient Top Glow */}
         <div
@@ -99,37 +99,37 @@ const JobRoleOverview = ({ singleJob }) => {
         />
 
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-purple-100 gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-100 to-pink-50 border border-purple-200/80 flex items-center justify-center text-[#6A38C2] shadow-2xs">
-              <FileText size={22} />
+        <div className="flex items-center justify-between pb-3.5 sm:pb-6 mb-3.5 sm:mb-6 border-b border-purple-100 gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-purple-100 to-pink-50 border border-purple-200/80 flex items-center justify-center text-[#6A38C2] shadow-2xs shrink-0">
+              <FileText className="w-4 h-4 sm:w-[22px] sm:h-[22px]" />
             </div>
-            <div>
-              <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-2xl font-black text-gray-900 tracking-tight truncate">
                 Role Overview & Scope
               </h2>
-              <p className="text-xs sm:text-sm text-gray-500 font-medium">
+              <p className="hidden sm:block text-xs sm:text-sm text-gray-500 font-medium">
                 Comprehensive mandate and expectations for this opening
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={handleCopyDescription}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200/80 text-[#6A38C2] text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+              className="inline-flex items-center gap-1.5 h-8 sm:h-auto px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200/80 text-[#6A38C2] text-[11px] sm:text-xs font-semibold transition-all cursor-pointer shadow-2xs"
               title="Copy text"
             >
               {copied ? (
                 <>
-                  <Check size={13} className="text-emerald-600" />
+                  <Check size={12} className="text-emerald-600 shrink-0" />
                   <span className="text-emerald-700">Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy size={13} className="text-[#6A38C2]" />
-                  <span>Copy Text</span>
+                  <Copy size={12} className="text-[#6A38C2] shrink-0" />
+                  <span>Copy</span>
                 </>
               )}
             </button>
@@ -138,7 +138,7 @@ const JobRoleOverview = ({ singleJob }) => {
 
         {/* Formatted Role Description */}
         <div className="prose max-w-none">
-          <p className="text-gray-700 text-sm sm:text-base leading-relaxed sm:leading-loose whitespace-pre-line font-normal">
+          <p className="text-gray-700 text-xs sm:text-base leading-relaxed sm:leading-loose whitespace-pre-line font-normal">
             {singleJob?.description ||
               "No detailed role description provided for this opening. Please contact the hiring recruiter for additional parameters."}
           </p>
@@ -146,21 +146,21 @@ const JobRoleOverview = ({ singleJob }) => {
 
         {/* Key Competencies / Requirements Tags */}
         {requirementsList.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-purple-100">
-            <div className="flex items-center gap-2 mb-3.5">
-              <Zap size={16} className="text-[#6A38C2]" />
-              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-800">
-                Key Skills & Competencies Required
+          <div className="mt-4 pt-4 sm:mt-8 sm:pt-6 border-t border-purple-100">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-2.5 sm:mb-3.5">
+              <Zap size={14} className="text-[#6A38C2] shrink-0" />
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-800">
+                Key Skills & Competencies
               </h3>
             </div>
 
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2.5">
               {requirementsList.map((skill, i) => (
                 <div
                   key={`${skill}-${i}`}
-                  className="group flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-purple-50/80 border border-purple-200/80 text-xs sm:text-sm font-semibold text-gray-800 hover:border-[#6A38C2] hover:bg-purple-100/70 hover:text-[#6A38C2] transition-all shadow-2xs"
+                  className="group flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-purple-50/80 border border-purple-200/80 text-[11px] sm:text-sm font-semibold text-gray-800 hover:border-[#6A38C2] hover:bg-purple-100/70 hover:text-[#6A38C2] transition-all shadow-2xs"
                 >
-                  <CheckCircle2 size={13} className="text-[#6A38C2] shrink-0" />
+                  <CheckCircle2 size={12} className="text-[#6A38C2] shrink-0" />
                   <span>{skill}</span>
                 </div>
               ))}
@@ -174,47 +174,47 @@ const JobRoleOverview = ({ singleJob }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-        className="relative rounded-3xl p-6 sm:p-8 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)] overflow-hidden"
+        className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-8 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)] overflow-hidden"
       >
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-purple-100">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-100 to-purple-100 border border-purple-200/80 flex items-center justify-center text-[#6A38C2]">
-            <Sparkles size={18} />
+        <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 pb-3 sm:mb-6 sm:pb-4 border-b border-purple-100">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-100 to-purple-100 border border-purple-200/80 flex items-center justify-center text-[#6A38C2] shrink-0">
+            <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
           </div>
-          <div>
-            <h3 className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-xl font-black text-gray-900 tracking-tight truncate">
               Recruitment Process & Roadmap
             </h3>
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="hidden sm:block text-xs text-gray-500 font-medium">
               Transparent 4-stage evaluation designed for speed and clarity
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
           {recruitmentSteps.map((item) => {
             const Icon = item.icon;
             return (
               <div
                 key={item.step}
-                className="group relative rounded-2xl p-4 sm:p-5 bg-purple-50/40 hover:bg-purple-50/90 border border-purple-100 hover:border-purple-200/90 transition-all duration-300 flex items-start gap-4 shadow-2xs"
+                className="group relative rounded-xl sm:rounded-2xl p-3 sm:p-5 bg-purple-50/40 hover:bg-purple-50/90 border border-purple-100 hover:border-purple-200/90 transition-all duration-300 flex items-start gap-3 sm:gap-4 shadow-2xs"
               >
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-purple-200/60 shadow-2xs group-hover:scale-105 transition-transform"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 border border-purple-200/60 shadow-2xs group-hover:scale-105 transition-transform"
                   style={{ backgroundColor: `${item.accent}12`, color: item.accent }}
                 >
-                  <Icon size={19} />
+                  <Icon className="w-4 h-4 sm:w-[19px] sm:h-[19px]" />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#6A38C2]">
+                  <div className="flex items-center justify-between gap-2 mb-0.5 sm:mb-1">
+                    <span className="text-[9.5px] sm:text-[10px] font-mono font-bold tracking-widest uppercase text-[#6A38C2]">
                       STAGE {item.step}
                     </span>
                   </div>
-                  <h4 className="text-sm sm:text-base font-bold text-gray-900 group-hover:text-[#6A38C2] transition-colors">
+                  <h4 className="text-xs sm:text-base font-bold text-gray-900 group-hover:text-[#6A38C2] transition-colors">
                     {item.title}
                   </h4>
-                  <p className="text-xs text-gray-600 leading-relaxed mt-1">
+                  <p className="text-[11px] sm:text-xs text-gray-600 leading-relaxed mt-0.5 sm:mt-1">
                     {item.desc}
                   </p>
                 </div>

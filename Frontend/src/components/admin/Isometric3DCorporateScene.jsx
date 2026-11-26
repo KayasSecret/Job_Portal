@@ -18,7 +18,7 @@ import {
  */
 const Isometric3DCorporateScene = ({ companyName = "", location = "", website = "", logoPreview = null }) => {
   return (
-    <div className="relative w-full h-full min-h-[460px] flex items-center justify-center p-8 select-none overflow-hidden">
+    <div className="relative w-full h-full min-h-[410px] sm:min-h-[460px] flex flex-col sm:flex-row items-center justify-between sm:justify-center pt-12 pb-4 px-3.5 sm:p-8 select-none overflow-hidden">
       {/* Ambient Lighting Orbs */}
       <div
         aria-hidden="true"
@@ -36,30 +36,30 @@ const Isometric3DCorporateScene = ({ companyName = "", location = "", website = 
       />
 
       {/* Futuristic Isometric Campus Illustration (SVG + CSS 3D Depth) */}
-      <div className="relative z-10 w-full max-w-[380px] aspect-square flex items-center justify-center">
+      <div className="relative z-10 w-full max-w-[300px] sm:max-w-[380px] min-h-[310px] sm:min-h-0 sm:aspect-square py-9 sm:py-0 flex items-center justify-center">
         {/* Floating Rotating Holographic Ring */}
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-4 rounded-full border border-dashed border-purple-400/25 pointer-events-none"
+          className="absolute inset-0 m-auto w-60 h-60 sm:w-auto sm:h-auto sm:inset-4 rounded-full border border-dashed border-purple-400/25 pointer-events-none"
         />
         <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-10 rounded-full border border-purple-300/15 pointer-events-none"
+          className="absolute inset-0 m-auto w-48 h-48 sm:w-auto sm:h-auto sm:inset-10 rounded-full border border-purple-300/15 pointer-events-none"
         />
 
         {/* Central Isometric Cyber Tower Structure */}
         <motion.div
           animate={{ y: [-8, 8, -8] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="relative flex flex-col items-center"
+          className="relative flex flex-col items-center w-full"
         >
           {/* Holographic Glowing Crown / Floating Diamond */}
           <motion.div
             animate={{ rotateY: 360 }}
             transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6A38C2] via-[#9333EA] to-[#EC4899] p-0.5 shadow-[0_0_30px_rgba(168,85,247,0.6)] flex items-center justify-center mb-4 backdrop-blur-md overflow-hidden"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-[#6A38C2] via-[#9333EA] to-[#EC4899] p-0.5 shadow-[0_0_30px_rgba(168,85,247,0.6)] flex items-center justify-center mb-3 sm:mb-4 backdrop-blur-md overflow-hidden"
           >
             <div className="w-full h-full rounded-[14px] bg-[#1E0E3E]/90 flex items-center justify-center text-white overflow-hidden">
               {logoPreview ? (
@@ -75,18 +75,18 @@ const Isometric3DCorporateScene = ({ companyName = "", location = "", website = 
           </motion.div>
 
           {/* Isometric Office Tower Block 1 (Top Level) */}
-          <div className="relative w-52 h-22 bg-gradient-to-br from-purple-500/40 via-indigo-600/30 to-[#1E0E3E]/80 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5 min-w-0">
+          <div className="relative w-48 sm:w-52 min-h-[72px] sm:h-22 bg-gradient-to-br from-purple-500/40 via-indigo-600/30 to-[#1E0E3E]/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl p-3 sm:p-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34D399] animate-ping shrink-0" />
               <div className="text-left min-w-0">
-                <div className="text-xs font-black text-white tracking-wide truncate max-w-[120px]">
+                <div className="text-xs font-black text-white tracking-wide truncate max-w-[110px] sm:max-w-[120px]">
                   {companyName.trim() || "HireNest HQ"}
                 </div>
-                <div className="text-[10px] text-purple-200/70 truncate max-w-[110px]">
+                <div className="text-[10px] text-purple-200/70 truncate max-w-[105px] sm:max-w-[110px]">
                   {location.trim() || "Global Enterprise"}
                 </div>
                 {website?.trim() && (
-                  <div className="text-[9px] text-cyan-300 truncate max-w-[110px]">
+                  <div className="text-[9px] text-cyan-300 truncate max-w-[105px] sm:max-w-[110px]">
                     {website.trim().replace(/^https?:\/\//i, "")}
                   </div>
                 )}
@@ -99,27 +99,27 @@ const Isometric3DCorporateScene = ({ companyName = "", location = "", website = 
           </div>
 
           {/* Tower Connector Beam */}
-          <div className="w-24 h-4 bg-gradient-to-b from-purple-400/40 to-transparent" />
+          <div className="w-20 sm:w-24 h-3 sm:h-4 bg-gradient-to-b from-purple-400/40 to-transparent" />
 
           {/* Isometric Campus Base Floor (Bottom Level) */}
-          <div className="relative w-64 h-24 bg-gradient-to-br from-[#2E1065]/90 to-[#14082B]/95 backdrop-blur-2xl rounded-3xl border border-purple-400/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-4 flex items-center justify-around">
+          <div className="relative w-full max-w-[236px] sm:max-w-none sm:w-64 h-20 sm:h-24 bg-gradient-to-br from-[#2E1065]/90 to-[#14082B]/95 backdrop-blur-2xl rounded-2xl sm:rounded-3xl border border-purple-400/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] px-3 py-2.5 sm:p-4 flex items-center justify-around">
             <div className="text-center">
               <div className="text-xs font-black text-purple-200">100%</div>
-              <div className="text-[9px] uppercase tracking-wider text-purple-400 font-semibold">
+              <div className="text-[8.5px] sm:text-[9px] uppercase tracking-wider text-purple-400 font-semibold">
                 Verified
               </div>
             </div>
-            <div className="h-8 w-px bg-purple-400/20" />
+            <div className="h-7 sm:h-8 w-px bg-purple-400/20" />
             <div className="text-center">
               <div className="text-xs font-black text-purple-200">Instant</div>
-              <div className="text-[9px] uppercase tracking-wider text-purple-400 font-semibold">
+              <div className="text-[8.5px] sm:text-[9px] uppercase tracking-wider text-purple-400 font-semibold">
                 Requisitions
               </div>
             </div>
-            <div className="h-8 w-px bg-purple-400/20" />
+            <div className="h-7 sm:h-8 w-px bg-purple-400/20" />
             <div className="text-center">
               <div className="text-xs font-black text-purple-200">Global</div>
-              <div className="text-[9px] uppercase tracking-wider text-purple-400 font-semibold">
+              <div className="text-[8.5px] sm:text-[9px] uppercase tracking-wider text-purple-400 font-semibold">
                 Branding
               </div>
             </div>
@@ -130,24 +130,24 @@ const Isometric3DCorporateScene = ({ companyName = "", location = "", website = 
         <motion.div
           animate={{ y: [-5, 5, -5], x: [3, -3, 3] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-8 left-2 px-3 py-1.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-semibold flex items-center gap-1.5 shadow-lg shadow-purple-900/30"
+          className="absolute top-0 left-0 sm:top-8 sm:left-2 z-20 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] sm:text-[11px] font-semibold flex items-center gap-1.5 shadow-lg shadow-purple-900/30"
         >
-          <Sparkles size={12} className="text-amber-300" />
+          <Sparkles size={12} className="text-amber-300 shrink-0" />
           <span>Talent Pipeline</span>
         </motion.div>
 
         <motion.div
           animate={{ y: [6, -6, 6], x: [-3, 3, -3] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-10 right-2 px-3 py-1.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-semibold flex items-center gap-1.5 shadow-lg shadow-pink-900/30"
+          className="absolute bottom-0 right-0 sm:bottom-10 sm:right-2 z-20 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] sm:text-[11px] font-semibold flex items-center gap-1.5 shadow-lg shadow-pink-900/30"
         >
-          <ShieldCheck size={13} className="text-emerald-400" />
+          <ShieldCheck size={13} className="text-emerald-400 shrink-0" />
           <span>Verified Recruiter</span>
         </motion.div>
       </div>
 
       {/* Bottom Subtitle / Tagline */}
-      <div className="absolute bottom-4 left-0 right-0 text-center text-xs text-purple-200/70 font-medium">
+      <div className="relative sm:absolute mt-2 sm:mt-0 sm:bottom-4 left-0 right-0 text-center text-[10.5px] sm:text-xs text-purple-200/70 font-medium px-2 leading-snug">
         HireNest 3D Entity Command Center &bull; Live Entity Preview
       </div>
     </div>

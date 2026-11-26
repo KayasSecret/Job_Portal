@@ -127,21 +127,21 @@ const Events = () => {
         className="max-w-7xl mx-auto px-4 sm:px-6 pt-1 pb-12 sm:pb-16"
       >
         {/* All Events Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-[#6A38C2] text-xs font-bold mb-2 shadow-2xs">
-              <Radio size={13} className="text-emerald-500 animate-pulse" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-purple-100 text-[#6A38C2] text-[11px] sm:text-xs font-bold mb-1.5 sm:mb-2 shadow-2xs">
+              <Radio size={12} className="text-emerald-500 animate-pulse" />
               <span>Live Tech Repertoire</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+            <h2 className="text-xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2">
               <span>All Upcoming Events</span>
-              <span className="text-[#6A38C2] text-xl sm:text-2xl font-black">
+              <span className="text-[#6A38C2] text-lg sm:text-2xl font-black">
                 ({filteredEvents.length})
               </span>
             </h2>
 
-            <p className="text-xs sm:text-sm text-gray-600 mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-gray-600 mt-1 max-w-xl leading-relaxed">
               Explore hands-on workshops, hackathons, webinars, developer conferences and bootcamps.
             </p>
           </div>

@@ -44,31 +44,31 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* 1. Verified Employer Profile Card */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative rounded-3xl p-6 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)] overflow-hidden"
+        className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)] overflow-hidden"
       >
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-purple-100">
+        <div className="flex items-center justify-between pb-3 mb-3 sm:pb-4 sm:mb-4 border-b border-purple-100">
           <div className="flex items-center gap-2">
-            <Building2 size={16} className="text-[#6A38C2]" />
-            <span className="text-xs font-mono font-bold tracking-wider uppercase text-gray-700">
+            <Building2 size={15} className="text-[#6A38C2]" />
+            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider uppercase text-gray-700">
               Employer Intelligence
             </span>
           </div>
 
-          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700">
+          <div className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[9.5px] sm:text-[10px] font-bold text-emerald-700">
             <ShieldCheck size={11} className="text-emerald-600" />
             <span>VERIFIED</span>
           </div>
         </div>
 
         {/* Company Header */}
-        <div className="flex items-start gap-4">
-          <div className="relative w-14 h-14 rounded-2xl bg-purple-50 border border-purple-200/80 p-2 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-purple-50 border border-purple-200/80 p-1.5 sm:p-2 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
             {companyLogo ? (
               <img
                 src={companyLogo}
@@ -76,17 +76,17 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
                 className="w-full h-full object-contain filter drop-shadow-2xs"
               />
             ) : (
-              <Building2 size={26} className="text-[#6A38C2]" />
+              <Building2 className="w-5 h-5 sm:w-[26px] sm:h-[26px] text-[#6A38C2]" />
             )}
             {/* Active pip */}
-            <span className="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+            <span className="absolute bottom-1 right-1 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
           </div>
 
           <div className="min-w-0 flex-1">
-            <h3 className="text-lg font-black text-gray-900 tracking-tight truncate">
+            <h3 className="text-base sm:text-lg font-black text-gray-900 tracking-tight truncate">
               {companyName}
             </h3>
-            <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-600">
+            <div className="flex items-center gap-1.5 mt-0.5 sm:mt-1 text-xs text-gray-600">
               <MapPin size={12} className="text-[#6A38C2] shrink-0" />
               <span className="truncate">{singleJob?.location || company?.location || "India (Remote/Hybrid)"}</span>
             </div>
@@ -95,7 +95,7 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
                 href={company.website.startsWith("http") ? company.website : `https://${company.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-semibold text-[#6A38C2] hover:text-[#5B21B6] transition-colors"
+                className="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-[#6A38C2] hover:text-[#5B21B6] transition-colors"
               >
                 <Globe size={11} />
                 <span className="truncate">{company.website.replace(/^https?:\/\//, "")}</span>
@@ -107,12 +107,12 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
 
         {/* Company Description */}
         {company?.description && (
-          <p className="mt-4 pt-3 border-t border-purple-100 text-xs text-gray-600 leading-relaxed line-clamp-3">
+          <p className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-purple-100 text-xs text-gray-600 leading-relaxed line-clamp-3">
             {company.description}
           </p>
         )}
 
-        <div className="mt-4 pt-3 border-t border-purple-100 flex items-center justify-between text-[11px] text-gray-500">
+        <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-purple-100 flex items-center justify-between text-[11px] text-gray-500">
           <span>Trust Rating</span>
           <span className="font-bold text-amber-600 flex items-center gap-1">
             <Sparkles size={11} /> 100% Direct Recruiter
@@ -125,12 +125,12 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
-        className="relative rounded-3xl p-6 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)]"
+        className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-white/95 border border-purple-100/90 backdrop-blur-xl shadow-[0_10px_35px_rgba(106,56,194,0.06)]"
       >
-        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-purple-100">
+        <div className="flex items-center justify-between pb-3 mb-3 sm:pb-3.5 sm:mb-4 border-b border-purple-100">
           <div className="flex items-center gap-2">
-            <Layers size={16} className="text-[#6A38C2]" />
-            <span className="text-xs font-mono font-bold tracking-wider uppercase text-gray-700">
+            <Layers size={15} className="text-[#6A38C2]" />
+            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider uppercase text-gray-700">
               Role Parameters
             </span>
           </div>
@@ -139,9 +139,9 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
           </span>
         </div>
 
-        <div className="space-y-3.5 text-xs sm:text-sm">
-          <div className="flex items-center justify-between py-1 border-b border-purple-50">
-            <span className="text-gray-600 flex items-center gap-2">
+        <div className="space-y-2.5 sm:space-y-3.5 text-xs sm:text-sm">
+          <div className="flex items-center justify-between py-1 border-b border-purple-50 gap-2">
+            <span className="text-gray-600 flex items-center gap-1.5 sm:gap-2 shrink-0">
               <Briefcase size={13} className="text-[#6A38C2]" />
               Role Title
             </span>
@@ -150,18 +150,18 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-1 border-b border-purple-50">
-            <span className="text-gray-600 flex items-center gap-2">
+          <div className="flex items-center justify-between py-1 border-b border-purple-50 gap-2">
+            <span className="text-gray-600 flex items-center gap-1.5 sm:gap-2 shrink-0">
               <MapPin size={13} className="text-[#6A38C2]" />
               Location
             </span>
-            <span className="font-semibold text-gray-900">
+            <span className="font-semibold text-gray-900 truncate text-right">
               {singleJob?.location || "India"}
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-1 border-b border-purple-50">
-            <span className="text-gray-600 flex items-center gap-2">
+          <div className="flex items-center justify-between py-1 border-b border-purple-50 gap-2">
+            <span className="text-gray-600 flex items-center gap-1.5 sm:gap-2 shrink-0">
               <Clock size={13} className="text-[#6A38C2]" />
               Experience Level
             </span>
@@ -170,8 +170,8 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-1 border-b border-purple-50">
-            <span className="text-gray-600 flex items-center gap-2">
+          <div className="flex items-center justify-between py-1 border-b border-purple-50 gap-2">
+            <span className="text-gray-600 flex items-center gap-1.5 sm:gap-2 shrink-0">
               <IndianRupee size={13} className="text-emerald-600" />
               Target Salary
             </span>
@@ -180,8 +180,8 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-1 border-b border-purple-50">
-            <span className="text-gray-600 flex items-center gap-2">
+          <div className="flex items-center justify-between py-1 border-b border-purple-50 gap-2">
+            <span className="text-gray-600 flex items-center gap-1.5 sm:gap-2 shrink-0">
               <Calendar size={13} className="text-[#6A38C2]" />
               Date Posted
             </span>
@@ -190,8 +190,8 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-1">
-            <span className="text-gray-600 flex items-center gap-2">
+          <div className="flex items-center justify-between py-1 gap-2">
+            <span className="text-gray-600 flex items-center gap-1.5 sm:gap-2 shrink-0">
               <Sparkles size={13} className="text-amber-500" />
               Application Mode
             </span>
@@ -207,7 +207,7 @@ const JobSidebarTelemetry = ({ singleJob, user }) => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.16, ease: "easeOut" }}
-        className="relative rounded-3xl p-6 bg-gradient-to-br from-purple-50/90 via-white to-pink-50/50 border border-purple-200/80 shadow-[0_10px_35px_rgba(106,56,194,0.06)]"
+        className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-gradient-to-br from-purple-50/90 via-white to-pink-50/50 border border-purple-200/80 shadow-[0_10px_35px_rgba(106,56,194,0.06)]"
       >
         <div className="flex items-center gap-2 mb-3">
           <ShieldCheck size={16} className="text-[#6A38C2]" />

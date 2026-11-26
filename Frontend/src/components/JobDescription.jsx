@@ -218,52 +218,52 @@ const JobDescription = () => {
     <>
       <Navbar />
 
-      <div className="relative min-h-screen text-gray-900 pb-20 selection:bg-purple-500 selection:text-white">
+      <div className="relative min-h-screen text-gray-900 pb-12 sm:pb-20 overflow-x-hidden selection:bg-purple-500 selection:text-white">
         {/* Light-themed Ambient Atmosphere Layer */}
         <JobAtmosphericBackground />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8">
           {/* Top Breadcrumb Navigation & Quick Action Controls */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <Link
               to="/jobs"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 hover:bg-white border border-purple-200/90 text-xs font-semibold text-gray-700 hover:text-[#6A38C2] shadow-2xs transition-all hover:scale-105 active:scale-95 group"
+              className="inline-flex items-center gap-1.5 sm:gap-2 h-9 px-3 sm:px-4 rounded-xl sm:rounded-full bg-white/95 hover:bg-white border border-purple-200/90 text-xs font-semibold text-gray-700 hover:text-[#6A38C2] shadow-2xs transition-all hover:scale-105 active:scale-95 group shrink-0"
             >
-              <ChevronLeft size={14} className="group-hover:-translate-x-0.5 transition-transform text-[#6A38C2]" />
-              <span>Back to Job Catalog</span>
+              <ChevronLeft size={14} className="group-hover:-translate-x-0.5 transition-transform text-[#6A38C2] shrink-0" />
+              <span>Back to Jobs</span>
             </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button
                 type="button"
                 onClick={shareRoleHandler}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-white border border-purple-200/90 text-xs font-semibold text-gray-700 hover:text-[#6A38C2] shadow-2xs transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 h-9 px-3 sm:px-3.5 rounded-xl sm:rounded-full bg-white/95 hover:bg-white border border-purple-200/90 text-xs font-semibold text-gray-700 hover:text-[#6A38C2] shadow-2xs transition-all cursor-pointer"
                 title="Share this role"
               >
-                <Share2 size={13} className="text-[#6A38C2]" />
-                <span className="hidden sm:inline">Share Role</span>
+                <Share2 size={13} className="text-[#6A38C2] shrink-0" />
+                <span>Share</span>
               </button>
 
               <button
                 type="button"
                 onClick={saveJobHandler}
                 disabled={saving || saved}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-semibold transition-all cursor-pointer ${
+                className={`inline-flex items-center justify-center gap-1.5 h-9 px-3 sm:px-3.5 rounded-xl sm:rounded-full border text-xs font-semibold transition-all cursor-pointer ${
                   saved
                     ? "bg-purple-50 border-purple-300 text-[#6A38C2] cursor-default shadow-2xs"
-                    : "bg-white/90 hover:bg-white border-purple-200/90 text-gray-700 hover:text-[#6A38C2] shadow-2xs"
+                    : "bg-white/95 hover:bg-white border-purple-200/90 text-gray-700 hover:text-[#6A38C2] shadow-2xs"
                 }`}
                 title={saved ? "Role Bookmarked" : "Save this role"}
               >
                 {saved ? (
                   <>
-                    <BookmarkCheck size={13} className="text-[#6A38C2]" />
+                    <BookmarkCheck size={13} className="text-[#6A38C2] shrink-0" />
                     <span>Saved</span>
                   </>
                 ) : (
                   <>
-                    <Bookmark size={13} className="text-[#6A38C2]" />
-                    <span className="hidden sm:inline">Save Job</span>
+                    <Bookmark size={13} className="text-[#6A38C2] shrink-0" />
+                    <span>Save</span>
                   </>
                 )}
               </button>
@@ -272,16 +272,16 @@ const JobDescription = () => {
 
           {/* Loading Skeleton State */}
           {loading ? (
-            <div className="space-y-6 animate-pulse">
-              <div className="h-80 rounded-3xl bg-white border border-purple-100 shadow-sm" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-4 sm:space-y-6 animate-pulse">
+              <div className="h-64 sm:h-80 rounded-2xl sm:rounded-3xl bg-white border border-purple-100 shadow-sm" />
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {[1, 2, 3, 4].map((n) => (
-                  <div key={n} className="h-32 rounded-2xl bg-white border border-purple-100 shadow-sm" />
+                  <div key={n} className="h-24 sm:h-32 rounded-2xl bg-white border border-purple-100 shadow-sm" />
                 ))}
               </div>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-8">
               {/* ==============================================================
                   1. HERO SECTION: COMPACT PURPLE GRADIENT CAREER COMMAND CENTER
                   ============================================================== */}
@@ -289,7 +289,7 @@ const JobDescription = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="relative rounded-3xl px-5 py-3.5 sm:px-7 sm:py-4 md:px-8 md:py-4.5 mb-6 sm:mb-8 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-2xl"
+                className="relative rounded-2xl sm:rounded-3xl p-4 sm:px-7 sm:py-4 md:px-8 md:py-4.5 mb-0 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-xl sm:shadow-2xl"
               >
                 {/* Ambient Soft Glow Orbs */}
                 <div
@@ -301,26 +301,26 @@ const JobDescription = () => {
                   className="pointer-events-none absolute -bottom-16 -right-16 w-60 h-60 rounded-full bg-[#EC4899]/25 blur-3xl"
                 />
 
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-center">
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6 items-center">
                   {/* Left Column: Job Details & Primary Action */}
-                  <div className="lg:col-span-7 flex flex-col justify-center">
-                    {/* Top Verified Opportunity Pill */}
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10.5px] font-semibold text-purple-200 mb-1.5 self-start shadow-xs">
+                  <div className="lg:col-span-7 flex flex-col justify-center min-w-0">
+                    {/* Top Verified Opportunity Pill (Desktop/Tablet only to keep mobile header uncluttered) */}
+                    <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10.5px] font-semibold text-purple-200 mb-1.5 self-start shadow-xs">
                       <Sparkles size={11} className="text-amber-300 animate-spin" style={{ animationDuration: "10s" }} />
                       <span className="tracking-wide">Direct Recruiter Verified Opening</span>
                       <ShieldCheck size={12} className="text-emerald-400" />
                     </div>
 
                     {/* Job Title with Gradient Accent */}
-                    <h1 className="text-xl sm:text-2xl lg:text-[28px] font-black tracking-tight text-white leading-tight">
+                    <h1 className="text-lg sm:text-2xl lg:text-[28px] font-black tracking-tight text-white leading-snug sm:leading-tight break-words">
                       <span className="bg-gradient-to-r from-white via-purple-100 to-pink-200 bg-clip-text text-transparent">
                         {singleJob?.title || "Technology Specialist"}
                       </span>
                     </h1>
 
                     {/* Company Identity & Location */}
-                    <div className="flex flex-wrap items-center gap-2.5 mt-1.5 text-purple-100/90 text-xs">
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 sm:mt-1.5 text-purple-100/90 text-xs">
+                      <div className="flex items-center gap-2 min-w-0">
                         <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/15 p-1 flex items-center justify-center shrink-0 backdrop-blur-md shadow-xs">
                           {companyLogo ? (
                             <img
@@ -332,48 +332,44 @@ const JobDescription = () => {
                             <Building2 size={14} className="text-purple-200" />
                           )}
                         </div>
-                        <span className="font-bold text-white text-sm sm:text-base">
+                        <span className="font-bold text-white text-xs sm:text-base truncate">
                           {companyName}
                         </span>
                       </div>
 
                       {singleJob?.location && (
-                        <>
-                          <span className="text-white/30">•</span>
-                          <div className="flex items-center gap-1 text-[11.5px] sm:text-xs text-purple-200 font-medium">
-                            <MapPin size={13} className="text-pink-400 shrink-0" />
-                            <span>{singleJob.location}</span>
-                          </div>
-                        </>
+                        <div className="flex items-center gap-1 text-[11px] sm:text-xs text-purple-200 font-medium">
+                          <MapPin size={12} className="text-pink-400 shrink-0" />
+                          <span>{singleJob.location}</span>
+                        </div>
                       )}
 
-                      <span className="text-white/30">•</span>
-                      <div className="flex items-center gap-1 text-[11.5px] sm:text-xs text-purple-200 font-medium">
-                        <Clock size={13} className="text-cyan-400 shrink-0" />
+                      <div className="flex items-center gap-1 text-[11px] sm:text-xs text-purple-200 font-medium">
+                        <Clock size={12} className="text-cyan-400 shrink-0" />
                         <span>{experienceYears === 0 ? "Fresher Friendly" : `${experienceYears}+ Yrs Exp`}</span>
                       </div>
                     </div>
 
                     {/* Parameter Badges */}
-                    <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <div className="px-2.5 py-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-purple-200 text-[11px] font-bold shadow-xs flex items-center gap-1.5">
-                        <Layers size={12} className="text-purple-300" />
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2.5 sm:mt-2">
+                      <div className="px-2.5 py-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-purple-200 text-[10.5px] sm:text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5">
+                        <Layers size={11} className="text-purple-300 shrink-0" />
                         <span>{singleJob?.position} Openings</span>
                       </div>
 
-                      <div className="px-2.5 py-1 rounded-lg bg-blue-500/15 backdrop-blur-md border border-blue-400/25 text-blue-200 text-[11px] font-bold shadow-xs flex items-center gap-1.5">
-                        <Clock size={12} className="text-blue-300" />
+                      <div className="px-2.5 py-1 rounded-lg bg-blue-500/15 backdrop-blur-md border border-blue-400/25 text-blue-200 text-[10.5px] sm:text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5">
+                        <Clock size={11} className="text-blue-300 shrink-0" />
                         <span>{singleJob?.jobType || "Full-Time"}</span>
                       </div>
 
-                      <div className="px-2.5 py-1 rounded-lg bg-emerald-500/15 backdrop-blur-md border border-emerald-400/25 text-emerald-200 text-[11px] font-bold shadow-xs flex items-center gap-1.5">
-                        <IndianRupee size={12} className="text-emerald-300" />
+                      <div className="px-2.5 py-1 rounded-lg bg-emerald-500/15 backdrop-blur-md border border-emerald-400/25 text-emerald-200 text-[10.5px] sm:text-[11px] font-bold shadow-xs inline-flex items-center gap-1.5">
+                        <IndianRupee size={11} className="text-emerald-300 shrink-0" />
                         <span>₹ {singleJob?.salary} LPA</span>
                       </div>
                     </div>
 
                     {/* Primary Apply Action Group */}
-                    <div className="mt-3 pt-2.5 sm:pt-3 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <div className="mt-3.5 sm:mt-3 pt-3 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                       <motion.div
                         whileHover={{ scale: isApplied ? 1 : 1.03 }}
                         whileTap={{ scale: isApplied ? 1 : 0.97 }}
@@ -383,7 +379,7 @@ const JobDescription = () => {
                           type="button"
                           onClick={!isApplied && !applying ? applyJobHandler : null}
                           disabled={isApplied || applying}
-                          className={`w-full sm:w-auto px-6 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                          className={`w-full sm:w-auto h-10 sm:h-auto px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
                             isApplied
                               ? "bg-emerald-600 text-white shadow-emerald-500/20 cursor-default"
                               : "bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-purple-600/30"
@@ -391,26 +387,26 @@ const JobDescription = () => {
                         >
                           {isApplied ? (
                             <>
-                              <CheckCircle2 size={16} className="text-white" />
+                              <CheckCircle2 size={15} className="text-white shrink-0" />
                               <span>Applied Successfully ✓</span>
                             </>
                           ) : applying ? (
                             <>
-                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0" />
                               <span>Submitting Application...</span>
                             </>
                           ) : (
                             <>
                               <span>Apply Now</span>
-                              <ArrowRight size={15} className="text-purple-200" />
+                              <ArrowRight size={15} className="text-purple-200 shrink-0" />
                             </>
                           )}
                         </button>
                       </motion.div>
 
                       {/* Security & Resume Policy Indicator */}
-                      <div className="flex items-center gap-1.5 text-[11px] text-purple-200/80">
-                        <FileText size={13} className="text-purple-300 shrink-0" />
+                      <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[10.5px] sm:text-[11px] text-purple-200/80">
+                        <FileText size={12} className="text-purple-300 shrink-0" />
                         <span>
                           {isApplied ? (
                             <span className="text-emerald-300 font-semibold">Application active in candidate pipeline</span>
@@ -423,7 +419,7 @@ const JobDescription = () => {
                   </div>
 
                   {/* Right Column: 3D Holographic Career Command Core */}
-                  <div className="lg:col-span-5 flex items-center justify-center">
+                  <div className="lg:col-span-5 flex items-center justify-center pt-2 sm:pt-0 border-t border-white/10 sm:border-t-0">
                     <CareerHologramCore
                       title={singleJob?.title}
                       company={companyName}
@@ -443,7 +439,7 @@ const JobDescription = () => {
                   Left: Role Overview, Key Skills & Recruitment Journey
                   Right: Company Intelligence, Metadata Table & Candidate Readiness
                   ============================================================== */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 items-start">
                 {/* Main Content Column (65% width) */}
                 <div className="lg:col-span-8">
                   <JobRoleOverview singleJob={singleJob} />

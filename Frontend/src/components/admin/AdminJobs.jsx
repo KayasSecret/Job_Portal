@@ -29,6 +29,7 @@ import {
   Loader2,
   Clock,
   Layers,
+  ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "../ui/badge";
@@ -42,6 +43,8 @@ import axios from "axios";
 import { JOB_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
 
+const MOBILE_INITIAL_CARDS = 3;
+
 const AdminJobs = () => {
   useGetAllAdminJobs();
   useGetAllCompanies();
@@ -54,6 +57,21 @@ const AdminJobs = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 767px)").matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const handleMediaChange = (e) => setIsMobile(e.matches);
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -125,6 +143,18 @@ const AdminJobs = () => {
       return matchesSearch && matchesType;
     });
   }, [allAdminJobs, searchInput, selectedJobType]);
+
+  useEffect(() => {
+    setShowAllMobile(false);
+  }, [searchInput, selectedJobType, allAdminJobs]);
+
+  const isRecruiter = Boolean(user && user.role?.toLowerCase() === "recruiter");
+  const shouldLimitOnMobile = isMobile && isRecruiter && !showAllMobile;
+  const visibleJobs = shouldLimitOnMobile
+    ? filteredJobs.slice(0, MOBILE_INITIAL_CARDS)
+    : filteredJobs;
+  const hasMoreMobileJobs =
+    shouldLimitOnMobile && filteredJobs.length > MOBILE_INITIAL_CARDS;
 
   const confirmDelete = (job) => {
     setJobToDelete(job);
@@ -237,18 +267,20 @@ const AdminJobs = () => {
             </div>
 
             {/* Filters & View Switcher */}
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Job Type Pills */}
-              <div className="flex items-center gap-1 p-1 bg-white rounded-2xl border border-purple-100 shadow-xs">
-                {jobTypeFilterOptions.map((type) => (
+            <div className="flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3">
+              {/* Job Type Segmented Filter Pills */}
+              <div className="grid grid-cols-6 gap-1.5 p-1.5 w-full bg-purple-50/70 backdrop-blur-sm rounded-2xl border border-purple-100/90 shadow-xs md:w-auto md:flex md:items-center md:gap-1 md:p-1 md:bg-white md:border-purple-100">
+                {jobTypeFilterOptions.map((type, idx) => (
                   <button
                     key={type}
                     type="button"
                     onClick={() => setSelectedJobType(type)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    className={`${
+                      idx < 3 ? "col-span-2" : "col-span-3"
+                    } flex items-center justify-center whitespace-nowrap h-9 md:h-auto px-2.5 md:px-3 py-2 md:py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       selectedJobType === type
-                        ? "bg-[#6A38C2] text-white shadow-xs"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-purple-50"
+                        ? "bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] md:bg-none md:bg-[#6A38C2] text-white shadow-sm shadow-purple-600/20 md:shadow-xs"
+                        : "bg-white/90 text-gray-600 border border-purple-100/80 shadow-2xs hover:text-[#6A38C2] hover:bg-white md:bg-transparent md:border-0 md:shadow-none md:hover:text-gray-900 md:hover:bg-purple-50"
                     }`}
                   >
                     {type}
@@ -257,7 +289,7 @@ const AdminJobs = () => {
               </div>
 
               {/* View Mode Toggle */}
-              <div className="flex items-center bg-white p-1 rounded-2xl border border-purple-100 shadow-xs">
+              <div className="flex items-center self-end md:self-auto bg-white p-1 rounded-2xl border border-purple-100 shadow-xs">
                 <button
                   type="button"
                   onClick={() => setViewMode("cards")}
@@ -329,8 +361,9 @@ const AdminJobs = () => {
             </motion.div>
           ) : viewMode === "cards" ? (
             /* ================= 3D INTERACTIVE CARDS GRID ================= */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredJobs.map((job, index) => {
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {visibleJobs.map((job, index) => {
                 const applicantCount = job?.applications?.length || 0;
                 const companyName = job?.company?.name || "Independent Enterprise";
                 const companyLogo = job?.company?.logo;
@@ -557,7 +590,23 @@ const AdminJobs = () => {
                   </motion.div>
                 );
               })}
-            </div>
+              </div>
+
+              {hasMoreMobileJobs && (
+                <div className="mt-6 flex justify-center md:hidden">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => setShowAllMobile(true)}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white border border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-xs font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
+                  >
+                    <span>Show More</span>
+                    <ChevronDown size={15} />
+                  </motion.button>
+                </div>
+              )}
+            </>
           ) : (
             /* ================= ENHANCED TABLE VIEW ================= */
             <AdminJobsTable jobs={filteredJobs} onDelete={confirmDelete} />

@@ -135,7 +135,7 @@ const SavedJobs = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-transparent py-8 sm:py-12 overflow-x-hidden">
+      <div className="min-h-screen bg-transparent py-5 sm:py-12 overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6">
           {/* ==============================================================
               1. HERO SECTION: 3D HOLOGRAPHIC CAREER VAULT COMMAND CENTER
@@ -144,7 +144,7 @@ const SavedJobs = () => {
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
-            className="relative rounded-3xl px-6 py-6 sm:px-8 sm:py-7 md:px-10 md:py-8 mb-8 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-2xl"
+            className="relative rounded-2xl sm:rounded-3xl p-4 sm:px-8 sm:py-7 md:px-10 md:py-8 mb-5 sm:mb-8 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-xl sm:shadow-2xl"
           >
             {/* Ambient Lighting Orbs */}
             <div
@@ -156,18 +156,18 @@ const SavedJobs = () => {
               className="pointer-events-none absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-[#EC4899]/25 blur-3xl"
             />
 
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-center">
               {/* Left Column: Heading, Description & Telemetry Chips */}
-              <div className="lg:col-span-8 flex flex-col justify-center">
-                {/* Vault Badge Pill */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-purple-200 mb-3 self-start shadow-xs">
+              <div className="lg:col-span-8 flex flex-col justify-center min-w-0">
+                {/* Vault Badge Pill (Desktop/Tablet only to keep mobile hero clean) */}
+                <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-purple-200 mb-3 self-start shadow-xs">
                   <Sparkles size={13} className="text-amber-300 animate-spin" style={{ animationDuration: "10s" }} />
                   <span className="tracking-wide">Curated Opportunity Vault • Student Collection</span>
                   <ShieldCheck size={13} className="text-emerald-400" />
                 </div>
 
                 {/* Hero Title */}
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+                <h1 className="text-xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-snug sm:leading-tight">
                   Your Saved{" "}
                   <span className="bg-gradient-to-r from-purple-200 via-pink-200 to-amber-200 bg-clip-text text-transparent">
                     Opportunities
@@ -175,25 +175,25 @@ const SavedJobs = () => {
                 </h1>
 
                 {/* Description */}
-                <p className="mt-2 text-xs sm:text-sm text-purple-100/80 max-w-2xl leading-relaxed">
+                <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-purple-100/85 max-w-2xl leading-relaxed">
                   Review, compare, and fast-track applications for your bookmarked high-impact positions across verified enterprise and high-growth startup innovators.
                 </p>
 
                 {/* Live Vault Telemetry Metrics */}
-                <div className="mt-5 pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2.5 border border-white/10">
-                    <div className="flex items-center gap-1.5 text-purple-300 text-[11px] font-semibold">
-                      <Bookmark size={12} className="text-pink-400" />
-                      <span>Saved Roles</span>
+                <div className="mt-3.5 sm:mt-5 pt-3 sm:pt-4 border-t border-white/10 grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-2.5 border border-white/10">
+                    <div className="flex items-center gap-1 sm:gap-1.5 text-purple-300 text-[10px] sm:text-[11px] font-semibold">
+                      <Bookmark size={11} className="text-pink-400 shrink-0" />
+                      <span className="truncate">Saved Roles</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">
+                    <div className="text-base sm:text-2xl font-black text-white mt-0.5 leading-none">
                       {totalSaved}
                     </div>
                   </div>
 
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2.5 border border-white/10">
+                  <div className="hidden sm:block bg-white/5 backdrop-blur-sm rounded-xl p-2.5 border border-white/10">
                     <div className="flex items-center gap-1.5 text-purple-300 text-[11px] font-semibold">
-                      <TrendingUp size={12} className="text-emerald-400" />
+                      <TrendingUp size={12} className="text-emerald-400 shrink-0" />
                       <span>Ready to Apply</span>
                     </div>
                     <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5 leading-none">
@@ -201,22 +201,22 @@ const SavedJobs = () => {
                     </div>
                   </div>
 
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2.5 border border-white/10">
-                    <div className="flex items-center gap-1.5 text-purple-300 text-[11px] font-semibold">
-                      <IndianRupee size={12} className="text-amber-400" />
-                      <span>Top Package</span>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-2.5 border border-white/10">
+                    <div className="flex items-center gap-1 sm:gap-1.5 text-purple-300 text-[10px] sm:text-[11px] font-semibold">
+                      <IndianRupee size={11} className="text-amber-400 shrink-0" />
+                      <span className="truncate">Top Package</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">
+                    <div className="text-base sm:text-2xl font-black text-white mt-0.5 leading-none truncate">
                       {maxSalary > 0 ? `₹${maxSalary} LPA` : "—"}
                     </div>
                   </div>
 
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2.5 border border-white/10">
-                    <div className="flex items-center gap-1.5 text-purple-300 text-[11px] font-semibold">
-                      <Building2 size={12} className="text-cyan-400" />
-                      <span>Employers</span>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-2.5 border border-white/10">
+                    <div className="flex items-center gap-1 sm:gap-1.5 text-purple-300 text-[10px] sm:text-[11px] font-semibold">
+                      <Building2 size={11} className="text-cyan-400 shrink-0" />
+                      <span className="truncate">Employers</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-white mt-0.5 leading-none">
+                    <div className="text-base sm:text-2xl font-black text-white mt-0.5 leading-none">
                       {uniqueCompaniesCount}
                     </div>
                   </div>
@@ -224,7 +224,7 @@ const SavedJobs = () => {
               </div>
 
               {/* Right Column: 3D Holographic Career Vault Canvas */}
-              <div className="lg:col-span-4 flex items-center justify-center">
+              <div className="lg:col-span-4 flex items-center justify-center pt-2 sm:pt-0 border-t border-white/10 sm:border-t-0">
                 <SavedJobsHologramVault savedCount={totalSaved} />
               </div>
             </div>
@@ -233,10 +233,10 @@ const SavedJobs = () => {
           {/* ==============================================================
               2. SEARCH, FILTER & SORT TOOLBAR
               ============================================================== */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-2xl border border-purple-100/90 shadow-[0_10px_30px_-10px_rgba(106,56,194,0.06)] p-3 sm:p-4 mb-8">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl border border-purple-100/90 shadow-[0_10px_30px_-10px_rgba(106,56,194,0.06)] p-3 sm:p-4 mb-6 sm:mb-8">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 md:gap-3">
               {/* Search Field */}
-              <div className="relative flex-1 max-w-md">
+              <div className="relative w-full md:flex-1 md:max-w-md">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-purple-500">
                   <Search size={15} />
                 </div>
@@ -245,7 +245,7 @@ const SavedJobs = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Filter by role, company, or location..."
-                  className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm text-gray-800 placeholder-gray-400 bg-purple-50/50 rounded-xl border border-purple-100 focus:outline-none focus:border-purple-400 focus:bg-white transition-all font-medium"
+                  className="w-full h-10 md:h-auto pl-9 pr-8 py-2 text-xs sm:text-sm text-gray-800 placeholder-gray-400 bg-purple-50/50 rounded-xl border border-purple-100 focus:outline-none focus:border-purple-400 focus:bg-white transition-all font-medium"
                 />
                 {searchQuery && (
                   <button
@@ -259,15 +259,17 @@ const SavedJobs = () => {
               </div>
 
               {/* Category Pills & Sort Dropdown */}
-              <div className="flex flex-wrap items-center gap-2">
-                {/* Job Type Filter Chips */}
-                <div className="flex items-center gap-1 overflow-x-auto py-1">
-                  {jobTypeOptions.map((type) => (
+              <div className="flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-2.5 md:gap-2">
+                {/* Job Type Filter Chips: 6-col Segmented Grid on Mobile, Inline Row on Tablet/Desktop */}
+                <div className="grid grid-cols-6 gap-1.5 p-1.5 w-full bg-purple-50/70 rounded-xl border border-purple-100/90 md:w-auto md:flex md:items-center md:gap-1 md:p-0 md:bg-transparent md:border-0">
+                  {jobTypeOptions.map((type, idx) => (
                     <button
                       key={type}
                       type="button"
                       onClick={() => setSelectedJobType(type)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                      className={`${
+                        idx < 3 ? "col-span-2" : "col-span-3"
+                      } flex items-center justify-center h-8.5 md:h-auto px-2.5 md:px-3 py-1.5 rounded-lg md:rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
                         selectedJobType === type
                           ? "bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] text-white shadow-purple-500/20"
                           : "bg-white hover:bg-purple-50 text-gray-600 hover:text-[#6A38C2] border border-purple-100"
@@ -279,12 +281,16 @@ const SavedJobs = () => {
                 </div>
 
                 {/* Sort Selector */}
-                <div className="relative flex items-center gap-1.5 bg-white border border-purple-100 rounded-xl px-2.5 py-1.5 shadow-2xs">
-                  <ArrowUpDown size={13} className="text-[#6A38C2] shrink-0" />
+                <div className="relative flex items-center justify-between md:justify-start gap-2 md:gap-1.5 w-full md:w-auto h-9 md:h-auto bg-gray-50/80 md:bg-white border border-purple-100 rounded-xl px-3 md:px-2.5 py-1.5 shadow-2xs">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 md:hidden shrink-0">
+                    <ArrowUpDown size={13} className="text-[#6A38C2] shrink-0" />
+                    <span>Sort by:</span>
+                  </span>
+                  <ArrowUpDown size={13} className="hidden md:block text-[#6A38C2] shrink-0" />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="text-xs font-bold text-gray-700 bg-transparent outline-none cursor-pointer pr-1"
+                    className="text-xs font-bold text-gray-700 bg-transparent outline-none cursor-pointer pr-1 flex-1 md:flex-initial"
                   >
                     <option value="latest">Latest Saved</option>
                     <option value="highest-salary">Highest Salary</option>
@@ -387,7 +393,7 @@ const SavedJobs = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-100 p-8 sm:p-14 text-center shadow-[0_20px_50px_-15px_rgba(106,56,194,0.1)] relative overflow-hidden"
+              className="rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-100 p-6 sm:p-14 text-center shadow-[0_20px_50px_-15px_rgba(106,56,194,0.1)] relative overflow-hidden"
             >
               {/* Ambient Atmosphere Accent Behind Empty State */}
               <div
@@ -397,35 +403,35 @@ const SavedJobs = () => {
 
               <div className="relative z-10 max-w-md mx-auto">
                 {/* 3D Floating Geometric Bookmark Icon with Halo */}
-                <div className="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500/25 via-violet-400/20 to-pink-400/25 blur-xl animate-pulse" />
-                  <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-100 to-violet-100 border border-purple-200/90 shadow-lg flex items-center justify-center text-[#6A38C2]">
-                    <BookmarkCheck size={38} className="animate-bounce" style={{ animationDuration: "3s" }} />
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-100 to-violet-100 border border-purple-200/90 shadow-lg flex items-center justify-center text-[#6A38C2]">
+                    <BookmarkCheck className="w-8 h-8 sm:w-[38px] sm:h-[38px] animate-bounce" style={{ animationDuration: "3s" }} />
                   </div>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+                <h3 className="text-xl sm:text-3xl font-black text-gray-900 tracking-tight">
                   {savedJobs.length === 0
                     ? "Your Career Vault is Empty"
                     : "No Matching Saved Roles"}
                 </h3>
 
-                <p className="mt-2.5 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                <p className="mt-2 sm:mt-2.5 text-xs sm:text-sm text-gray-600 leading-relaxed">
                   {savedJobs.length === 0
                     ? "Discover verified engineering, AI, and design openings from top recruiters and bookmark them to organize and fast-track your applications here."
                     : "No saved opportunities match your current search or filter parameters. Try clearing your filters to view all your bookmarked roles."}
                 </p>
 
                 {/* Action Buttons */}
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-3">
                   {savedJobs.length === 0 ? (
                     <Button
                       onClick={() => navigate("/jobs")}
-                      className="h-11 px-6 rounded-xl bg-gradient-to-r from-[#6A38C2] via-purple-600 to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-bold text-xs sm:text-sm shadow-xl shadow-purple-600/25 flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                      className="w-full sm:w-auto justify-center h-11 px-6 rounded-xl bg-gradient-to-r from-[#6A38C2] via-purple-600 to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white font-bold text-xs sm:text-sm shadow-xl shadow-purple-600/25 flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
                     >
-                      <Compass size={16} />
+                      <Compass size={16} className="shrink-0" />
                       <span>Explore Verified Jobs</span>
-                      <ArrowRight size={15} />
+                      <ArrowRight size={15} className="shrink-0" />
                     </Button>
                   ) : (
                     <Button
@@ -433,7 +439,7 @@ const SavedJobs = () => {
                         setSearchQuery("");
                         setSelectedJobType("All");
                       }}
-                      className="h-10 px-5 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] text-white font-bold text-xs shadow-md cursor-pointer transition-all"
+                      className="w-full sm:w-auto justify-center h-10 px-5 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] text-white font-bold text-xs shadow-md cursor-pointer transition-all"
                     >
                       <span>Reset Filters</span>
                     </Button>

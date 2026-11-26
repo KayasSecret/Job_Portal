@@ -65,7 +65,7 @@ const JobHighlightsTelemetry = ({ singleJob }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-5">
       {cards.map((card, idx) => {
         const Icon = card.icon;
 
@@ -76,7 +76,7 @@ const JobHighlightsTelemetry = ({ singleJob }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: idx * 0.08, ease: "easeOut" }}
             whileHover={{ y: -5, scale: 1.015 }}
-            className="group relative rounded-2xl sm:rounded-3xl p-5 sm:p-6 bg-white/95 hover:bg-white border border-purple-100/90 backdrop-blur-xl overflow-hidden shadow-[0_6px_24px_rgba(106,56,194,0.06)] transition-all duration-300 hover:border-purple-300 hover:shadow-[0_16px_36px_rgba(106,56,194,0.12)]"
+            className="group relative rounded-xl sm:rounded-3xl p-3 sm:p-6 bg-white/95 hover:bg-white border border-purple-100/90 backdrop-blur-xl overflow-hidden shadow-[0_6px_24px_rgba(106,56,194,0.06)] transition-all duration-300 hover:border-purple-300 hover:shadow-[0_16px_36px_rgba(106,56,194,0.12)]"
           >
             {/* Ambient Corner Soft Glow on Hover */}
             <div
@@ -87,33 +87,33 @@ const JobHighlightsTelemetry = ({ singleJob }) => {
 
             {/* Top Accent Gradient Bar */}
             <div
-              className={`absolute top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r ${card.color} opacity-80 group-hover:opacity-100 transition-opacity`}
+              className={`absolute top-0 left-0 right-0 h-[2px] sm:h-[2.5px] bg-gradient-to-r ${card.color} opacity-80 group-hover:opacity-100 transition-opacity`}
             />
 
             {/* Header: Icon & Category Tag */}
-            <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="flex items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-4">
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-2xs group-hover:scale-105 transition-transform duration-300 ${card.iconBg}`}
+                className={`w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center border shadow-2xs group-hover:scale-105 transition-transform duration-300 shrink-0 ${card.iconBg}`}
               >
-                <Icon size={19} />
+                <Icon className="w-3.5 h-3.5 sm:w-[19px] sm:h-[19px]" />
               </div>
 
               <span
-                className={`text-[9.5px] font-mono font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full border ${card.badgeColor}`}
+                className={`hidden sm:inline-block text-[9.5px] font-mono font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full border ${card.badgeColor}`}
               >
                 {card.badge}
               </span>
             </div>
 
             {/* Metric Value */}
-            <div className="mt-2">
-              <div className="text-xs font-bold text-gray-500 tracking-wider uppercase">
+            <div className="mt-1 sm:mt-2 min-w-0">
+              <div className="text-[10px] sm:text-xs font-bold text-gray-500 tracking-wider uppercase truncate">
                 {card.label}
               </div>
-              <div className="text-2xl sm:text-[26px] font-black tracking-tight text-gray-900 mt-1 group-hover:text-[#6A38C2] transition-colors">
+              <div className="text-sm sm:text-[26px] font-black tracking-tight text-gray-900 mt-0.5 sm:mt-1 group-hover:text-[#6A38C2] transition-colors truncate">
                 {card.value}
               </div>
-              <div className="text-[11.5px] font-medium text-gray-500 mt-1 flex items-center gap-1.5">
+              <div className="hidden sm:flex text-[11.5px] font-medium text-gray-500 mt-1 items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block" />
                 <span>{card.sublabel}</span>
               </div>

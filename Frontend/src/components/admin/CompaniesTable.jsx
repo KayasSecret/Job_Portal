@@ -23,9 +23,12 @@ import {
   CheckCircle2,
   Clock,
   Trash2,
+  ChevronDown,
 } from "lucide-react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+
+const MOBILE_INITIAL_CARDS = 3;
 
 const CompaniesTable = ({ viewMode = "cards" }) => {
   const dispatch = useDispatch();
@@ -39,6 +42,21 @@ const CompaniesTable = ({ viewMode = "cards" }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 767px)").matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const handleMediaChange = (e) => setIsMobile(e.matches);
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
 
   // Helper: Only the authenticated recruiter who created this company can delete it
   const canDeleteCompany = (company) => {
@@ -121,7 +139,16 @@ const CompaniesTable = ({ viewMode = "cards" }) => {
       }) || [];
 
     setFilterCompany(filtered);
+    setShowAllMobile(false);
   }, [companies, searchCompanyByText]);
+
+  const isRecruiter = Boolean(user && user.role?.toLowerCase() === "recruiter");
+  const shouldLimitOnMobile = isMobile && isRecruiter && !showAllMobile;
+  const visibleCompanies = shouldLimitOnMobile
+    ? filterCompany.slice(0, MOBILE_INITIAL_CARDS)
+    : filterCompany;
+  const hasMoreMobileCompanies =
+    shouldLimitOnMobile && filterCompany.length > MOBILE_INITIAL_CARDS;
 
   const formatDate = (isoString) => {
     if (!isoString) return "Recently";
@@ -183,9 +210,10 @@ const CompaniesTable = ({ viewMode = "cards" }) => {
   return (
     <>
       {viewMode === "cards" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence>
-            {filterCompany.map((company, index) => {
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence>
+              {visibleCompanies.map((company, index) => {
               const initial = company?.name?.charAt(0)?.toUpperCase() || "C";
               const jobCount = jobCountsByCompanyId[company?._id?.toString()] || 0;
 
@@ -324,6 +352,22 @@ const CompaniesTable = ({ viewMode = "cards" }) => {
             })}
           </AnimatePresence>
         </div>
+
+        {hasMoreMobileCompanies && (
+          <div className="mt-6 flex justify-center md:hidden">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={() => setShowAllMobile(true)}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white border border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-xs font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
+            >
+              <span>Show More</span>
+              <ChevronDown size={15} />
+            </motion.button>
+          </div>
+        )}
+        </>
       ) : (
         <div className="rounded-3xl bg-white/95 backdrop-blur-xl border border-purple-100/90 shadow-[0_15px_35px_-5px_rgba(106,56,194,0.08)] overflow-hidden">
           <div className="overflow-x-auto">

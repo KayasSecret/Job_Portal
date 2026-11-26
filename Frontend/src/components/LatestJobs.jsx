@@ -1,18 +1,50 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   Briefcase,
+  ChevronDown,
   Flame,
   Search,
 } from "lucide-react";
 import LatestJobCards from "./LatestJobCards";
 
+const MOBILE_CARDS_STEP = 3;
+
 const LatestJobs = () => {
   const { allJobs } = useSelector((store) => store.job);
+  const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
+
+  const [mobileVisibleCount, setMobileVisibleCount] = useState(MOBILE_CARDS_STEP);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 767px)").matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const handleMediaChange = (e) => setIsMobile(e.matches);
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
+
+  useEffect(() => {
+    setMobileVisibleCount(MOBILE_CARDS_STEP);
+  }, [allJobs]);
+
+  const isJobSeeker = !user || user.role?.toLowerCase() === "student";
+  const shouldPaginateMobile = isMobile && isJobSeeker;
+  const displayedJobs = shouldPaginateMobile
+    ? (allJobs || []).slice(0, mobileVisibleCount)
+    : (allJobs || []).slice(0, 6);
+  const hasMoreMobileJobs =
+    shouldPaginateMobile && (allJobs?.length || 0) > mobileVisibleCount;
 
   return (
     <section className="relative py-12 sm:py-16 overflow-hidden">
@@ -49,11 +81,30 @@ const LatestJobs = () => {
 
         {/* Jobs Grid */}
         {allJobs && allJobs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
-            {allJobs.slice(0, 6).map((job) => (
-              <LatestJobCards key={job._id} job={job} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+              {displayedJobs.map((job) => (
+                <LatestJobCards key={job._id} job={job} />
+              ))}
+            </div>
+
+            {hasMoreMobileJobs && (
+              <div className="mt-8 flex justify-center md:hidden">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() =>
+                    setMobileVisibleCount((prev) => prev + MOBILE_CARDS_STEP)
+                  }
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white border border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-xs font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
+                >
+                  <span>Show More</span>
+                  <ChevronDown size={15} />
+                </motion.button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-16 px-4 rounded-3xl bg-white/60 backdrop-blur-md border border-dashed border-purple-200">
             <div className="w-16 h-16 rounded-2xl bg-purple-100 text-[#6A38C2] flex items-center justify-center mx-auto mb-4">
