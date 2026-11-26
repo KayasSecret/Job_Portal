@@ -76,11 +76,12 @@ const appRouter = createBrowserRouter([
         element: <EventDetails />,
       },
 
-      // AI Services (Strictly Job Seeker / Student Role Only)
+      // AI Services: public preview for guests; recruiters are redirected away.
+      // Resume upload/analysis is login-gated in the page and enforced by the Express API (student only).
       {
         path: "/ai-services",
         element: (
-          <ProtectedRoute requiredRole="student">
+          <ProtectedRoute requiredRole="student" allowGuest>
             <AIServices />
           </ProtectedRoute>
         ),
@@ -88,7 +89,7 @@ const appRouter = createBrowserRouter([
       {
         path: "/ai-services/ats-checker",
         element: (
-          <ProtectedRoute requiredRole="student">
+          <ProtectedRoute requiredRole="student" allowGuest>
             <ATSScoreChecker />
           </ProtectedRoute>
         ),

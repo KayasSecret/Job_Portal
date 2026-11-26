@@ -10,7 +10,6 @@ import {
   FileText,
   Target,
   Layers,
-  Wrench,
   CheckSquare,
   RefreshCw,
   ArrowUp,
@@ -22,6 +21,8 @@ import {
   Lightbulb,
   ShieldAlert,
   Info,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 const getScoreTheme = (score) => {
@@ -61,7 +62,7 @@ const ScoreRing = ({ score, label, subtitle, size = 136 }) => {
 
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="relative" style={{ width: size, height: size }}>
+      <div className="relative w-[104px] h-[104px] sm:w-[136px] sm:h-[136px]">
         <svg className="w-full h-full -rotate-90" viewBox={`0 0 ${size} ${size}`}>
           <circle
             cx={size / 2}
@@ -86,20 +87,20 @@ const ScoreRing = ({ score, label, subtitle, size = 136 }) => {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+          <span className="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight leading-none">
             {clamped}
           </span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">
             / 100
           </span>
         </div>
       </div>
-      <p className="text-xs sm:text-sm font-extrabold text-gray-900 mt-2.5">
+      <p className="text-xs sm:text-sm font-extrabold text-gray-900 mt-1.5 sm:mt-2.5 leading-snug">
         {label}
       </p>
       {subtitle && (
         <Badge
-          className={`mt-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${theme.badge}`}
+          className={`mt-1 text-[10px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full border ${theme.badge}`}
         >
           {subtitle}
         </Badge>
@@ -112,8 +113,13 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
   const [activeKeywordTab, setActiveKeywordTab] = useState(
     report?.has_job_description ? "matched" : "detected"
   );
+  const [expandedIssueIds, setExpandedIssueIds] = useState({});
 
   if (!report) return null;
+
+  const toggleIssueExpand = (id) => {
+    setExpandedIssueIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const {
     overall_score,
@@ -199,48 +205,54 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
-      className="space-y-6 sm:space-y-8"
+      className="space-y-4 sm:space-y-8"
     >
       {/* ================= 1. DUAL SCORE OVERVIEW CARD ================= */}
-      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-[0_14px_40px_-15px_rgba(106,56,194,0.14)] p-5 sm:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-purple-50 pb-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6A38C2] uppercase tracking-wider">
-              <Sparkles size={13} />
+      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-[0_14px_40px_-15px_rgba(106,56,194,0.14)] p-3.5 sm:p-8 space-y-3.5 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-purple-50 pb-3 sm:pb-4">
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-[#6A38C2] uppercase tracking-wider">
+              <Sparkles size={12} className="shrink-0" />
               <span>ATS Evaluation Report</span>
             </div>
-            <h2 className="text-lg sm:text-2xl font-black text-gray-900 mt-0.5">
+            <h2 className="text-base sm:text-2xl font-black text-gray-900 mt-0.5 leading-snug">
               Resume Readiness & Keyword Intelligence
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-2 sm:flex items-center gap-2 shrink-0">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={onScrollToForm}
-              className="flex-1 sm:flex-initial h-9 px-3.5 rounded-xl border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-xs font-bold cursor-pointer justify-center"
+              className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-xl border-purple-200 text-[#6A38C2] hover:bg-purple-50 text-[11px] sm:text-xs font-bold cursor-pointer justify-center"
             >
-              <ArrowUp size={13} className="mr-1.5 shrink-0" />
-              Edit Input / JD
+              <ArrowUp size={13} className="mr-1 sm:mr-1.5 shrink-0" />
+              <span>Edit Input / JD</span>
             </Button>
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={onResetAll}
-              className="flex-1 sm:flex-initial h-9 px-3.5 rounded-xl border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-bold cursor-pointer justify-center"
+              className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-xl border-gray-200 text-gray-600 hover:bg-gray-50 text-[11px] sm:text-xs font-bold cursor-pointer justify-center"
             >
-              <RefreshCw size={13} className="mr-1.5 shrink-0" />
-              New Scan
+              <RefreshCw size={13} className="mr-1 sm:mr-1.5 shrink-0" />
+              <span>New Scan</span>
             </Button>
           </div>
         </div>
 
         {/* Score Gauges + Executive Summary */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div className="lg:col-span-5 flex flex-col sm:flex-row items-center justify-around gap-6 p-4 rounded-2xl bg-purple-50/40 border border-purple-100/80">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-6 items-center">
+          <div
+            className={`lg:col-span-5 flex ${
+              has_job_description && job_match_score !== null
+                ? "flex-row justify-around"
+                : "flex-col sm:flex-row justify-around"
+            } items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl bg-purple-50/40 border border-purple-100/80`}
+          >
             <ScoreRing
               score={overall_score}
               label="ATS Readiness Score"
@@ -254,84 +266,112 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                 subtitle={job_match_label}
               />
             ) : (
-              <div className="max-w-[200px] rounded-2xl bg-white border border-dashed border-purple-200 p-4 text-center space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#6A38C2] mx-auto flex items-center justify-center">
-                  <Target size={18} />
+              <>
+                {/* Mobile-only compact horizontal No-JD card */}
+                <div className="sm:hidden w-full rounded-xl bg-white border border-dashed border-purple-200 p-2.5 flex items-center gap-2.5 text-left">
+                  <div className="w-8 h-8 rounded-lg bg-purple-100 text-[#6A38C2] flex items-center justify-center shrink-0">
+                    <Target size={15} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-extrabold text-gray-800 leading-tight">
+                      No Job Description Added
+                    </p>
+                    <p className="text-[10px] text-gray-500 leading-snug mt-0.5">
+                      Add a target JD above to unlock your{" "}
+                      <strong className="text-gray-700">Job Match Score</strong>.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs font-extrabold text-gray-800">
-                  No Job Description Provided
-                </p>
-                <p className="text-[11px] text-gray-500 leading-relaxed">
-                  Paste a target job description above and re-run to unlock your{" "}
-                  <strong className="text-gray-700">Job Match Score</strong>.
-                </p>
-              </div>
+
+                {/* Desktop original vertical No-JD card (preserved) */}
+                <div className="hidden sm:block max-w-[200px] rounded-2xl bg-white border border-dashed border-purple-200 p-4 text-center space-y-2">
+                  <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#6A38C2] mx-auto flex items-center justify-center">
+                    <Target size={18} />
+                  </div>
+                  <p className="text-xs font-extrabold text-gray-800">
+                    No Job Description Provided
+                  </p>
+                  <p className="text-[11px] text-gray-500 leading-relaxed">
+                    Paste a target job description above and re-run to unlock your{" "}
+                    <strong className="text-gray-700">Job Match Score</strong>.
+                  </p>
+                </div>
+              </>
             )}
           </div>
 
-          <div className="lg:col-span-7 space-y-4">
-            <div className="rounded-2xl bg-gradient-to-br from-[#F8F6FF] to-white border border-purple-100 p-4 sm:p-5 space-y-2">
-              <p className="text-xs font-extrabold uppercase tracking-wider text-[#6A38C2]">
+          <div className="lg:col-span-7 space-y-3 sm:space-y-4">
+            <div className="rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#F8F6FF] to-white border border-purple-100 p-3 sm:p-5 space-y-1 sm:space-y-2">
+              <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-wider text-[#6A38C2]">
                 Executive Assessment
               </p>
-              <p className="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-gray-700 leading-snug sm:leading-relaxed font-medium">
                 {score_summary}
               </p>
             </div>
 
-            {/* Resume Telemetry Pills */}
+            {/* Resume Telemetry Pills (Clean 2-Column Mobile Grid, 4-Column Desktop Grid) */}
             {resume_stats && (
-              <div className="space-y-2.5">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-3">
-                    <p className="text-[11px] text-gray-500 font-medium">
+              <div className="space-y-2 sm:space-y-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-2.5 sm:p-3 flex flex-col justify-between min-w-0">
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">
                       Document & Layer
                     </p>
                     <p className="text-xs sm:text-sm font-extrabold text-gray-900 truncate mt-0.5">
                       {resume_stats.file_type} • {resume_stats.file_size_kb} KB
                     </p>
                     {resume_stats.document_classification && (
-                      <p className="text-[10px] font-semibold text-[#6A38C2] truncate mt-0.5">
+                      <p className="text-[10px] font-semibold text-[#6A38C2] truncate mt-0.5 capitalize">
                         {resume_stats.document_classification.replace(/_/g, " ")}
                       </p>
                     )}
                   </div>
-                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-3">
-                    <p className="text-[11px] text-gray-500 font-medium">
+                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-2.5 sm:p-3 flex flex-col justify-between min-w-0">
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">
                       Word Count
                     </p>
                     <p className="text-xs sm:text-sm font-extrabold text-gray-900 mt-0.5">
                       {resume_stats.word_count} words
                     </p>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5 sm:hidden">
+                      {resume_stats.page_or_section_count} page(s)
+                    </p>
                   </div>
-                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-3">
-                    <p className="text-[11px] text-gray-500 font-medium">
+                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-2.5 sm:p-3 flex flex-col justify-between min-w-0">
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">
                       Quantified Items
                     </p>
                     <p className="text-xs sm:text-sm font-extrabold text-gray-900 mt-0.5">
                       {resume_stats.quantified_bullet_count} detected{" "}
-                      <span className="text-[11px] font-semibold text-gray-500">
+                      <span className="hidden sm:inline text-[11px] font-semibold text-gray-500">
                         ({resume_stats.bullet_count} bullets)
                       </span>
                     </p>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5 sm:hidden">
+                      Across {resume_stats.bullet_count} bullets
+                    </p>
                   </div>
-                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-3">
-                    <p className="text-[11px] text-gray-500 font-medium">
+                  <div className="rounded-xl bg-gray-50 border border-gray-200/70 p-2.5 sm:p-3 flex flex-col justify-between min-w-0">
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium">
                       Action Verbs
                     </p>
                     <p className="text-xs sm:text-sm font-extrabold text-gray-900 mt-0.5">
                       {resume_stats.action_verb_count} detected
+                    </p>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5 sm:hidden">
+                      Active voice
                     </p>
                   </div>
                 </div>
 
                 {Array.isArray(resume_stats.extraction_warnings) &&
                   resume_stats.extraction_warnings.length > 0 && (
-                    <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 space-y-1">
+                    <div className="rounded-xl bg-amber-50 border border-amber-200 p-2.5 sm:p-3 space-y-1">
                       {resume_stats.extraction_warnings.map((warn, idx) => (
                         <div
                           key={idx}
-                          className="flex items-start gap-2 text-xs text-amber-900 font-medium leading-relaxed"
+                          className="flex items-start gap-2 text-[11px] sm:text-xs text-amber-900 font-medium leading-snug sm:leading-relaxed"
                         >
                           <AlertTriangle
                             size={14}
@@ -349,37 +389,40 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
       </section>
 
       {/* ================= 2. 6-CATEGORY WEIGHTED SCORE BREAKDOWN ================= */}
-      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-5 sm:p-8 space-y-5">
+      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-3.5 sm:p-8 space-y-3 sm:space-y-5">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center">
-              <Layers size={18} />
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center shrink-0">
+              <Layers size={16} className="sm:w-[18px] sm:h-[18px]" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-extrabold text-gray-900">
+              <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 leading-tight">
                 Category Score Breakdown
               </h3>
-              <p className="text-xs text-gray-500">
-                Transparent 100-point rubric evaluating structure, content, and keywords
+              <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+                <span className="sm:hidden">100-point ATS readiness breakdown</span>
+                <span className="hidden sm:inline">
+                  Transparent 100-point rubric evaluating structure, content, and keywords
+                </span>
               </p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
           {categoryList.map((cat) => {
             const theme = getScoreTheme(cat.percentage);
             return (
               <div
                 key={cat.key}
-                className="rounded-2xl border border-purple-100/80 bg-gray-50/40 p-4 space-y-2.5"
+                className="rounded-xl sm:rounded-2xl border border-purple-100/80 bg-gray-50/40 p-3 sm:p-4 space-y-1.5 sm:space-y-2.5"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs sm:text-sm font-bold text-gray-900">
+                  <span className="text-xs sm:text-sm font-bold text-gray-900 min-w-0 truncate">
                     {cat.label}
                   </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold text-gray-800">
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <span className="text-[11px] sm:text-xs font-extrabold text-gray-800">
                       {cat.score} / {cat.max_score} pts
                     </span>
                     <Badge
@@ -390,7 +433,7 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                   </div>
                 </div>
 
-                <div className="w-full h-2 rounded-full bg-gray-200 overflow-hidden">
+                <div className="w-full h-1.5 sm:h-2 rounded-full bg-gray-200 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -400,7 +443,7 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                   />
                 </div>
 
-                <p className="text-xs text-gray-600 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-gray-600 leading-snug sm:leading-relaxed">
                   {cat.feedback}
                 </p>
               </div>
@@ -410,40 +453,57 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
       </section>
 
       {/* ================= 3. CONTACT & SECTION STRUCTURE AUDIT ================= */}
-      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-5 sm:p-8 space-y-6">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center">
-            <FileText size={18} />
+      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-3.5 sm:p-8 space-y-3.5 sm:space-y-6">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center shrink-0">
+            <FileText size={16} className="sm:w-[18px] sm:h-[18px]" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-extrabold text-gray-900">
+            <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 leading-tight">
               Contact Channels & Section Detection
             </h3>
-            <p className="text-xs text-gray-500">
-              What an automated ATS parser extracts from your document headings
+            <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+              <span className="sm:hidden">Detected contact details and headings</span>
+              <span className="hidden sm:inline">
+                What an automated ATS parser extracts from your document headings
+              </span>
             </p>
           </div>
         </div>
 
-        {/* Contact Channels */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-          {contactItems.map((item) => {
+        {/* Contact Channels: 2-column grid on mobile (5th item spans cleanly), 5-column on desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-2.5">
+          {contactItems.map((item, idx) => {
             const Icon = item.icon;
+            const isLastOdd = idx === contactItems.length - 1;
             return (
               <div
                 key={item.label}
-                className={`rounded-xl border p-3 flex items-center gap-2.5 ${
+                className={`${
+                  isLastOdd ? "col-span-2 sm:col-span-1" : ""
+                } rounded-xl border p-2.5 sm:p-3 flex items-start sm:items-center gap-2 sm:gap-2.5 min-w-0 ${
                   item.ok
                     ? "bg-emerald-50/50 border-emerald-200 text-emerald-800"
                     : "bg-rose-50/40 border-rose-200 text-rose-700"
                 }`}
               >
-                <Icon size={15} className="shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[11px] font-bold truncate">{item.label}</p>
-                  <p className="text-[10px] font-semibold opacity-80">
-                    {item.ok ? "Detected" : "Missing"}
+                <Icon
+                  size={15}
+                  className="shrink-0 mt-0.5 sm:mt-0"
+                />
+                <div className="min-w-0 flex-1 flex flex-col items-start">
+                  <p className="text-[11px] font-bold leading-snug break-words w-full">
+                    {item.label}
                   </p>
+                  <span
+                    className={`mt-1 sm:mt-0.5 inline-flex items-center text-[10px] font-bold sm:font-semibold px-1.5 py-0.5 sm:p-0 rounded-md sm:rounded-none sm:bg-transparent sm:opacity-80 ${
+                      item.ok
+                        ? "bg-emerald-100/85 text-emerald-800"
+                        : "bg-rose-100/85 text-rose-700"
+                    }`}
+                  >
+                    {item.ok ? "Detected" : "Missing"}
+                  </span>
                 </div>
               </div>
             );
@@ -451,10 +511,10 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
         </div>
 
         {/* Detected vs Missing Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="rounded-2xl bg-emerald-50/40 border border-emerald-200/80 p-4 space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
+          <div className="rounded-xl sm:rounded-2xl bg-emerald-50/40 border border-emerald-200/80 p-3 sm:p-4 space-y-2 sm:space-y-2.5">
             <p className="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5">
-              <CheckCircle2 size={14} />
+              <CheckCircle2 size={14} className="shrink-0" />
               <span>Detected Standard Sections ({detected_sections.length})</span>
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -462,7 +522,7 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                 detected_sections.map((sec) => (
                   <Badge
                     key={sec}
-                    className="bg-white text-emerald-800 border border-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-lg"
+                    className="bg-white text-emerald-800 border border-emerald-200 text-[11px] sm:text-xs font-semibold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg"
                   >
                     ✓ {sec}
                   </Badge>
@@ -475,9 +535,9 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-amber-50/40 border border-amber-200/80 p-4 space-y-2.5">
+          <div className="rounded-xl sm:rounded-2xl bg-amber-50/40 border border-amber-200/80 p-3 sm:p-4 space-y-2 sm:space-y-2.5">
             <p className="text-xs font-extrabold text-amber-800 flex items-center gap-1.5">
-              <AlertTriangle size={14} />
+              <AlertTriangle size={14} className="shrink-0" />
               <span>Missing Core Sections ({missing_sections.length})</span>
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -485,7 +545,7 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                 missing_sections.map((sec) => (
                   <Badge
                     key={sec}
-                    className="bg-white text-amber-800 border border-amber-200 text-xs font-semibold px-2.5 py-1 rounded-lg"
+                    className="bg-white text-amber-800 border border-amber-200 text-[11px] sm:text-xs font-semibold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg"
                   >
                     ! {sec}
                   </Badge>
@@ -501,27 +561,43 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
       </section>
 
       {/* ================= 4. KEYWORD & SKILL INTELLIGENCE ================= */}
-      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-5 sm:p-8 space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center">
-              <Target size={18} />
+      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-3.5 sm:p-8 space-y-3 sm:space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center shrink-0">
+              <Target size={16} className="sm:w-[18px] sm:h-[18px]" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-extrabold text-gray-900">
+              <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 leading-tight">
                 Keyword & Skill Analysis
               </h3>
-              <p className="text-xs text-gray-500">
-                {has_job_description
-                  ? "Exact, partial/ecosystem, and missing keywords compared against your target Job Description"
-                  : "Canonical technical and professional skills extracted from your resume via NLP"}
+              <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+                {has_job_description ? (
+                  <>
+                    <span className="sm:hidden">
+                      Target job keyword alignment & detected skills
+                    </span>
+                    <span className="hidden sm:inline">
+                      Exact, partial/ecosystem, and missing keywords compared against your target Job Description
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="sm:hidden">
+                      Technical & domain skills extracted from your resume
+                    </span>
+                    <span className="hidden sm:inline">
+                      Canonical technical and professional skills extracted from your resume via NLP
+                    </span>
+                  </>
+                )}
               </p>
             </div>
           </div>
 
-          {/* Filter Tabs */}
+          {/* Filter Tabs: 2x2 grid on mobile, inline flex wrap on desktop */}
           {has_job_description && (
-            <div className="flex flex-wrap items-center gap-1.5 bg-purple-50/70 p-1 rounded-xl border border-purple-100">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1 sm:gap-1.5 bg-purple-50/70 p-1 rounded-xl border border-purple-100">
               {[
                 {
                   id: "matched",
@@ -537,14 +613,14 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                 },
                 {
                   id: "detected",
-                  label: `All Resume Skills (${detectedSkills.length})`,
+                  label: `All Skills (${detectedSkills.length})`,
                 },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveKeywordTab(tab.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer text-center ${
                     activeKeywordTab === tab.id
                       ? "bg-[#6A38C2] text-white shadow-2xs"
                       : "text-gray-600 hover:text-[#6A38C2]"
@@ -558,18 +634,23 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
         </div>
 
         {/* Keyword Chips Display */}
-        <div className="rounded-2xl bg-gray-50/70 border border-gray-200/70 p-4 sm:p-5">
+        <div className="rounded-xl sm:rounded-2xl bg-gray-50/70 border border-gray-200/70 p-3 sm:p-5">
           {has_job_description && activeKeywordTab === "matched" && (
-            <div className="space-y-2.5">
-              <p className="text-xs font-bold text-emerald-800">
-                Exact Keyword Matches Found in Your Resume ({matchedKw.length})
-              </p>
+            <div className="space-y-2 sm:space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] sm:text-xs font-bold text-emerald-800">
+                  Exact Keyword Matches Found
+                </p>
+                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 text-[10px] font-bold px-2 py-0 rounded-full">
+                  {matchedKw.length} skills
+                </Badge>
+              </div>
               {matchedKw.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   {matchedKw.map((kw) => (
                     <Badge
                       key={kw}
-                      className="bg-emerald-100 text-emerald-800 border-emerald-200 text-xs font-bold px-3 py-1 rounded-xl"
+                      className="bg-emerald-100 text-emerald-800 border-emerald-200 text-[11px] sm:text-xs font-semibold sm:font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl max-w-full break-words"
                     >
                       ✓ {kw}
                     </Badge>
@@ -584,16 +665,21 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
           )}
 
           {has_job_description && activeKeywordTab === "partial" && (
-            <div className="space-y-2.5">
-              <p className="text-xs font-bold text-amber-800">
-                Partial / Related Ecosystem Matches ({partialKw.length})
-              </p>
+            <div className="space-y-2 sm:space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] sm:text-xs font-bold text-amber-800">
+                  Partial / Related Ecosystem Matches
+                </p>
+                <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-[10px] font-bold px-2 py-0 rounded-full">
+                  {partialKw.length} skills
+                </Badge>
+              </div>
               {partialKw.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   {partialKw.map((kw) => (
                     <Badge
                       key={kw}
-                      className="bg-amber-100 text-amber-800 border-amber-200 text-xs font-bold px-3 py-1 rounded-xl"
+                      className="bg-amber-100 text-amber-800 border-amber-200 text-[11px] sm:text-xs font-semibold sm:font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl max-w-full break-words"
                     >
                       ≈ {kw}
                     </Badge>
@@ -608,16 +694,21 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
           )}
 
           {has_job_description && activeKeywordTab === "missing" && (
-            <div className="space-y-2.5">
-              <p className="text-xs font-bold text-rose-700">
-                Missing Job Description Keywords ({missingKw.length})
-              </p>
+            <div className="space-y-2 sm:space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] sm:text-xs font-bold text-rose-700">
+                  Missing Job Description Keywords
+                </p>
+                <Badge className="bg-rose-100 text-rose-700 border-rose-200 text-[10px] font-bold px-2 py-0 rounded-full">
+                  {missingKw.length} skills
+                </Badge>
+              </div>
               {missingKw.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   {missingKw.map((kw) => (
                     <Badge
                       key={kw}
-                      className="bg-rose-100 text-rose-700 border-rose-200 text-xs font-bold px-3 py-1 rounded-xl"
+                      className="bg-rose-100 text-rose-700 border-rose-200 text-[11px] sm:text-xs font-semibold sm:font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl max-w-full break-words"
                     >
                       + {kw}
                     </Badge>
@@ -632,16 +723,21 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
           )}
 
           {(!has_job_description || activeKeywordTab === "detected") && (
-            <div className="space-y-2.5">
-              <p className="text-xs font-bold text-[#6A38C2]">
-                Canonical Skills Extracted from Your Resume ({detectedSkills.length})
-              </p>
+            <div className="space-y-2 sm:space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] sm:text-xs font-bold text-[#6A38C2]">
+                  Canonical Skills Extracted from Your Resume
+                </p>
+                <Badge className="bg-purple-100 text-[#6A38C2] border-purple-200 text-[10px] font-bold px-2 py-0 rounded-full shrink-0">
+                  {detectedSkills.length} skills
+                </Badge>
+              </div>
               {detectedSkills.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   {detectedSkills.map((kw) => (
                     <Badge
                       key={kw}
-                      className="bg-purple-100 text-[#6A38C2] border-purple-200 text-xs font-bold px-3 py-1 rounded-xl"
+                      className="bg-white sm:bg-purple-100 text-[#6A38C2] border border-purple-200 text-[11px] sm:text-xs font-semibold sm:font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl shadow-2xs sm:shadow-none max-w-full break-words"
                     >
                       {kw}
                     </Badge>
@@ -658,41 +754,47 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
       </section>
 
       {/* ================= 5. DETECTED ISSUES & ACTIONABLE RECOMMENDATIONS ================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Detected Issues */}
-        <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-5 sm:p-7 space-y-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
-              <ShieldAlert size={18} />
+        <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-3.5 sm:p-7 space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+              <ShieldAlert size={16} className="sm:w-[18px] sm:h-[18px]" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-extrabold text-gray-900">
+              <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 leading-tight">
                 Detected ATS Issues ({issues.length})
               </h3>
-              <p className="text-xs text-gray-500">
-                Specific gaps found during parsing and structural inspection
+              <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+                <span className="sm:hidden">Gaps found during resume inspection</span>
+                <span className="hidden sm:inline">
+                  Specific gaps found during parsing and structural inspection
+                </span>
               </p>
             </div>
           </div>
 
           {issues.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               {issues.map((issue) => {
                 const style =
                   severityStyles[issue.severity] || severityStyles.optional;
                 const Icon = style.icon;
+                const isExpanded = Boolean(expandedIssueIds[issue.id]);
+                const hasLongExplanation = (issue.explanation || "").length > 110;
+
                 return (
                   <div
                     key={issue.id}
-                    className={`rounded-2xl border p-4 space-y-2 ${style.border}`}
+                    className={`rounded-xl sm:rounded-2xl border p-3 sm:p-4 space-y-1.5 sm:space-y-2 ${style.border}`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-start gap-2 min-w-0">
                         <Icon
                           size={15}
-                          className={`shrink-0 ${style.iconColor}`}
+                          className={`shrink-0 mt-0.5 ${style.iconColor}`}
                         />
-                        <span className="text-xs sm:text-sm font-extrabold text-gray-900">
+                        <span className="text-xs sm:text-sm font-extrabold text-gray-900 leading-snug">
                           {issue.title}
                         </span>
                       </div>
@@ -702,10 +804,34 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                         {style.label}
                       </Badge>
                     </div>
-                    <p className="text-xs text-gray-600 leading-relaxed">
-                      {issue.explanation}
-                    </p>
-                    <p className="text-xs font-semibold text-gray-800 bg-white/80 rounded-xl p-2.5 border border-gray-200/60">
+
+                    <div className="text-[11px] sm:text-xs text-gray-600 leading-snug sm:leading-relaxed">
+                      <p
+                        className={
+                          !isExpanded && hasLongExplanation
+                            ? "line-clamp-2 sm:line-clamp-none"
+                            : ""
+                        }
+                      >
+                        {issue.explanation}
+                      </p>
+                      {hasLongExplanation && (
+                        <button
+                          type="button"
+                          onClick={() => toggleIssueExpand(issue.id)}
+                          className="sm:hidden mt-1 inline-flex items-center gap-0.5 text-[11px] font-bold text-[#6A38C2] cursor-pointer"
+                        >
+                          <span>{isExpanded ? "Show less" : "Details"}</span>
+                          {isExpanded ? (
+                            <ChevronUp size={12} />
+                          ) : (
+                            <ChevronDown size={12} />
+                          )}
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] sm:text-xs font-semibold text-gray-800 bg-white/85 rounded-lg sm:rounded-xl p-2 sm:p-2.5 border border-gray-200/60 leading-snug sm:leading-relaxed">
                       <span className="text-[#6A38C2] font-bold">Fix: </span>
                       {issue.suggestion}
                     </p>
@@ -714,15 +840,15 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
               })}
             </div>
           ) : (
-            <div className="rounded-2xl bg-emerald-50/60 border border-emerald-200 p-5 text-center space-y-1.5">
+            <div className="rounded-xl sm:rounded-2xl bg-emerald-50/60 border border-emerald-200 p-4 sm:p-5 text-center space-y-1">
               <CheckCircle2
-                size={24}
+                size={22}
                 className="text-emerald-600 mx-auto"
               />
-              <p className="text-sm font-bold text-emerald-900">
+              <p className="text-xs sm:text-sm font-bold text-emerald-900">
                 No Critical ATS Issues Detected
               </p>
-              <p className="text-xs text-emerald-700">
+              <p className="text-[11px] sm:text-xs text-emerald-700">
                 Your resume passed all core structural and contact parseability checks.
               </p>
             </div>
@@ -730,29 +856,32 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
         </section>
 
         {/* Actionable Recommendations */}
-        <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-5 sm:p-7 space-y-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
-              <Lightbulb size={18} />
+        <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-3.5 sm:p-7 space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+              <Lightbulb size={16} className="sm:w-[18px] sm:h-[18px]" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-extrabold text-gray-900">
+              <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 leading-tight">
                 Actionable Recommendations ({recommendations.length})
               </h3>
-              <p className="text-xs text-gray-500">
-                Prioritized improvements with concrete rewrite examples
+              <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+                <span className="sm:hidden">Prioritized fixes & rewrite templates</span>
+                <span className="hidden sm:inline">
+                  Prioritized improvements with concrete rewrite examples
+                </span>
               </p>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {recommendations.map((rec) => (
               <div
                 key={rec.id}
-                className="rounded-2xl border border-purple-100 bg-purple-50/25 p-4 space-y-2.5"
+                className="rounded-xl sm:rounded-2xl border border-purple-100 bg-purple-50/25 p-3 sm:p-4 space-y-2 sm:space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs sm:text-sm font-extrabold text-gray-900">
+                  <span className="text-xs sm:text-sm font-extrabold text-gray-900 leading-snug">
                     {rec.title}
                   </span>
                   <Badge
@@ -764,12 +893,12 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
                   </Badge>
                 </div>
 
-                <p className="text-xs text-gray-600 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-gray-600 leading-snug sm:leading-relaxed">
                   {rec.action}
                 </p>
 
                 {rec.example && (
-                  <div className="rounded-xl bg-white border border-purple-100 p-3 text-xs text-gray-700 font-mono leading-relaxed whitespace-pre-wrap break-words overflow-x-hidden">
+                  <div className="rounded-lg sm:rounded-xl bg-white border border-purple-100 p-2.5 sm:p-3 text-[11px] sm:text-xs text-gray-700 font-mono leading-snug sm:leading-relaxed whitespace-pre-wrap break-words overflow-x-hidden">
                     <span className="block text-[10px] font-sans font-bold uppercase tracking-wider text-[#6A38C2] mb-1">
                       Example Rewrite
                     </span>
@@ -783,26 +912,29 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
       </div>
 
       {/* ================= 6. 7-POINT ATS READINESS CHECKLIST ================= */}
-      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-5 sm:p-8 space-y-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center">
-            <CheckSquare size={18} />
+      <section className="rounded-2xl sm:rounded-3xl bg-white border border-purple-100/90 shadow-xs p-3.5 sm:p-8 space-y-3 sm:space-y-4">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-purple-100 text-[#6A38C2] flex items-center justify-center shrink-0">
+            <CheckSquare size={16} className="sm:w-[18px] sm:h-[18px]" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-extrabold text-gray-900">
+            <h3 className="text-sm sm:text-lg font-extrabold text-gray-900 leading-tight">
               7-Point ATS Readiness Checklist
             </h3>
-            <p className="text-xs text-gray-500">
-              Quick verification of fundamental automated screening criteria
+            <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+              <span className="sm:hidden">Core automated screening checks</span>
+              <span className="hidden sm:inline">
+                Quick verification of fundamental automated screening criteria
+              </span>
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
           {checklist.map((item) => (
             <div
               key={item.id}
-              className={`rounded-2xl border p-3.5 flex items-start gap-3 ${
+              className={`rounded-xl sm:rounded-2xl border p-2.5 sm:p-3.5 flex items-start gap-2.5 sm:gap-3 ${
                 item.passed
                   ? "bg-emerald-50/35 border-emerald-200/80"
                   : "bg-rose-50/35 border-rose-200/80"
@@ -810,17 +942,31 @@ const ATSReportDashboard = ({ report, onScrollToForm, onResetAll }) => {
             >
               {item.passed ? (
                 <CheckCircle2
-                  size={17}
-                  className="text-emerald-600 shrink-0 mt-0.5"
+                  size={16}
+                  className="text-emerald-600 shrink-0 mt-0.5 sm:w-[17px] sm:h-[17px]"
                 />
               ) : (
-                <XCircle size={17} className="text-rose-500 shrink-0 mt-0.5" />
+                <XCircle
+                  size={16}
+                  className="text-rose-500 shrink-0 mt-0.5 sm:w-[17px] sm:h-[17px]"
+                />
               )}
-              <div className="min-w-0">
-                <p className="text-xs font-extrabold text-gray-900">
-                  {item.label}
-                </p>
-                <p className="text-[11px] text-gray-600 mt-0.5 leading-relaxed">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-extrabold text-gray-900 leading-snug">
+                    {item.label}
+                  </p>
+                  <span
+                    className={`sm:hidden text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0 ${
+                      item.passed
+                        ? "bg-emerald-100/80 text-emerald-800"
+                        : "bg-rose-100/80 text-rose-700"
+                    }`}
+                  >
+                    {item.passed ? "Pass" : "Needs Fix"}
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-600 mt-0.5 leading-snug sm:leading-relaxed">
                   {item.detail}
                 </p>
               </div>

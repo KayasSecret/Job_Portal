@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "../../utils/constant";
 import Navbar from "../shared/Navbar";
@@ -35,7 +35,24 @@ const Login = () => {
 
   const { loading, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
+
+  // Optional return URL passed via navigate("/login", { state: { from } }).
+  // Only same-site, non-auth, non-admin paths are honored, and only for job seekers.
+  const requestedFrom = location.state?.from;
+  const safeReturnPath =
+    typeof requestedFrom === "string" &&
+    requestedFrom.startsWith("/") &&
+    !requestedFrom.startsWith("//") &&
+    !requestedFrom.startsWith("/login") &&
+    !requestedFrom.startsWith("/signup") &&
+    !requestedFrom.startsWith("/admin")
+      ? requestedFrom
+      : null;
+
+  const getPostLoginPath = (role) =>
+    role === "recruiter" ? "/admin/companies" : safeReturnPath || "/";
 
   useEffect(() => {
     dispatch(setLoading(false));
@@ -43,8 +60,9 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      navigate(user.role === "recruiter" ? "/admin/companies" : "/", { replace: true });
+      navigate(getPostLoginPath(user.role), { replace: true });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   const changeEventHandler = (e) => {
@@ -75,11 +93,7 @@ const Login = () => {
       if (res.data.success) {
         dispatch(setUser(res.data.user));
 
-        if (res.data.user.role === "recruiter") {
-          navigate("/admin/companies");
-        } else {
-          navigate("/");
-        }
+        navigate(getPostLoginPath(res.data.user.role), { replace: true });
 
         toast.success(res.data.message || `Welcome back, ${res.data.user.fullName}!`);
       }

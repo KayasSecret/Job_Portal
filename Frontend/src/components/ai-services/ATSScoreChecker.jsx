@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -9,8 +10,18 @@ import ATSReportDashboard from "./ATSReportDashboard";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { ATS_API_ENDPOINT } from "../../utils/constant";
 import {
+  LogIn,
+  Lock,
   ArrowLeft,
   FileCheck2,
   Upload,
@@ -38,6 +49,33 @@ const ATSScoreChecker = () => {
   const fileInputRef = useRef(null);
   const formSectionRef = useRef(null);
   const reportSectionRef = useRef(null);
+  const navigate = useNavigate();
+  const { user } = useSelector((store) => store.auth);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+  // Single access gate for every resume-selection / upload / analyze action.
+  // Backend (Express isAuthenticated + authorizeRole("student")) remains the final security boundary.
+  const ensureStudentAccess = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return false;
+    }
+    if (user.role !== "student") {
+      toast.error("The ATS Resume Checker is available to Job Seekers only.");
+      return false;
+    }
+    return true;
+  };
+
+  const openFilePicker = () => {
+    if (!ensureStudentAccess()) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleLoginRedirect = () => {
+    setShowLoginPrompt(false);
+    navigate("/login", { state: { from: "/ai-services/ats-checker" } });
+  };
 
   const [resumeFile, setResumeFile] = useState(null);
   const [fileError, setFileError] = useState("");
@@ -72,6 +110,10 @@ const ATSScoreChecker = () => {
   };
 
   const validateAndSelectFile = (file) => {
+    if (!ensureStudentAccess()) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     setFileError("");
     setAnalysisError("");
 
@@ -173,6 +215,7 @@ const ATSScoreChecker = () => {
 
   const handleAnalyzeSubmit = async (e) => {
     e.preventDefault();
+    if (!ensureStudentAccess()) return;
     setFileError("");
     setAnalysisError("");
 
@@ -221,6 +264,10 @@ const ATSScoreChecker = () => {
         toast.error(fallbackMsg);
       }
     } catch (error) {
+      if (error.response?.status === 401) {
+        setShowLoginPrompt(true);
+        return;
+      }
       const serverMsg =
         error.response?.data?.message ||
         "Unable to analyze your resume right now. Please verify the file is a readable text-based PDF or DOCX and try again.";
@@ -347,13 +394,13 @@ const ATSScoreChecker = () => {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={openFilePicker}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      fileInputRef.current?.click();
+                      openFilePicker();
                     }
                   }}
                   className={`rounded-2xl border-2 border-dashed p-4 sm:p-8 text-center transition-all cursor-pointer ${
@@ -389,7 +436,7 @@ const ATSScoreChecker = () => {
                       variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        fileInputRef.current?.click();
+                        openFilePicker();
                       }}
                       className="h-9 px-4 rounded-xl border-purple-200 bg-white text-[#6A38C2] hover:bg-purple-50 text-xs font-bold cursor-pointer"
                     >
@@ -429,7 +476,7 @@ const ATSScoreChecker = () => {
                       variant="outline"
                       size="sm"
                       disabled={isAnalyzing}
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={openFilePicker}
                       className="flex-1 sm:flex-initial h-9 px-3 rounded-xl border-purple-200 bg-white text-[#6A38C2] hover:bg-purple-50 text-xs font-semibold cursor-pointer justify-center"
                     >
                       <RefreshCw size={13} className="mr-1.5 shrink-0" />
@@ -582,6 +629,40 @@ const ATSScoreChecker = () => {
           </div>
         </div>
       </main>
+
+      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
+        <DialogContent className="sm:max-w-md rounded-2xl p-5">
+          <DialogHeader className="items-center text-center sm:items-start sm:text-left">
+            <div className="w-11 h-11 rounded-2xl bg-purple-100 text-[#6A38C2] flex items-center justify-center mb-1">
+              <Lock size={20} />
+            </div>
+            <DialogTitle className="text-base sm:text-lg font-extrabold text-gray-900">
+              Login required
+            </DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+              Please log in to upload your resume and use the ATS Resume Checker.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowLoginPrompt(false)}
+              className="h-10 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleLoginRedirect}
+              className="h-10 rounded-xl bg-gradient-to-r from-[#6A38C2] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white text-xs sm:text-sm font-bold cursor-pointer"
+            >
+              <LogIn size={15} className="mr-1.5" />
+              Login
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
