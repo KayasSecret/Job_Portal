@@ -9,11 +9,8 @@ import {
   MapPin,
   Upload,
   Sparkles,
-  FileText,
   CheckCircle2,
-  AlertCircle,
   X,
-  ExternalLink,
 } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Sparkles, Shield, Cpu, Activity } from "lucide-react";
+import { Sparkles, Shield, Activity } from "lucide-react";
 
 /**
  * CareerHologramCore

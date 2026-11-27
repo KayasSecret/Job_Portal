@@ -15,12 +15,11 @@ import {
   Sparkles,
   ArrowRight,
   Plus,
-  Users2,
   ExternalLink,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import useGetAllCompanies from "@/hooks/useGetAllCompanies";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";

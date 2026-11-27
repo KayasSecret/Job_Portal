@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  CalendarDays,
   MapPin,
   Users,
   ArrowRight,
@@ -9,10 +8,7 @@ import {
   Building2,
   Mic,
   Sparkles,
-  Tag,
   Clock,
-  CheckCircle2,
-  ExternalLink,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";

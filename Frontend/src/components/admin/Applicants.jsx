@@ -11,7 +11,6 @@ import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import {
   Users,
   Search,
-  Sparkles,
   CheckCircle2,
   XCircle,
   Clock,
@@ -23,14 +22,11 @@ import {
   LayoutGrid,
   Table as TableIcon,
   X,
-  Filter,
   ArrowLeft,
-  ChevronDown,
-  Building2,
   Loader2,
   Trash2,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";

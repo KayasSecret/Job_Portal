@@ -7,21 +7,18 @@ import {
   BookmarkCheck,
   Bookmark,
   Sparkles,
-  Briefcase,
   TrendingUp,
   Search,
-  SlidersHorizontal,
   X,
   ArrowRight,
   ShieldCheck,
   Building2,
   IndianRupee,
-  Layers,
   ArrowUpDown,
   Compass,
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SavedJobsHologramVault from "./saved-jobs/SavedJobsHologramVault";
 import SavedJobCard from "./saved-jobs/SavedJobCard";
 

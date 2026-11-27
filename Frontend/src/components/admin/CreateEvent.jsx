@@ -3,7 +3,6 @@ import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Badge } from "../ui/badge";
 import {
   Select,
   SelectContent,
@@ -13,7 +12,6 @@ import {
 } from "../ui/select";
 import {
   CalendarDays,
-  Clock,
   MapPin,
   Laptop,
   Users,
@@ -22,29 +20,21 @@ import {
   ArrowRight,
   CheckCircle2,
   UploadCloud,
-  ImageIcon,
   X,
   Plus,
   Trash2,
-  Building2,
-  Mic,
-  Tag,
-  ShieldCheck,
   AlertCircle,
-  Eye,
   Layers,
   Globe,
   Loader2,
   FileText,
-  DollarSign,
-  HelpCircle,
 } from "lucide-react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { EVENT_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import EventLivePreview from "./EventLivePreview";
 
 const CATEGORIES = [

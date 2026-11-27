@@ -8,7 +8,7 @@ from app.config import Settings
 from app.services import ocr_service
 from app.services.pdf_parser import parse_pdf_resume
 from app.utils.text_normalizer import ResumeParseError
-from tests.test_parsers import build_blank_pdf_bytes, build_minimal_pdf_bytes
+from tests.test_parsers import build_minimal_pdf_bytes
 
 
 def build_scanned_image_pdf_bytes() -> bytes:

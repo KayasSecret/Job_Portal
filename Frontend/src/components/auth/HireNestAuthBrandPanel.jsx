@@ -3,9 +3,6 @@ import { motion } from "framer-motion";
 import {
   Sparkles,
   ShieldCheck,
-  Building2,
-  Users,
-  Compass,
   ArrowUpRight,
   GraduationCap,
   Briefcase,

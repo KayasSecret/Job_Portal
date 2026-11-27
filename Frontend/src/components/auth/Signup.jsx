@@ -23,9 +23,7 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
-  CheckCircle2,
   X,
-  Image as ImageIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import HireNestAuthBrandPanel from "./HireNestAuthBrandPanel";

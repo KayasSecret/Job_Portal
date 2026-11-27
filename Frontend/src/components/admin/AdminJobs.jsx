@@ -13,11 +13,9 @@ import {
   Search,
   Briefcase,
   Plus,
-  Sparkles,
   Users,
   Building2,
   MapPin,
-  TrendingUp,
   LayoutGrid,
   Table as TableIcon,
   X,
@@ -25,13 +23,10 @@ import {
   MoreVertical,
   Trash2,
   Eye,
-  AlertTriangle,
-  Loader2,
   Clock,
-  Layers,
   ChevronDown,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Badge } from "../ui/badge";
 import {
   Popover,

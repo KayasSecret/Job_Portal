@@ -12,14 +12,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../ui/popover";
-import { Button } from "../ui/button";
 import {
-  CalendarDays,
   MapPin,
   Laptop,
   Users,
   MoreVertical,
-  ExternalLink,
   Edit,
   Trash2,
   Eye,

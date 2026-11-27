@@ -13,8 +13,6 @@ import {
   Sparkles,
   ArrowUpRight,
   Clock,
-  Briefcase,
-  TrendingUp,
 } from "lucide-react";
 
 const LatestJobCards = ({ job }) => {

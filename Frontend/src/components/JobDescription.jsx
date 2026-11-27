@@ -289,7 +289,7 @@ const JobDescription = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="relative rounded-2xl sm:rounded-3xl p-4 sm:px-7 sm:py-4 md:px-8 md:py-4.5 mb-0 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-xl sm:shadow-2xl"
+                className="relative rounded-2xl sm:rounded-3xl p-4 sm:px-7 sm:py-4 md:px-8 md:py-4.5 mb-5 sm:mb-7 overflow-hidden bg-gradient-to-br from-[#1E0E3E] via-[#2E1065] to-[#4C1D95] text-white shadow-xl sm:shadow-2xl"
               >
                 {/* Ambient Soft Glow Orbs */}
                 <div

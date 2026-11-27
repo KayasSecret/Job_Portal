@@ -17,15 +17,10 @@ import {
   ExternalLink,
   Briefcase,
   Search,
-  Sparkles,
   ArrowUpRight,
-  TrendingUp,
-  CheckCircle2,
-  Clock,
   Trash2,
   ChevronDown,
 } from "lucide-react";
-import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 
 const MOBILE_INITIAL_CARDS = 3;

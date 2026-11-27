@@ -18,7 +18,6 @@ import {
   CheckCircle2,
   ShieldCheck,
   Lock,
-  Info,
   Layers,
   Zap,
 } from "lucide-react";

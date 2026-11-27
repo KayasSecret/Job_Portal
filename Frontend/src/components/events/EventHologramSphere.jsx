@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Sparkles, Shield, Calendar, Activity } from "lucide-react";
+import { Shield, Calendar, Activity } from "lucide-react";
 
 /**
  * EventHologramSphere

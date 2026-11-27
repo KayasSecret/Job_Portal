@@ -4,9 +4,7 @@ import {
   MapPin,
   Users,
   Laptop,
-  Building2,
   Sparkles,
-  ExternalLink,
   MoreVertical,
   Edit,
   Trash2,
@@ -15,11 +13,9 @@ import {
   Clock,
   Layers,
   Globe,
-  Tag,
   AlertCircle,
   Share2,
 } from "lucide-react";
-import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
   Popover,

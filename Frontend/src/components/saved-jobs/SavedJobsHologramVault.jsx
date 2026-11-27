@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Sparkles, Shield, Bookmark, Activity } from "lucide-react";
+import { Shield, Bookmark, Activity } from "lucide-react";
 
 /**
  * SavedJobsHologramVault

@@ -1,6 +1,6 @@
 """Pydantic response and validation schemas for the ATS Checker service."""
 
-from typing import Dict, List, Literal, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
 

@@ -21,11 +21,8 @@ import {
   MapPin,
   Calendar,
   MoreVertical,
-  ExternalLink,
   Trash2,
   Eye,
-  Loader2,
-  AlertTriangle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";

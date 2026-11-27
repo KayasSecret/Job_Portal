@@ -2,9 +2,6 @@ import React from "react";
 import {
   Filter,
   RotateCcw,
-  Layers,
-  Laptop,
-  Tag,
   ArrowUpDown,
   LayoutGrid,
   List,

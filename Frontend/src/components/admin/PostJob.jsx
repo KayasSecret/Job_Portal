@@ -31,12 +31,11 @@ import {
   CheckCircle2,
   X,
   Plus,
-  Eye,
   Zap,
   ShieldCheck,
   FileText,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Badge } from "../ui/badge";
 
 const PostJob = () => {

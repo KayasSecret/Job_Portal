@@ -8,17 +8,10 @@ import {
   Search,
   SlidersHorizontal,
   Briefcase,
-  Building2,
   Sparkles,
-  TrendingUp,
-  RotateCcw,
   X,
   ChevronDown,
   ArrowUpDown,
-  CheckCircle2,
-  Layers,
-  MapPin,
-  IndianRupee,
 } from "lucide-react";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import { setSearchedQuery } from "@/redux/jobSlice";

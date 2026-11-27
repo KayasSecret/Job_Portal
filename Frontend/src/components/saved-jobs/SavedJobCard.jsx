@@ -4,17 +4,13 @@ import { USER_API_ENDPOINT, APPLICANT_API_ENDPOINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
-  BookmarkCheck,
-  BookmarkX,
   MapPin,
   Clock,
   ArrowUpRight,
   ArrowRight,
   CheckCircle2,
-  Building2,
   Layers,
   IndianRupee,
-  Sparkles,
   ShieldCheck,
   Trash2,
   Briefcase,

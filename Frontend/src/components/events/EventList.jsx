@@ -1,7 +1,7 @@
 import React from "react";
 import EventCard from "./EventCard";
 import { motion, AnimatePresence } from "framer-motion";
-import { CalendarDays, Sparkles, Compass, RotateCcw } from "lucide-react";
+import { CalendarDays, RotateCcw } from "lucide-react";
 import { Button } from "../ui/button";
 
 /**

@@ -1,6 +1,5 @@
 import React from "react";
-import { Search, X, Sparkles } from "lucide-react";
-import { Input } from "../ui/input";
+import { Search, X } from "lucide-react";
 import { Button } from "../ui/button";
 
 /**

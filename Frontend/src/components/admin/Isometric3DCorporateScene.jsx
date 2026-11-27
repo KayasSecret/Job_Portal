@@ -4,10 +4,6 @@ import {
   Building2,
   Sparkles,
   ShieldCheck,
-  TrendingUp,
-  Globe2,
-  Users2,
-  Boxes,
   Zap,
 } from "lucide-react";
 

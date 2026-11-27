@@ -16,9 +16,6 @@ import {
   Briefcase,
   LayoutGrid,
   Table as TableIcon,
-  TrendingUp,
-  MapPin,
-  CheckCircle2,
   ShieldCheck,
   X,
 } from "lucide-react";

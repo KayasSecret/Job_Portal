@@ -4,15 +4,8 @@ import {
   MapPin,
   Users,
   Laptop,
-  Building2,
   Sparkles,
-  ExternalLink,
-  Clock,
   Layers,
-  Globe,
-  Tag,
-  ShieldCheck,
-  CheckCircle2,
 } from "lucide-react";
 
 /**

@@ -23,10 +23,8 @@ import {
   Image as ImageIcon,
   X,
   ExternalLink,
-  Briefcase,
   AlertCircle,
   FileText,
-  Layers,
 } from "lucide-react";
 import { motion } from "framer-motion";
 

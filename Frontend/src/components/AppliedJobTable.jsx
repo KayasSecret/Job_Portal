@@ -1,22 +1,17 @@
 import React, { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   BriefcaseBusiness,
-  Building2,
   Calendar,
   CheckCircle2,
   Clock,
   XCircle,
   ArrowUpRight,
   Search,
-  Filter,
-  IndianRupee,
   MapPin,
-  Sparkles,
 } from "lucide-react";
-import { Badge } from "./ui/badge";
 import { Avatar, AvatarImage } from "./ui/avatar";
 
 const AppliedJobTable = () => {

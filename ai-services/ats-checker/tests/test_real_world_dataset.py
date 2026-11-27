@@ -15,7 +15,7 @@ Covers all 11 required document types:
 """
 
 import io
-from typing import Dict, List
+from typing import List
 import pytest
 from docx import Document
 from docx.oxml import OxmlElement
@@ -27,7 +27,6 @@ from app.main import app
 from app.services.docx_parser import parse_docx_resume
 from app.services.keyword_analyzer import analyze_keywords
 from app.services.pdf_parser import parse_pdf_resume
-from app.services.recommendation_engine import generate_issues_and_recommendations
 from app.services.resume_analyzer import analyze_resume_structure
 from app.services.scoring_engine import compute_ats_scores
 from app.utils.text_normalizer import ResumeParseError
@@ -174,15 +173,6 @@ def build_complex_formatted_docx_bytes() -> bytes:
     buf = io.BytesIO()
     doc.save(buf)
     return buf.getvalue()
-
-
-def _attach_xml_bullet(paragraph):
-    pPr = paragraph._p.get_or_add_pPr()
-    numPr = OxmlElement("w:numPr")
-    numId = OxmlElement("w:numId")
-    numId.set(qn("w:val"), "1")
-    numPr.append(numId)
-    pPr.append(numPr)
 
 
 def test_1_and_10_pdf_vs_docx_parity_on_identical_resume():

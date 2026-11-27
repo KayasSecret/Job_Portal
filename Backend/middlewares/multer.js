@@ -118,9 +118,6 @@ export const resumeUpload = (req, res, next) => {
   });
 };
 
-// Backward-compatible alias for existing imports
-export const singleUpload = imageUpload;
-
 // 3. ATS Resume Filter (Max 5MB, PDF & DOCX only)
 const atsResumeFileFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname || "").toLowerCase();

@@ -74,7 +74,7 @@ const JobHighlightsTelemetry = ({ singleJob }) => {
             key={card.id}
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: idx * 0.08, ease: "easeOut" }}
+            transition={{ duration: 0.2, delay: idx * 0.08, ease: "easeOut" }}
             whileHover={{ y: -5, scale: 1.015 }}
             className="group relative rounded-xl sm:rounded-3xl p-3 sm:p-6 bg-white/95 hover:bg-white border border-purple-100/90 backdrop-blur-xl overflow-hidden shadow-[0_6px_24px_rgba(106,56,194,0.06)] transition-all duration-300 hover:border-purple-300 hover:shadow-[0_16px_36px_rgba(106,56,194,0.12)]"
           >
